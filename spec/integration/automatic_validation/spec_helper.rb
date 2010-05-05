@@ -35,7 +35,7 @@ class SailBoat
   property :allow_nil,     String,     :length => 5..10,          :required => false,      :validates       => :nil_test
   property :build_date,    Date,                                                          :validates       => :primitive_test
   property :float,         Float,      :precision => 2, :scale => 1
-  property :big_decimal,   BigDecimal, :precision => 2, :scale => 1
+  property :big_decimal,   Decimal, :precision => 2, :scale => 1
 
   include TypecastBypassSetter
 end

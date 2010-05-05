@@ -1,7 +1,7 @@
 module DataMapper
   class Property
     # for options_with_message
-    OPTIONS << :message << :messages << :set
+    accept_options :message, :messages, :set, :validates, :auto_validation, :format
   end
 
   module Validations
@@ -131,9 +131,9 @@ module DataMapper
       end
 
       def infer_length_validation_for(property, options)
-        return unless [ String, DataMapper::Types::Text ].include?(property.type)
+        return unless [ DataMapper::Property::String, DataMapper::Property::Text ].include?(property.class)
 
-        case length = property.options.fetch(:length, DataMapper::Property::DEFAULT_LENGTH)
+        case length = property.options.fetch(:length, DataMapper::Property::String::DEFAULT_LENGTH)
           when Range then options[:within]  = length
           else            options[:maximum] = length
         end
@@ -171,19 +171,23 @@ module DataMapper
       end
 
       def infer_type_validation_for(property, options)
-        options[:gte] = property.min if property.min
-        options[:lte] = property.max if property.max
+        return if property.custom?
 
-        if Integer == property.type
+        if property.kind_of?(Property::Numeric)
+          options[:gte] = property.min if property.min
+          options[:lte] = property.max if property.max
+        end
+
+        if Integer == property.primitive
           options[:integer_only] = true
 
           validates_numericality_of property.name, options_with_message(options, property, :is_number)
-        elsif BigDecimal == property.type || Float == property.type
+        elsif BigDecimal == property.primitive || Float == property.primitive
           options[:precision] = property.precision
           options[:scale]     = property.scale
 
           validates_numericality_of property.name, options_with_message(options, property, :is_number)
-        elsif !property.custom?
+        else
           # We only need this in the case we don't already
           # have a numeric validator, because otherwise
           # it will cause duplicate validation errors

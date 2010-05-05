@@ -35,6 +35,16 @@ rescue LoadError
 
 end
 
+module DataMapper
+  class Property
+    def self.new(model, name, options = {}, type = nil)
+      property = super
+      property.model.auto_generate_validations(property)
+      property
+    end
+  end
+end
+
 require 'dm-validations/exceptions'
 require 'dm-validations/validation_errors'
 require 'dm-validations/contextual_validators'
