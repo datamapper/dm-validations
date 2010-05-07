@@ -7,6 +7,7 @@ $LOAD_PATH.unshift(lib) if File.directory?(lib)
 # Support running specs with 'rake spec' and 'spec'
 $LOAD_PATH.unshift('lib') unless $LOAD_PATH.include?('lib')
 
+require 'dm-migrations'
 require 'dm-validations'
 
 def load_driver(name, default_uri)
