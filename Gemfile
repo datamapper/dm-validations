@@ -93,6 +93,7 @@ group(:development) do # Development dependencies (as in the gemspec)
   gem 'yard',           '~> 0.5'
   gem 'rcov',           '~> 0.9.7'
   gem 'jeweler',        '~> 1.4'
+  gem 'dm-types',       '~> 0.10.3'
 
 end
 

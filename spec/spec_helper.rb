@@ -8,6 +8,7 @@ $LOAD_PATH.unshift(lib) if File.directory?(lib)
 $LOAD_PATH.unshift('lib') unless $LOAD_PATH.include?('lib')
 
 require 'dm-migrations'
+require 'dm-types'
 require 'dm-validations'
 
 def load_driver(name, default_uri)
