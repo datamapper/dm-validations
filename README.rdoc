@@ -66,11 +66,11 @@ Again, using our example for pure Ruby class validations:
     include DataMapper::Resource
 
     property :name, String
-    
+
     def ensure_allows_manual_memory_management
       # ...
     end
-    
+
     def ensure_allows_optional_parentheses
       # ...
     end
