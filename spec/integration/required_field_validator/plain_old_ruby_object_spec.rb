@@ -1,33 +1,38 @@
 require 'spec_helper'
 require 'integration/required_field_validator/spec_helper'
 
-if HAS_SQLITE3 || HAS_MYSQL || HAS_POSTGRES
-  describe "A plain old Ruby object (not a DM resource)" do
-    before do
-      class PlainClass
-        extend DataMapper::Validations::ClassMethods
-        include DataMapper::Validations
-        attr_accessor :accessor
-        validates_presence_of :here, :empty, :nil, :accessor
-        def here;  "here" end
-        def empty; ""     end
-        def nil;   nil    end
+describe 'required_field_validator/plain_old_ruby_object_spec' do
+
+  supported_by :sqlite, :mysql, :postgres do
+
+    describe "A plain old Ruby object (not a DM resource)" do
+      before do
+        class PlainClass
+          extend DataMapper::Validations::ClassMethods
+          include DataMapper::Validations
+          attr_accessor :accessor
+          validates_presence_of :here, :empty, :nil, :accessor
+          def here;  "here" end
+          def empty; ""     end
+          def nil;   nil    end
+        end
+
+        @pc = PlainClass.new
       end
 
-      @pc = PlainClass.new
-    end
+      it "should fail validation with empty, nil, or blank fields" do
+        @pc.should_not be_valid
+        @pc.errors.on(:empty).should    == [ 'Empty must not be blank' ]
+        @pc.errors.on(:nil).should      == [ 'Nil must not be blank' ]
+        @pc.errors.on(:accessor).should == [ 'Accessor must not be blank' ]
+      end
 
-    it "should fail validation with empty, nil, or blank fields" do
-      @pc.should_not be_valid
-      @pc.errors.on(:empty).should    == [ 'Empty must not be blank' ]
-      @pc.errors.on(:nil).should      == [ 'Nil must not be blank' ]
-      @pc.errors.on(:accessor).should == [ 'Accessor must not be blank' ]
-    end
-
-    it "giving accessor a value should remove validation error" do
-      @pc.accessor = "full"
-      @pc.valid?
-      @pc.errors.on(:accessor).should be_nil
+      it "giving accessor a value should remove validation error" do
+        @pc.accessor = "full"
+        @pc.valid?
+        @pc.errors.on(:accessor).should be_nil
+      end
     end
   end
+
 end
