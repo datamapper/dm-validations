@@ -71,7 +71,7 @@
 source 'http://rubygems.org'
 
 DATAMAPPER = 'git://github.com/datamapper'
-
+DM_VERSION = '~> 0.10.3'
 
 group :runtime do # Runtime dependencies (as in the gemspec)
 
@@ -81,19 +81,20 @@ group :runtime do # Runtime dependencies (as in the gemspec)
     gem 'activesupport', '~> 3.0.0.beta3', :git => 'git://github.com/rails/rails.git', :require => nil
   end
 
-  gem 'dm-core', '~> 0.10.3', :git => "#{DATAMAPPER}/dm-core.git"
+  gem 'dm-core',        DM_VERSION, :git => "#{DATAMAPPER}/dm-core.git"
 
 
 end
 
 group(:development) do # Development dependencies (as in the gemspec)
 
+  gem 'dm-types',       DM_VERSION, :git => "#{DATAMAPPER}/dm-types.git"
+
   gem 'rake',           '~> 0.8.7'
   gem 'rspec',          '~> 1.3'
   gem 'yard',           '~> 0.5'
   gem 'rcov',           '~> 0.9.7'
   gem 'jeweler',        '~> 1.4'
-  gem 'dm-types',       '~> 0.10.3'
 
 end
 
@@ -107,8 +108,6 @@ group :quality do # These gems contain rake tasks that check the quality of the 
 end
 
 group :datamapper do # We need this because we want to pin these dependencies to their git master sources
-
-  DM_VERSION = '~> 0.10.3'
 
   adapters = ENV['ADAPTER'] || ENV['ADAPTERS']
   adapters = adapters.to_s.gsub(',',' ').split(' ') - ['in_memory']
