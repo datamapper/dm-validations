@@ -3,126 +3,123 @@ require 'integration/required_field_validator/spec_helper'
 
 describe 'required_field_validator/date_type_value_spec' do
 
-  supported_by :sqlite, :mysql, :postgres do
+  class Holiday
+    #
+    # Behaviors
+    #
 
-    class Holiday
-      #
-      # Behaviors
-      #
+    include DataMapper::Resource
 
-      include DataMapper::Resource
+    #
+    # Properties
+    #
 
-      #
-      # Properties
-      #
+    property :id, Serial
+    property :on, Date,    :auto_validation => false
 
-      property :id, Serial
-      property :on, Date,    :auto_validation => false
+    #
+    # Validations
+    #
 
-      #
-      # Validations
-      #
+    validates_presence_of :on
+  end
 
-      validates_presence_of :on
+  describe 'Holiday' do
+    before :all do
+      Holiday.auto_migrate!
     end
 
-    describe 'Holiday' do
-      before :all do
-        Holiday.auto_migrate!
+    before do
+      @ny09 = Holiday.new(:on => Date.new(2008, 12, 31))
+      @ny09.should be_valid
+    end
+
+
+    describe "with on = nil" do
+      before do
+        @ny09.on = nil
       end
 
-      before do
-        @ny09 = Holiday.new(:on => Date.new(2008, 12, 31))
+      it "is NOT valid" do
+        # nil = missing for Date value
+        # and Holiday only has default validation context
+        @ny09.should_not be_valid
+
+        # sanity check
+        @ny09.on = Date.new(2008, 12, 31)
         @ny09.should be_valid
       end
+    end
 
 
-      describe "with on = nil" do
-        before do
-          @ny09.on = nil
-        end
-
-        it "is NOT valid" do
-          # nil = missing for Date value
-          # and Holiday only has default validation context
-          @ny09.should_not be_valid
-
-          # sanity check
-          @ny09.on = Date.new(2008, 12, 31)
-          @ny09.should be_valid
-        end
+    describe "with on = valid date" do
+      before do
+        @ny09.on = 0.0
       end
 
+      it "IS valid" do
+        # yes, presence validator does not care
+        @ny09.should be_valid
+      end
+    end
 
-      describe "with on = valid date" do
-        before do
-          @ny09.on = 0.0
-        end
 
-        it "IS valid" do
-          # yes, presence validator does not care
-          @ny09.should be_valid
-        end
+
+    describe "with on = 0" do
+      before do
+        @ny09.on = 0
       end
 
+      it "IS valid" do
+        # yes, presence validator does not care
+        @ny09.should be_valid
+      end
+    end
 
 
-      describe "with on = 0" do
-        before do
-          @ny09.on = 0
-        end
 
-        it "IS valid" do
-          # yes, presence validator does not care
-          @ny09.should be_valid
-        end
+    describe "with on = 100" do
+      before do
+        @ny09.on = 100
       end
 
+      it "IS valid" do
+        @ny09.should be_valid
+      end
+    end
 
 
-      describe "with on = 100" do
-        before do
-          @ny09.on = 100
-        end
-
-        it "IS valid" do
-          @ny09.should be_valid
-        end
+    describe "with on = 100.0" do
+      before do
+        @ny09.on = 100.0
       end
 
+      it "IS valid" do
+        @ny09.should be_valid
+      end
+    end
 
-      describe "with on = 100.0" do
-        before do
-          @ny09.on = 100.0
-        end
 
-        it "IS valid" do
-          @ny09.should be_valid
-        end
+    describe "with on = -1100" do
+      before do
+        # presence validator does not care
+        @ny09.on = -1100
       end
 
+      it "IS valid" do
+        @ny09.should be_valid
+      end
+    end
 
-      describe "with on = -1100" do
-        before do
-          # presence validator does not care
-          @ny09.on = -1100
-        end
 
-        it "IS valid" do
-          @ny09.should be_valid
-        end
+    describe "with on = -1100.5" do
+      before do
+        # presence validator does not care
+        @ny09.on = -1100.5
       end
 
-
-      describe "with on = -1100.5" do
-        before do
-          # presence validator does not care
-          @ny09.on = -1100.5
-        end
-
-        it "IS valid" do
-          @ny09.should be_valid
-        end
+      it "IS valid" do
+        @ny09.should be_valid
       end
     end
   end

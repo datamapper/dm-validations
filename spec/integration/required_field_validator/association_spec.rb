@@ -1,104 +1,67 @@
 require 'spec_helper'
 require 'integration/required_field_validator/spec_helper'
 
-class Artist
-  #
-  # Behaviors
-  #
-
-  include DataMapper::Resource
-
-  #
-  # Properties
-  #
-
-  property :id,   Serial
-  property :name, String,  :auto_validation => false
-
-  #
-  # Associations
-  #
-
-  has n, :albums
-
-  #
-  # Validations
-  #
-
-  validates_presence_of :name
-end
-
-class Album
-  #
-  # Behaviors
-  #
-
-  include DataMapper::Resource
-
-  #
-  # Properties
-  #
-
-  property :id,        Serial
-  property :name,      String,  :auto_validation => false
-  property :artist_id, Integer, :index => :artist
-
-  #
-  # Associations
-  #
-
-  belongs_to :artist
-
-  #
-  # Validations
-  #
-
-  validates_presence_of :name, :artist
-end
-Artist.auto_migrate!
-Album.auto_migrate!
-
 describe 'required_field_validator/association_spec' do
 
-  supported_by :sqlite, :mysql, :postgres do
+  before :all do
 
-    describe 'Album' do
-      before :all do
-        Artist.auto_migrate!
-        Album.auto_migrate!
-      end
+    class Artist
 
+      include DataMapper::Resource
+
+      property :id,   Serial
+      property :name, String,  :auto_validation => false
+
+      has n, :albums
+
+      validates_presence_of :name
+
+    end
+
+    class Album
+
+      include DataMapper::Resource
+
+      property :id,        Serial
+      property :name,      String,  :auto_validation => false
+      property :artist_id, Integer, :index => :artist
+
+      belongs_to :artist
+
+      validates_presence_of :name, :artist
+
+    end
+
+  end
+
+
+  describe 'Album' do
+
+    before do
+      @artist = Artist.create(:name => "Oceanlab")
+      @album  = @artist.albums.new(:name => "Sirens of the sea")
+    end
+
+    describe 'with a missing artist' do
       before do
-        @artist = Artist.create(:name => "Oceanlab")
-        @album  = @artist.albums.new(:name => "Sirens of the sea")
+        @album.artist = nil
       end
 
-      describe 'with a missing artist' do
-        before do
-          @album.artist = nil
-        end
-
-        it 'is not valid' do
-          @album.should_not be_valid
-        end
-
-        it 'has a meaninful error messages on association key property' do
-          @album.valid?
-          @album.errors.on(:artist).should == [ 'Artist must not be blank' ]
-        end
+      it 'is not valid' do
+        @album.should_not be_valid
       end
 
-      describe 'with specified artist and name' do
-        before do
-          # no op
-        end
-
-        it 'is valid' do
-          @album.should be_valid
-        end
+      it 'has a meaninful error messages on association key property' do
+        @album.valid?
+        @album.errors.on(:artist).should == [ 'Artist must not be blank' ]
       end
     end
 
+    describe 'with specified artist and name' do
+      it 'is valid' do
+        @album.should be_valid
+      end
+    end
   end
 
 end

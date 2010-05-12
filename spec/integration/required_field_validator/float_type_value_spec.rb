@@ -3,130 +3,127 @@ require 'integration/required_field_validator/spec_helper'
 
 describe 'required_field_validator/float_type_value_spec' do
 
-  supported_by :sqlite, :mysql, :postgres do
+  #
+  # Especially stupid example since Hg adds local repository revision
+  # to each new commit, but lets roll on with this SCM-ish classes and
+  # still show how Integer type values are validated for presence
+  #
+  class CpuConsumption
+    #
+    # Behaviors
+    #
+
+    include DataMapper::Resource
 
     #
-    # Especially stupid example since Hg adds local repository revision
-    # to each new commit, but lets roll on with this SCM-ish classes and
-    # still show how Integer type values are validated for presence
+    # Properties
     #
-    class CpuConsumption
-      #
-      # Behaviors
-      #
 
-      include DataMapper::Resource
+    property :id,      Serial
+    property :percent, Float,   :auto_validation => false
 
-      #
-      # Properties
-      #
+    #
+    # Validations
+    #
 
-      property :id,      Serial
-      property :percent, Float,   :auto_validation => false
+    validates_presence_of :percent
+  end
 
-      #
-      # Validations
-      #
-
-      validates_presence_of :percent
+  describe 'CpuConsumption' do
+    before :all do
+      CpuConsumption.auto_migrate!
     end
 
-    describe 'CpuConsumption' do
-      before :all do
-        CpuConsumption.auto_migrate!
+    before do
+      @metric = CpuConsumption.new(:percent => 20.0)
+      @metric.should be_valid
+    end
+
+    describe "with percentage = 0.0" do
+      before do
+        @metric.percent = 0.0
       end
 
-      before do
-        @metric = CpuConsumption.new(:percent => 20.0)
+      it "IS valid" do
+        # yes, presence validator does not care
         @metric.should be_valid
       end
+    end
 
-      describe "with percentage = 0.0" do
-        before do
-          @metric.percent = 0.0
-        end
 
-        it "IS valid" do
-          # yes, presence validator does not care
-          @metric.should be_valid
-        end
+
+    describe "with percentage = 0" do
+      before do
+        @metric.percent = 0
       end
 
+      it "IS valid" do
+        # yes, presence validator does not care
+        @metric.should be_valid
+      end
+    end
 
 
-      describe "with percentage = 0" do
-        before do
-          @metric.percent = 0
-        end
 
-        it "IS valid" do
-          # yes, presence validator does not care
-          @metric.should be_valid
-        end
+    describe "with percentage = 100" do
+      before do
+        @metric.percent = 100
       end
 
+      it "IS valid" do
+        @metric.should be_valid
+      end
+    end
 
 
-      describe "with percentage = 100" do
-        before do
-          @metric.percent = 100
-        end
-
-        it "IS valid" do
-          @metric.should be_valid
-        end
+    describe "with percentage = 100.0" do
+      before do
+        @metric.percent = 100.0
       end
 
+      it "IS valid" do
+        @metric.should be_valid
+      end
+    end
 
-      describe "with percentage = 100.0" do
-        before do
-          @metric.percent = 100.0
-        end
 
-        it "IS valid" do
-          @metric.should be_valid
-        end
+    describe "with percentage = -1100" do
+      before do
+        # presence validator does not care
+        @metric.percent = -1100
       end
 
+      it "IS valid" do
+        @metric.should be_valid
+      end
+    end
 
-      describe "with percentage = -1100" do
-        before do
-          # presence validator does not care
-          @metric.percent = -1100
-        end
 
-        it "IS valid" do
-          @metric.should be_valid
-        end
+    describe "with percentage = -1100.5" do
+      before do
+        # presence validator does not care
+        @metric.percent = -1100.5
       end
 
+      it "IS valid" do
+        @metric.should be_valid
+      end
+    end
 
-      describe "with percentage = -1100.5" do
-        before do
-          # presence validator does not care
-          @metric.percent = -1100.5
-        end
 
-        it "IS valid" do
-          @metric.should be_valid
-        end
+    describe "with percentage = nil" do
+      before do
+        @metric.percent = nil
       end
 
+      it "is NOT valid" do
+        # nil = missing for float value
+        # and CpuConsumption only has default validation context
+        @metric.should_not be_valid
 
-      describe "with percentage = nil" do
-        before do
-          @metric.percent = nil
-        end
-
-        it "is NOT valid" do
-          # nil = missing for float value
-          # and CpuConsumption only has default validation context
-          @metric.should_not be_valid
-
-          # sanity check
-          @metric.percent = 100
-          @metric.should be_valid
-        end
+        # sanity check
+        @metric.percent = 100
+        @metric.should be_valid
       end
     end
   end

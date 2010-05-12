@@ -3,98 +3,95 @@ require 'integration/required_field_validator/spec_helper'
 
 describe 'required_field_validator/integer_type_value_spec' do
 
-  supported_by :sqlite, :mysql, :postgres do
+  #
+  # Especially stupid example since Hg adds local repository revision
+  # to each new commit, but lets roll on with this SCM-ish classes and
+  # still show how Integer type values are validated for presence
+  #
+  class HgCommit < ScmOperation
+    #
+    # Properties
+    #
+
+    property :local_repo_revision_num, Integer, :auto_validation => false
 
     #
-    # Especially stupid example since Hg adds local repository revision
-    # to each new commit, but lets roll on with this SCM-ish classes and
-    # still show how Integer type values are validated for presence
+    # Validations
     #
-    class HgCommit < ScmOperation
-      #
-      # Properties
-      #
 
-      property :local_repo_revision_num, Integer, :auto_validation => false
+    validates_presence_of :local_repo_revision_num
+  end
 
-      #
-      # Validations
-      #
-
-      validates_presence_of :local_repo_revision_num
+  describe 'HgCommit' do
+    before :all do
+      HgCommit.auto_migrate!
     end
 
-    describe 'HgCommit' do
-      before :all do
-        HgCommit.auto_migrate!
+    before do
+      @operation = HgCommit.new(:local_repo_revision_num => 90, :name => "ci")
+      @operation.should be_valid
+    end
+
+    describe "with local revision number = 0" do
+      before do
+        @operation.local_repo_revision_num = 0
       end
 
-      before do
-        @operation = HgCommit.new(:local_repo_revision_num => 90, :name => "ci")
+      it "IS valid" do
+        # yes, presence validator does not care
         @operation.should be_valid
       end
+    end
 
-      describe "with local revision number = 0" do
-        before do
-          @operation.local_repo_revision_num = 0
-        end
 
-        it "IS valid" do
-          # yes, presence validator does not care
-          @operation.should be_valid
-        end
+
+    describe "with local revision number = 100" do
+      before do
+        @operation.local_repo_revision_num = 100
       end
 
+      it "IS valid" do
+        @operation.should be_valid
+      end
+    end
 
 
-      describe "with local revision number = 100" do
-        before do
-          @operation.local_repo_revision_num = 100
-        end
-
-        it "IS valid" do
-          @operation.should be_valid
-        end
+    describe "with local revision number = 100.0 (float!)" do
+      before do
+        @operation.local_repo_revision_num = 100.0
       end
 
+      it "IS valid" do
+        @operation.should be_valid
+      end
+    end
 
-      describe "with local revision number = 100.0 (float!)" do
-        before do
-          @operation.local_repo_revision_num = 100.0
-        end
 
-        it "IS valid" do
-          @operation.should be_valid
-        end
+    describe "with local revision number = -1100" do
+      before do
+        # presence validator does not care
+        @operation.local_repo_revision_num = -1100
       end
 
+      it "IS valid" do
+        @operation.should be_valid
+      end
+    end
 
-      describe "with local revision number = -1100" do
-        before do
-          # presence validator does not care
-          @operation.local_repo_revision_num = -1100
-        end
 
-        it "IS valid" do
-          @operation.should be_valid
-        end
+    describe "with local revision number = nil" do
+      before do
+        @operation.local_repo_revision_num = nil
       end
 
+      it "is NOT valid" do
+        # nil = missing for integer value
+        # and HgCommit only has default validation context
+        @operation.should_not be_valid
 
-      describe "with local revision number = nil" do
-        before do
-          @operation.local_repo_revision_num = nil
-        end
-
-        it "is NOT valid" do
-          # nil = missing for integer value
-          # and HgCommit only has default validation context
-          @operation.should_not be_valid
-
-          # sanity check
-          @operation.local_repo_revision_num = 100
-          @operation.should be_valid
-        end
+        # sanity check
+        @operation.local_repo_revision_num = 100
+        @operation.should be_valid
       end
     end
   end
