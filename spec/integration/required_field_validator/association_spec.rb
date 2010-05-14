@@ -5,7 +5,7 @@ describe 'required_field_validator/association_spec' do
 
   before :all do
 
-    class Artist
+    class ::Artist
 
       include DataMapper::Resource
 
@@ -18,7 +18,7 @@ describe 'required_field_validator/association_spec' do
 
     end
 
-    class Album
+    class ::Album
 
       include DataMapper::Resource
 
