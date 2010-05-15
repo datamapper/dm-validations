@@ -8,11 +8,11 @@ describe 'uniqueness_validator/uniqueness_validator_spec' do
     before :all do
       DataMapper::Validations::Fixtures::Department.auto_migrate!
 
-      DataMapper::Validations::Fixtures::Department.create(:name => "HR")
+      DataMapper::Validations::Fixtures::Department.create(:name => "HR").should be_saved
     end
 
     describe "with unique name" do
-      before :all do
+      before do
         @model = DataMapper::Validations::Fixtures::Department.new(:name => "R & D")
       end
 
@@ -20,7 +20,7 @@ describe 'uniqueness_validator/uniqueness_validator_spec' do
     end
 
     describe "with a duplicate name" do
-      before :all do
+      before do
         @model = DataMapper::Validations::Fixtures::Department.new(:name => "HR")
       end
 
@@ -38,7 +38,7 @@ describe 'uniqueness_validator/uniqueness_validator_spec' do
     end
 
     describe "with missing domain" do
-      before :all do
+      before do
         @model.domain = nil
       end
 
@@ -46,7 +46,7 @@ describe 'uniqueness_validator/uniqueness_validator_spec' do
     end
 
     describe "with a duplicate domain" do
-      before :all do
+      before do
         @model = DataMapper::Validations::Fixtures::Organisation.new(:name => 'Fake Apple', :domain => 'apple.com')
       end
 
@@ -82,7 +82,7 @@ describe 'uniqueness_validator/uniqueness_validator_spec' do
     end
 
     describe "with username not valid across the organization" do
-      before :all do
+      before do
         @model = DataMapper::Validations::Fixtures::User.new(:organisation => @organization, :user_name => 'guy')
       end
 
@@ -91,13 +91,14 @@ describe 'uniqueness_validator/uniqueness_validator_spec' do
       end
 
       it "has a meaningful error message" do
+        @model.valid?(:signing_up_for_organization_account)
         @model.errors.on(:user_name).should == [ 'User name is already taken' ]
       end
     end
 
 
     describe "with username not valid across the department" do
-      before :all do
+      before do
         @model = DataMapper::Validations::Fixtures::User.new(:user_name => 'guy', :department => @dept)
       end
 
@@ -106,6 +107,7 @@ describe 'uniqueness_validator/uniqueness_validator_spec' do
       end
 
       it "has a meaningful error message" do
+        @model.valid?(:signing_up_for_department_account)
         @model.errors.on(:user_name).should == [ 'User name is already taken' ]
       end
     end

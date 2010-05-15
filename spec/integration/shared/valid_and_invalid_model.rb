@@ -1,4 +1,8 @@
 describe "valid model", :shared => true do
+  before do
+    @model.valid?
+  end
+
   it "is valid" do
     @model.should be_valid
   end
@@ -13,6 +17,10 @@ describe "valid model", :shared => true do
 end
 
 describe "invalid model", :shared => true do
+  before do
+    @model.valid?
+  end
+
   it "is NOT valid" do
     @model.should_not be_valid
   end
