@@ -6,7 +6,7 @@ describe 'uniqueness_validator/uniqueness_validator_spec' do
 
   describe 'DataMapper::Validations::Fixtures::Department' do
     before :all do
-      DataMapper::Validations::Fixtures::Department.auto_migrate!
+      DataMapper::Validations::Fixtures::Department.all.destroy!
 
       DataMapper::Validations::Fixtures::Department.create(:name => "HR").should be_saved
     end
@@ -30,7 +30,7 @@ describe 'uniqueness_validator/uniqueness_validator_spec' do
 
   describe 'DataMapper::Validations::Fixtures::Organisation' do
     before :all do
-      DataMapper::Validations::Fixtures::Organisation.auto_migrate!
+      DataMapper::Validations::Fixtures::Organisation.all.destroy!
 
       @model = DataMapper.repository do
         DataMapper::Validations::Fixtures::Organisation.create(:name => 'Apple', :domain => 'apple.com')
@@ -66,9 +66,9 @@ describe 'uniqueness_validator/uniqueness_validator_spec' do
 
   describe 'DataMapper::Validations::Fixtures::User' do
     before :all do
-      DataMapper::Validations::Fixtures::Organisation.auto_migrate!
-      DataMapper::Validations::Fixtures::Department.auto_migrate!
-      DataMapper::Validations::Fixtures::User.auto_migrate!
+      DataMapper::Validations::Fixtures::Organisation.all.destroy!
+      DataMapper::Validations::Fixtures::Department.all.destroy!
+      DataMapper::Validations::Fixtures::User.all.destroy!
 
       DataMapper.repository do
         @organization = DataMapper::Validations::Fixtures::Organisation.create(:name => 'Org 101', :domain => '101')

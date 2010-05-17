@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe 'DataMapper::Resource' do
   before :all do
-    DataMapper::Validations::Fixtures::Barcode.auto_migrate!
+    DataMapper::Validations::Fixtures::Barcode.all.destroy!
 
     @resource = DataMapper::Validations::Fixtures::Barcode.new
   end
@@ -34,9 +34,9 @@ describe 'DataMapper::Resource' do
 
     describe 'when provided invalid attributes and a context' do
       before :all do
-        DataMapper::Validations::Fixtures::Organisation.auto_migrate!
-        DataMapper::Validations::Fixtures::Department.auto_migrate!
-        DataMapper::Validations::Fixtures::User.auto_migrate!
+        DataMapper::Validations::Fixtures::Organisation.all.destroy!
+        DataMapper::Validations::Fixtures::Department.all.destroy!
+        DataMapper::Validations::Fixtures::User.all.destroy!
 
         organization = DataMapper::Validations::Fixtures::Organisation.create(:name => 'Org 101', :domain => '101')
         dept         = DataMapper::Validations::Fixtures::Department.create(:name => 'accounting')
