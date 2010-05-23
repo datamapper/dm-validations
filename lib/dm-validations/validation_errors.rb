@@ -109,6 +109,12 @@ module DataMapper
         errors.send(meth, *args, &block)
       end
 
+      def [](property_name)
+        if property_errors = errors[property_name.to_sym]
+          property_errors
+        end
+      end
+
       private
       def errors
         @errors
