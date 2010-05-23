@@ -35,7 +35,9 @@ module DataMapper
       }
 
       # Holds a hash with all the default error messages that can be replaced by your own copy or localizations.
-      cattr_writer :default_error_messages
+      def self.default_error_messages=(default_error_messages)
+        @@default_error_messages = default_error_messages
+      end
 
       def self.default_error_message(key, field, *values)
         field = ActiveSupport::Inflector.humanize(field)
