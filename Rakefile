@@ -10,7 +10,7 @@ begin
     gem.summary     = 'Library for performing validations on DM models and pure Ruby object'
     gem.description = gem.summary
     gem.email       = 'vandenberg.guy [a] gmail [d] com'
-    gem.homepage    = 'http://github.com/datamapper/dm-more/tree/master/%s' % gem.name
+    gem.homepage    = 'http://github.com/datamapper/%s' % gem.name
     gem.authors     = [ 'Guy van den Berg' ]
 
     gem.rubyforge_project = 'datamapper'
