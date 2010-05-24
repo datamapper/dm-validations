@@ -14,7 +14,7 @@ describe 'DataMapper::Resource' do
       end
 
       it 'should return true' do
-        @response.should be_true
+        @response.should be(true)
       end
     end
 
@@ -24,7 +24,7 @@ describe 'DataMapper::Resource' do
       end
 
       it 'should return false' do
-        @response.should be_false
+        @response.should be(false)
       end
 
       it 'should set errors' do
@@ -56,7 +56,7 @@ describe 'DataMapper::Resource' do
       end
 
       it 'should return false' do
-        @response.should be_false
+        @response.should be(false)
       end
 
       it 'should set errors' do

@@ -7,7 +7,7 @@ describe "a good fit for DSLs", :shared => true do
   end
 
   it "is totally fine for DSLs" do
-    @model.ensure_appropriate_for_dsls.should be_true
+    @model.ensure_appropriate_for_dsls.should be(true)
   end
 end
 
@@ -17,7 +17,7 @@ describe "a poor candidate for DSLs", :shared => true do
   end
 
   it "is unappropriate for DSLs" do
-    @model.ensure_appropriate_for_dsls.first.should be_false
+    @model.ensure_appropriate_for_dsls.first.should be(false)
   end
 
   it "has a (more or less) meaningful error message" do
@@ -32,7 +32,7 @@ describe "a good fit for game engine core", :shared => true do
   end
 
   it "is appropriate for system programming" do
-    @model.ensure_appropriate_for_system_programming.should be_true
+    @model.ensure_appropriate_for_system_programming.should be(true)
   end
 end
 
@@ -50,7 +50,7 @@ describe "a good fit for kernel hacking", :shared => true do
   end
 
   it "is appropriate for system programming" do
-    @model.ensure_appropriate_for_system_programming.should be_true
+    @model.ensure_appropriate_for_system_programming.should be(true)
   end
 end
 
