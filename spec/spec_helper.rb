@@ -10,6 +10,7 @@ Pathname.glob((SPEC_ROOT + 'fixtures/**/*.rb').to_s).each { |file| require file 
 Pathname.glob((SPEC_ROOT + 'integration/shared/**/*.rb').to_s).each { |file| require file }
 
 DataMapper::Spec.setup
+DataMapper.finalize
 
 Spec::Runner.configure do |config|
   config.extend(DataMapper::Spec::Adapters::Helpers)
