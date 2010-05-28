@@ -68,12 +68,18 @@ describe 'DataMapper::Validations::Fixtures::EthernetFrame' do
 
   describe "with multibyte characters" do
     before :all do
-      @model = DataMapper::Validations::Fixtures::Currency.valid_instance(
-        :name   => 'Euro',
-        :code   => 'EUR',
-        :symbol => '€'
-      )
-      @model.valid?
+      begin
+        # force normal encoding in this block
+        original, $KCODE = $KCODE, 'N' if RUBY_VERSION <= '1.8.6'
+
+        # example from: http://intertwingly.net/stories/2004/04/14/i18n.html
+        @model = DataMapper::Validations::Fixtures::Multibyte.new(
+          :name => 'Iñtërnâtiônàlizætiøn'
+        )
+        @model.should be_valid
+      ensure
+        $KCODE = original if RUBY_VERSION <= '1.8.6'
+      end
     end
 
     it_should_behave_like "valid model"

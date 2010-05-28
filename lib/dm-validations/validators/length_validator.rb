@@ -94,7 +94,7 @@ module DataMapper
       #
       # @api private
       def value_length(value)
-        value.to_str.split(//).size
+        value.to_str.split(//u).size
       end
 
       # Validate the value length is equal to the expected length
