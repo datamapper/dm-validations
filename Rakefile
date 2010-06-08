@@ -15,10 +15,10 @@ begin
 
     gem.rubyforge_project = 'datamapper'
 
-    gem.add_dependency 'dm-core', '~> 1.0.0.rc3'
+    gem.add_dependency 'dm-core', '~> 1.0.0'
 
     gem.add_development_dependency 'rspec',    '~> 1.3'
-    gem.add_development_dependency 'dm-types', '~> 1.0.0.rc3'
+    gem.add_development_dependency 'dm-types', '~> 1.0.0'
   end
 
   Jeweler::GemcutterTasks.new
