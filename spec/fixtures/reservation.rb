@@ -30,7 +30,7 @@ module DataMapper
 
         validates_confirmation_of :person_name,     :allow_nil => false, :allow_blank => false
         validates_confirmation_of :number_of_seats, :confirm => :seats_confirmation, :message => Proc.new { |resource, property|
-          '%s requires confirmation for %s' % [ActiveSupport::Inflector.demodulize(resource.model.name), property.name]
+          '%s requires confirmation for %s' % [DataMapper::Inflector.demodulize(resource.model.name), property.name]
         }
       end # Reservation
     end # Fixtures
