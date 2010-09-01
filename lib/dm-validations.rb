@@ -1,38 +1,43 @@
 require 'dm-core'
 
 begin
-
+  # We need array for extract_options! which attr_accessors uses, at least in AS
+  # 2.3.3.
+  require 'active_support/core_ext/array'
   require 'active_support/core_ext/class/attribute_accessors'
-  require 'active_support/core_ext/object/blank'
-  require 'active_support/ordered_hash'
-
-  class Object
-    # If receiver is callable, calls it and
-    # returns result. If not, just returns receiver
-    # itself
-    #
-    # @return [Object]
-    def try_call(*args)
-      if self.respond_to?(:call)
-        self.call(*args)
-      else
-        self
-      end
-    end
-  end
-
 rescue LoadError
-
   require 'extlib/class'
-  require 'extlib/dictionary'
+end
+
+begin
+  require 'active_support/core_ext/object/blank'
+rescue LoadError
   require 'extlib/blank'
-  require 'extlib/try_dup'
-  require 'extlib/object'
+end
 
-  module ActiveSupport
-    OrderedHash = Dictionary
+begin
+  require 'active_support/ordered_hash'
+rescue LoadError
+  require 'extlib/dictionary'
+
+  module ::ActiveSupport
+    OrderedHash = ::Dictionary
   end
+end
 
+class Object
+   # If receiver is callable, calls it and
+   # returns result. If not, just returns receiver
+   # itself
+   #
+   # @return [Object]
+   def try_call(*args)
+     if self.respond_to?(:call)
+       self.call(*args)
+     else
+       self
+     end
+   end
 end
 
 module DataMapper
