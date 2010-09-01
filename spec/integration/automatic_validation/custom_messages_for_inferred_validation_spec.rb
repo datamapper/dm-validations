@@ -5,8 +5,8 @@ describe 'Inferred validations' do
   it "allow overriding a single error message" do
     custom_boat = Class.new do
       include DataMapper::Resource
-      property :id,   DataMapper::Types::Serial
-      property :name, String,  :required => true, :message => "This boat must have name"
+      property :id,   DataMapper::Property::Serial
+      property :name, String, :required => true, :message => "This boat must have name"
     end
     boat = custom_boat.new
     boat.should_not be_valid
@@ -16,8 +16,8 @@ describe 'Inferred validations' do
   it "should have correct error messages" do
     custom_boat = Class.new do
       include DataMapper::Resource
-      property :id,   DataMapper::Types::Serial
-      property :name, String,  :required => true, :length => 5..20, :format => /^[a-z]+$/,
+      property :id,   DataMapper::Property::Serial
+      property :name, String, :required => true, :length => 5..20, :format => /^[a-z]+$/,
                :messages => {
                  :presence => "This boat must have name",
                  :length => "Name must have at least 4 and at most 20 chars",

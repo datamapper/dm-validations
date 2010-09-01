@@ -5,8 +5,8 @@ describe 'A model with a :set & :default options on a property' do
   before :all do
     class ::LimitedBoat
       include DataMapper::Resource
-      property :id,       DataMapper::Types::Serial
-      property :limited,  String,   :set => %w[ foo bar bang ], :default => 'foo'
+      property :id,      DataMapper::Property::Serial
+      property :limited, String, :set => %w[ foo bar bang ], :default => 'foo'
     end
   end
 
