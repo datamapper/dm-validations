@@ -112,7 +112,7 @@ module DataMapper
         @disable_auto_validations || false
       end
 
-      alias auto_validations_disabled? disabled_auto_validations?
+      alias_method :auto_validations_disabled?, :disabled_auto_validations?
 
       # Checks whether or not property should be auto validated.
       # It is the case for properties with :auto_validation option

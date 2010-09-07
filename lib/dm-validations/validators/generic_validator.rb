@@ -143,7 +143,7 @@ module DataMapper
         "<##{self.class.name} @field_name='#{@field_name}' @if_clause=#{@if_clause.inspect} @unless_clause=#{@unless_clause.inspect} @options=#{@options.inspect}>"
       end
 
-      alias to_s inspect
+      alias_method :to_s, :inspect
     end # class GenericValidator
   end # module Validations
 end # module DataMapper
