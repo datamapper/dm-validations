@@ -40,7 +40,9 @@ module DataMapper
     def self.new(model, name, options = {}, type = nil)
       property = super
       property.model.auto_generate_validations(property)
-      property
+
+      # FIXME: explicit return needed for YARD to parse this properly
+      return property
     end
   end
 end
