@@ -36,7 +36,6 @@ module DataMapper
       # Auto-generate validations for a given property. This will only occur
       # if the option :auto_validation is either true or left undefined.
       #
-      # @details [Triggers]
       #   Triggers that generate validator creation
       #
       #   :required => true

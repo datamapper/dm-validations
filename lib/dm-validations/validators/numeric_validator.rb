@@ -131,8 +131,6 @@ module DataMapper
 
       # Validate whether a field is numeric
       #
-      # @details
-      #
       # Options are:
       #
       # :allow_nil => true | false

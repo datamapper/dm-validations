@@ -70,7 +70,6 @@ module DataMapper
       # @option :as<Format, Proc, Regexp>   the pre-defined format, Proc or Regexp to validate against
       # @option :with<Format, Proc, Regexp> an alias for :as
       #
-      # @details [Pre-defined Formats]
       #   :email_address (format is specified in DataMapper::Validations::Format::Email)
       #   :url (format is specified in DataMapper::Validations::Format::Url)
       #

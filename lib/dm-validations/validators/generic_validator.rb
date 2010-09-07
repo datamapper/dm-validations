@@ -130,7 +130,7 @@ module DataMapper
       # explicitly given validations with different option
       # (usually as Range vs. max limit for inferred validation)
       #
-      # @semipublic
+      # @api semipublic
       def ==(other)
         self.class == other.class &&
         self.field_name == other.field_name &&
