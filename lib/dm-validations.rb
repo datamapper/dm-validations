@@ -82,16 +82,6 @@ module DataMapper
     extend Chainable
 
     def self.included(model)
-      model.class_eval <<-RUBY, __FILE__, __LINE__ + 1
-        def self.create(attributes = {}, *args)
-          resource = new(attributes)
-          resource.save(*args)
-          resource
-        end
-      RUBY
-
-      # models that are non DM resources must get .validators
-      # and other methods, too
       model.extend ClassMethods
     end
 
@@ -184,6 +174,12 @@ module DataMapper
         validators.contexts.each do |context, validators|
           base.validators.context(context).concat(validators)
         end
+      end
+
+      def create(attributes = {}, *args)
+        resource = new(attributes)
+        resource.save(*args)
+        resource
       end
 
       private
