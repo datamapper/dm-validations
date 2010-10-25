@@ -132,9 +132,14 @@ module DataMapper
       def infer_length_validation_for(property, options)
         return unless [ DataMapper::Property::String, DataMapper::Property::Text ].any? { |klass| property.kind_of?(klass) }
 
-        case length = property.options.fetch(:length, DataMapper::Property::String::DEFAULT_LENGTH)
-          when Range then options[:within]  = length
-          else            options[:maximum] = length
+        length = property.options.fetch(:length, DataMapper::Property::String::DEFAULT_LENGTH)
+
+
+        if length.is_a?(Range)
+          raise ArgumentError, "Infinity is no valid upper bound for a length range" if length.last == Infinity
+          options[:within]  = length
+        else
+          options[:maximum] = length
         end
 
         validates_length_of property.name, options_with_message(options, property, :length)

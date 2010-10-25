@@ -122,4 +122,13 @@ describe 'DataMapper::Validations::Fixtures::SmsMessage' do
       @model.errors.on(:body).should == [ 'Body must be between 1 and 500 characters long' ]
     end
   end
+
+  describe 'with an infinitely long note' do
+    it "should raise when trying to set the upper bound of a property length range to Infinity" do
+      expected_msg = "Infinity is no valid upper bound for a length range"
+      lambda {
+        @model.class.property :body, String, :length => (1..1.0/0)
+      }.should raise_error(ArgumentError, expected_msg)
+    end
+  end
 end
