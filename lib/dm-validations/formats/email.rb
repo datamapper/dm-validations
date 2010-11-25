@@ -11,12 +11,16 @@ module DataMapper
           )
         end
 
-        # RFC2822 (No attribution reference available)
+        # Almost RFC2822 (No attribution reference available).
+        #
+        # This differs in that it does not allow local domains (test@localhost).
+        # 99% of the time you do not want to allow these email addresses
+        # in a public web application.
         EmailAddress = begin
             alpha = "a-zA-Z"
             digit = "0-9"
             atext = "[#{alpha}#{digit}\!\#\$\%\&\'\*+\/\=\?\^\_\`\{\|\}\~\-]"
-            dot_atom_text = "#{atext}+([.]#{atext}*)*"
+            dot_atom_text = "#{atext}+([.]#{atext}*)+" # Last char changed from * to +
             dot_atom = "#{dot_atom_text}"
             qtext = '[^\\x0d\\x22\\x5c\\x80-\\xff]'
             text = "[\\x01-\\x09\\x11\\x12\\x14-\\x7f]"
@@ -31,7 +35,7 @@ module DataMapper
             dtext = "[#{no_ws_ctl}\\x21-\\x5a\\x5e-\\x7e]"
             dcontent = "(?:#{dtext}|#{quoted_pair})"
             domain_literal = "\\[#{dcontent}+\\]"
-            obs_domain = "#{atom}([.]#{atom})*"
+            obs_domain = "#{atom}([.]#{atom})+" # Last char changed from * to +
             domain = "(?:#{dot_atom}|#{domain_literal}|#{obs_domain})"
             addr_spec = "#{local_part}\@#{domain}"
             pattern = /^#{addr_spec}$/

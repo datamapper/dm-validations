@@ -15,7 +15,6 @@ describe 'DataMapper::Validations::Fixtures::BillOfLading' do
         '{_dave_}@example.com',
         '"[[ dave ]]"@example.com',
         'dave."dave"@example.com',
-        'test@localhost',
         'test@example.com',
         'test@example.co.uk',
         'test@example.com.br',
@@ -40,6 +39,7 @@ describe 'DataMapper::Validations::Fixtures::BillOfLading' do
         '.dave@example.com',
         'Max@Job 3:14',
         'Job@Book of Job',
+        'test@localhost',
         'J. P. \'s-Gravezande, a.k.a. The Hacker!@example.com'].each do |email|
     describe "with email value of #{email} (non RFC2822 compliant)" do
       before :all do
