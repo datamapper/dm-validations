@@ -33,7 +33,13 @@ module DataMapper
           field_name => value,
         }
 
-        Array(@options[:scope]).each { |subject| opts[subject] = target.__send__(subject) }
+        Array(@options[:scope]).each {|subject| 
+          if target.respond_to?(subject)
+            opts[subject] = target.__send__(subject) 
+          else
+            raise ArgumentError, "Could not find property to scope by: #{subject}. Note that :unique does not currently support arbitrarily named groups, for that you should use :unique_index with an explicit validates_uniqueness_of."
+          end
+        }
 
         resource = DataMapper.repository(target.repository.name) { target.model.first(opts) }
 
