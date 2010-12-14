@@ -94,7 +94,13 @@ module DataMapper
       #
       # @api private
       def value_length(value)
-        value.to_str.split(//u).size
+        value.to_str.length
+      end
+
+      if RUBY_VERSION < '1.9'
+        def value_length(value)
+          value.to_str.scan(/./u).size
+        end
       end
 
       # Validate the value length is equal to the expected length
