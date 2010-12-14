@@ -13,4 +13,3 @@ describe 'DataMapper::Validations::ValidationErrors#respond_to?' do
   end
 
 end
-
