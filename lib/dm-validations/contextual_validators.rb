@@ -56,14 +56,19 @@ module DataMapper
       def execute(named_context, target)
         target.errors.clear!
 
-        validators = context(named_context).select { |validator| validator.execute?(target) }
+        runnable_validators = context(named_context).select{ |validator| validator.execute?(target) }
 
-        # Only run validators on dirty attributes.
-        validators = validators.select{|v| target.dirty_attributes.keys.include?(v.field_name) }
+        # Start the list with all validators on dirty properties.
+        dirty_attrs = target.dirty_attributes.keys.map{ |p| p.name }
+        validators  = runnable_validators.select{ |v| dirty_attrs.include?(v.field_name) }
 
-        # Load all lazy, not-yet-loaded, needs-to-be-validated properties.
-        need_to_load = validators.map{ |v| target.class.properties[v.field_name] }.select { |p| p.lazy? && !p.loaded?(target) }
-        target.__send__(:eager_load, need_to_load)
+        # Load all lazy, not-yet-loaded properties that need validation, all at once.
+        fields_to_load = validators.map{ |v| target.class.properties[v.field_name] }.select{ |p| p.lazy? && !p.loaded?(target) }
+        target.__send__(:eager_load, fields_to_load)
+
+        # Include any method validators that don't reference any real property
+        # (field-less block validators).
+        validators |= runnable_validators.select{ |v| v.kind_of?(MethodValidator) }
 
         validators.map { |validator| validator.call(target) }.all?
       end
