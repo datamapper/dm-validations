@@ -37,6 +37,12 @@ group :quality do # These gems contain rake tasks that check the quality of the 
 
 end
 
+group :test do
+
+  gem 'ruby-debug'
+
+end
+
 group :datamapper do # We need this because we want to pin these dependencies to their git master sources
 
   adapters = ENV['ADAPTER'] || ENV['ADAPTERS']

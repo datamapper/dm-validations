@@ -2,3 +2,4 @@
 --loadby random
 --format profile
 --backtrace
+--debugger
