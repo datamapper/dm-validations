@@ -56,6 +56,11 @@ module DataMapper
       def execute(named_context, target)
         target.errors.clear!
 
+        # TODO: Discuss current spec design wrt "validating model behaviour when
+        # dm-validations is present" versus "validating validator behaviour".
+        # Former requires generalized assumptions about model behaviour overall,
+        # and ends up testing more than "validator behaviour".  [jpr5]
+
         runnable_validators = context(named_context).select{ |validator| validator.execute?(target) }
 
         # Start the list with all validators on dirty properties.
@@ -66,9 +71,13 @@ module DataMapper
         fields_to_load = validators.map{ |v| target.class.properties[v.field_name] }.select{ |p| p.lazy? && !p.loaded?(target) }
         target.__send__(:eager_load, fields_to_load)
 
-        # Include any method validators that don't reference any real property
-        # (field-less block validators).
-        validators |= runnable_validators.select{ |v| v.kind_of?(MethodValidator) }
+        # Finally include any validators that should always run or don't
+        # reference any real properties (field-less block vaildators).
+        validators |= runnable_validators.select do |v|
+          [ MethodValidator, PresenceValidator, AbsenceValidator ].any? do |klass|
+            v.kind_of?(klass)
+          end
+        end
 
         validators.map { |validator| validator.call(target) }.all?
       end
