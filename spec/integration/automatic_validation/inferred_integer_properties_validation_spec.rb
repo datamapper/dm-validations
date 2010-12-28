@@ -8,6 +8,7 @@ describe "A model with an Integer property" do
     @model = SailBoat.new
   end
 
+  # success case
   describe "assigned to an integer" do
     before :all do
       @model.id = 1

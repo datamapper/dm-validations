@@ -6,7 +6,7 @@ describe "A model with a Boolean property" do
     @model = HasNullableBoolean.new(:id => 1)
   end
 
-  describe "assigned to true" do
+  describe "assigned a true" do
     before :all do
       @model.bool = true
     end
@@ -14,7 +14,7 @@ describe "A model with a Boolean property" do
     it_should_behave_like "valid model"
   end
 
-  describe "assigned to false" do
+  describe "assigned a false" do
     before :all do
       @model.bool = false
     end
@@ -22,7 +22,7 @@ describe "A model with a Boolean property" do
     it_should_behave_like "valid model"
   end
 
-  describe "assigned to a nil" do
+  describe "assigned a nil" do
     before :all do
       @model.bool = nil
     end
@@ -31,14 +31,12 @@ describe "A model with a Boolean property" do
   end
 end
 
-
-
 describe "A model with a required Boolean property" do
   before :all do
     @model = HasNotNullableBoolean.new(:id => 1)
   end
 
-  describe "assigned to true" do
+  describe "assigned a true" do
     before :all do
       @model.bool = true
     end
@@ -46,7 +44,7 @@ describe "A model with a required Boolean property" do
     it_should_behave_like "valid model"
   end
 
-  describe "assigned to false" do
+  describe "assigned a false" do
     before :all do
       @model.bool = false
     end
@@ -54,7 +52,7 @@ describe "A model with a required Boolean property" do
     it_should_behave_like "valid model"
   end
 
-  describe "assigned to a nil" do
+  describe "assigned a nil" do
     before :all do
       @model.bool = nil
     end
@@ -67,14 +65,12 @@ describe "A model with a required Boolean property" do
   end
 end
 
-
-
 describe "A model with a required paranoid Boolean property" do
   before :all do
     @model = HasNotNullableParanoidBoolean.new(:id => 1)
   end
 
-  describe "assigned to true" do
+  describe "assigned a true" do
     before :all do
       @model.bool = true
     end
@@ -82,7 +78,7 @@ describe "A model with a required paranoid Boolean property" do
     it_should_behave_like "valid model"
   end
 
-  describe "assigned to false" do
+  describe "assigned a false" do
     before :all do
       @model.bool = false
     end
@@ -90,7 +86,7 @@ describe "A model with a required paranoid Boolean property" do
     it_should_behave_like "valid model"
   end
 
-  describe "assigned to a nil" do
+  describe "assigned a nil" do
     before :all do
       @model.bool = nil
     end
