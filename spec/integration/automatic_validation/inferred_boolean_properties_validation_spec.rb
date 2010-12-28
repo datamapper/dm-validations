@@ -33,7 +33,7 @@ end
 
 describe "A model with a required Boolean property" do
   before :all do
-    @model = HasNotNullableBoolean.new(:id => 1)
+    @model = HasRequiredBoolean.new(:id => 1)
   end
 
   describe "assigned a true" do
@@ -67,7 +67,7 @@ end
 
 describe "A model with a required paranoid Boolean property" do
   before :all do
-    @model = HasNotNullableParanoidBoolean.new(:id => 1)
+    @model = HasRequiredParanoidBoolean.new(:id => 1)
   end
 
   describe "assigned a true" do

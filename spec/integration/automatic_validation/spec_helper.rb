@@ -38,7 +38,7 @@ class HasNullableBoolean
   property :bool, Boolean # :required => false by default
 end
 
-class HasNotNullableBoolean
+class HasRequiredBoolean
   include DataMapper::Resource
 
   # this one is not Serial intentionally
@@ -47,7 +47,7 @@ class HasNotNullableBoolean
   property :bool, Boolean, :required => true
 end
 
-class HasNotNullableParanoidBoolean
+class HasRequiredParanoidBoolean
   include DataMapper::Resource
 
   # this one is not Serial intentionally
