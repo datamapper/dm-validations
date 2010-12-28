@@ -8,7 +8,7 @@ describe "A model with a Boolean property" do
 
   describe "assigned to true" do
     before :all do
-      @model.set(:bool => true)
+      @model.bool = true
     end
 
     it_should_behave_like "valid model"
@@ -16,7 +16,7 @@ describe "A model with a Boolean property" do
 
   describe "assigned to false" do
     before :all do
-      @model.set(:bool => false)
+      @model.bool = false
     end
 
     it_should_behave_like "valid model"
@@ -24,7 +24,7 @@ describe "A model with a Boolean property" do
 
   describe "assigned to a nil" do
     before :all do
-      @model.set(:bool => nil)
+      @model.bool = nil
     end
 
     it_should_behave_like "valid model"
@@ -40,7 +40,7 @@ describe "A model with a required Boolean property" do
 
   describe "assigned to true" do
     before :all do
-      @model.set(:bool => true)
+      @model.bool = true
     end
 
     it_should_behave_like "valid model"
@@ -48,7 +48,7 @@ describe "A model with a required Boolean property" do
 
   describe "assigned to false" do
     before :all do
-      @model.set(:bool => false)
+      @model.bool = false
     end
 
     it_should_behave_like "valid model"
@@ -56,7 +56,7 @@ describe "A model with a required Boolean property" do
 
   describe "assigned to a nil" do
     before :all do
-      @model.set(:bool => nil)
+      @model.bool = nil
     end
 
     it_should_behave_like "invalid model"
@@ -76,7 +76,7 @@ describe "A model with a required paranoid Boolean property" do
 
   describe "assigned to true" do
     before :all do
-      @model.set(:bool => true)
+      @model.bool = true
     end
 
     it_should_behave_like "valid model"
@@ -84,7 +84,7 @@ describe "A model with a required paranoid Boolean property" do
 
   describe "assigned to false" do
     before :all do
-      @model.set(:bool => false)
+      @model.bool = false
     end
 
     it_should_behave_like "valid model"
@@ -92,7 +92,7 @@ describe "A model with a required paranoid Boolean property" do
 
   describe "assigned to a nil" do
     before :all do
-      @model.set(:bool => nil)
+      @model.bool = nil
     end
 
     it_should_behave_like "invalid model"

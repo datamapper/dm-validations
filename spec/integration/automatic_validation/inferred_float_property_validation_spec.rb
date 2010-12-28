@@ -12,7 +12,7 @@ require 'integration/automatic_validation/spec_helper'
 
     describe "with an integer value" do
       before :all do
-        @model.set(column => 1)
+        @model.attributes = {column => 1}
       end
 
       it_should_behave_like "valid model"
@@ -20,7 +20,7 @@ require 'integration/automatic_validation/spec_helper'
 
     describe "with a float value" do
       before :all do
-        @model.set(column => 1.0)
+        @model.attributes = {column => 1.0}
       end
 
       it_should_behave_like "valid model"
@@ -28,7 +28,7 @@ require 'integration/automatic_validation/spec_helper'
 
     describe "with a BigDecimal value" do
       before :all do
-        @model.set(column => BigDecimal('1'))
+        @model.attributes = {column => BigDecimal('1')}
       end
 
       it_should_behave_like "valid model"

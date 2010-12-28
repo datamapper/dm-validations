@@ -10,15 +10,6 @@
 # and use a few more realistic models with ParanoidBoolean and all
 # that
 
-module TypecastBypassSetter
-  # Bypass typecasting so we can set values for specs
-  def set(attributes)
-    attributes.each do |k, v|
-      instance_variable_set("@#{k}", v)
-    end
-  end
-end
-
 class SailBoat
   include DataMapper::Resource
 
@@ -36,8 +27,6 @@ class SailBoat
   property :build_date,    Date,                                                          :validates       => :primitive_test
   property :float,         Float,      :precision => 2, :scale => 1
   property :big_decimal,   Decimal, :precision => 2, :scale => 1
-
-  include TypecastBypassSetter
 end
 
 class HasNullableBoolean
@@ -47,8 +36,6 @@ class HasNullableBoolean
   # use Serial in real world apps
   property :id,   Integer, :key => true
   property :bool, Boolean # :required => false by default
-
-  include TypecastBypassSetter
 end
 
 class HasNotNullableBoolean
@@ -58,8 +45,6 @@ class HasNotNullableBoolean
   # use Serial in real world apps
   property :id,   Integer, :key => true
   property :bool, Boolean, :required => true
-
-  include TypecastBypassSetter
 end
 
 class HasNotNullableParanoidBoolean
@@ -69,6 +54,4 @@ class HasNotNullableParanoidBoolean
   # use Serial in real world apps
   property :id,   Integer,         :key => true
   property :bool, ParanoidBoolean, :required => true
-
-  include TypecastBypassSetter
 end
