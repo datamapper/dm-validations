@@ -33,5 +33,13 @@ require 'integration/automatic_validation/spec_helper'
 
       it_should_behave_like "valid model"
     end
+
+    describe "with an uncoercible value" do
+      before :all do
+        @model.attributes = {column => "foo"}
+      end
+
+      it_should_behave_like "invalid model"
+    end
   end
 end
