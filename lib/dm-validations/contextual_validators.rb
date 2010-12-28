@@ -56,26 +56,40 @@ module DataMapper
       def execute(named_context, target)
         target.errors.clear!
 
-        # TODO: Discuss current spec design wrt "validating model behaviour when
-        # dm-validations is present" versus "validating validator behaviour".
-        # Former requires generalized assumptions about model behaviour overall,
-        # and ends up testing more than "validator behaviour".  [jpr5]
-
         runnable_validators = context(named_context).select{ |validator| validator.execute?(target) }
+        validators = runnable_validators.dup
 
-        # Start the list with all validators on dirty properties.
-        dirty_attrs = target.dirty_attributes.keys.map{ |p| p.name }
-        validators  = runnable_validators.select{ |v| dirty_attrs.include?(v.field_name) }
+        # By default we start the list with the full set of runnable validators.
+        #
+        # In the case of a new Resource or regular ruby class instance,
+        # everything needs to be validated completely, and no eager-loading
+        # logic should apply.
+        #
+        # In the case of a DM::Resource that isn't new, we optimize:
+        #
+        #   1. Eager-load all lazy, not-yet-loaded properties that need
+        #      validation, all at once.
+        #
+        #   2. Limit run validators to
+        #      - those applied to dirty attributes only,
+        #      - those that should always run (presence/absence)
+        #      - those that don't reference any real properties (field-less
+        #        block validators)
 
-        # Load all lazy, not-yet-loaded properties that need validation, all at once.
-        fields_to_load = validators.map{ |v| target.class.properties[v.field_name] }.select{ |p| p.lazy? && !p.loaded?(target) }
-        target.__send__(:eager_load, fields_to_load)
+        if target.kind_of?(DataMapper::Resource) and !target.new?
+          dirty_attrs = target.dirty_attributes.keys.map{ |p| p.name }
+          validators  = runnable_validators.select{ |v| dirty_attrs.include?(v.field_name) }
 
-        # Finally include any validators that should always run or don't
-        # reference any real properties (field-less block vaildators).
-        validators |= runnable_validators.select do |v|
-          [ MethodValidator, PresenceValidator, AbsenceValidator ].any? do |klass|
-            v.kind_of?(klass)
+          # Load all lazy, not-yet-loaded properties that need validation, all at once.
+          fields_to_load = validators.map{ |v| target.class.properties[v.field_name] }.select{ |p| p.lazy? && !p.loaded?(target) }
+          target.__send__(:eager_load, fields_to_load)
+
+          # Finally include any validators that should always run or don't
+          # reference any real properties (field-less block vaildators).
+          validators |= runnable_validators.select do |v|
+            [ MethodValidator, PresenceValidator, AbsenceValidator ].any? do |klass|
+              v.kind_of?(klass)
+            end
           end
         end
 
