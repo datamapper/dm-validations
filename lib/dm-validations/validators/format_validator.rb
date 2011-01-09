@@ -1,8 +1,8 @@
 #require File.dirname(__FILE__) + '/formats/email'
 
 require 'pathname'
-require Pathname(__FILE__).dirname.expand_path + ".." + 'formats/email'
-require Pathname(__FILE__).dirname.expand_path + ".." + 'formats/url'
+require 'dm-validations/formats/email'
+require 'dm-validations/formats/url'
 
 module DataMapper
   module Validations
