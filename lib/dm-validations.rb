@@ -42,7 +42,7 @@ end
 
 module DataMapper
   class Property
-    def self.new(model, name, options = {}, type = nil)
+    def self.new(model, name, options = {})
       property = super
       property.model.auto_generate_validations(property)
 

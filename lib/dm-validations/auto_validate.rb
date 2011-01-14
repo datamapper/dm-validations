@@ -175,8 +175,6 @@ module DataMapper
       end
 
       def infer_type_validation_for(property, options)
-        return if property.custom?
-
         if property.kind_of?(Property::Numeric)
           options[:gte] = property.min if property.min
           options[:lte] = property.max if property.max
