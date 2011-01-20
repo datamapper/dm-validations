@@ -29,7 +29,7 @@ module DataMapper
         return true if optional?(value)
 
         opts = {
-          :fields    => target.model.key,
+          :fields    => target.model.key(target.repository.name),
           field_name => value,
         }
 
