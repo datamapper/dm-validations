@@ -1,3 +1,4 @@
+# encoding: UTF-8
 require 'spec_helper'
 require 'integration/format_validator/spec_helper'
 
@@ -47,6 +48,25 @@ describe 'DataMapper::Validations::Fixtures::BillOfLading' do
       end
 
       it_should_behave_like "invalid model"
+    end
+  end
+
+  describe "with valid email including unicode characters" do
+    before :all do
+      @model = DataMapper::Validations::Fixtures::BillOfLading.new(valid_attributes.merge(:email => 'pelé@gmail.com'))
+    end
+
+    if RUBY_VERSION >= '1.9.0'
+      it 'should not raise' do
+        lambda {
+          @model.valid?
+        }.should_not raise_error(Encoding::CompatibilityError)
+      end
+    end
+
+    it 'should behave like valid model' do
+      pending
+      @model.should be_valid
     end
   end
 
