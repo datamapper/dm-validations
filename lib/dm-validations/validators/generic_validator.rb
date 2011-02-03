@@ -90,30 +90,18 @@ module DataMapper
         end
       end
 
-      # Test the value to see if it is blank or nil, and if it is allowed
+      # Test the value to see if it is blank or nil, and if it is allowed.
+      # Note that allowing blank without explicitly denying nil allows nil
+      # values, since nil.blank? is true.
       #
       # @param <Object> value to test
       # @return <Boolean> true if blank/nil is allowed, and the value is blank/nil
       def optional?(value)
-        return allow_nil?(value)   if value.nil?
-        return allow_blank?(value) if value.blank?
-        false
-      end
-
-      # Test if the value is nil and is allowed
-      #
-      # @param <Object> value to test
-      # @return <Boolean> true if nil is allowed and value is nil
-      def allow_nil?(value)
-        @options[:allow_nil] if value.nil?
-      end
-
-      # Test if the value is blank and is allowed
-      #
-      # @param <Object> value to test
-      # @return <Boolean> true if blank is allowed and value is blank
-      def allow_blank?(value)
-        @options[:allow_blank] if value.blank?
+        if value.nil?
+          @options[:allow_nil] || (@options[:allow_blank] && !@options.has_key?(:allow_nil))
+        elsif value.blank?
+          @options[:allow_blank]
+        end
       end
 
       # Returns true if validators are equal

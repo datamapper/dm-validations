@@ -32,6 +32,10 @@ module DataMapper
         return true if allow_nil?(value)
         @options[:accept].include?(value)
       end
+
+      def allow_nil?(value)
+        @options[:allow_nil] && value.nil?
+      end
     end # class AcceptanceValidator
 
     module ValidatesAcceptance
