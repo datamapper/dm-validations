@@ -52,7 +52,7 @@ module DataMapper
           else
             raise UnknownValidationFormat, "Can't determine how to validate #{target.class}##{field_name} with #{validator.inspect}"
         end
-      rescue Encoding::CompatibilityError => e 
+      rescue Encoding::CompatibilityError => e
         # Only occurs in 1.9. Encoding is not defined in 1.8, but it doesn't.
         # seem to complain. Don't know how to handle these properly yet,
         # so return false until it is figured out.
