@@ -52,11 +52,6 @@ module DataMapper
           else
             raise UnknownValidationFormat, "Can't determine how to validate #{target.class}##{field_name} with #{validator.inspect}"
         end
-      rescue Encoding::CompatibilityError => e
-        # Only occurs in 1.9. Encoding is not defined in 1.8, but it doesn't.
-        # seem to complain. Don't know how to handle these properly yet,
-        # so return false until it is figured out.
-        false
       end
     end # class FormatValidator
 
@@ -75,7 +70,7 @@ module DataMapper
       # @option :as<Format, Proc, Regexp>   the pre-defined format, Proc or Regexp to validate against
       # @option :with<Format, Proc, Regexp> an alias for :as
       #
-      #   :email_address (format is specified in DataMapper::Validations::Format::Email)
+      #   :email_address (format is specified in DataMapper::Validations::Format::Email - note that unicode emails will *not* be matched under MRI1.8.7)
       #   :url (format is specified in DataMapper::Validations::Format::Url)
       #
       # @example [Usage]

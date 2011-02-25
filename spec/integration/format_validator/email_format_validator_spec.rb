@@ -56,17 +56,11 @@ describe 'DataMapper::Validations::Fixtures::BillOfLading' do
       @model = DataMapper::Validations::Fixtures::BillOfLading.new(valid_attributes.merge(:email => 'pelé@gmail.com'))
     end
 
-    if RUBY_VERSION >= '1.9.0'
-      it 'should not raise' do
-        lambda {
-          @model.valid?
-        }.should_not raise_error(Encoding::CompatibilityError)
+    # Unicode emails not supported on MRI18
+    unless !defined?(RUBY_ENGINE) && RUBY_VERSION == '1.8.7'
+      it 'should behave like valid model' do
+        @model.should be_valid
       end
-    end
-
-    it 'should behave like valid model' do
-      pending
-      @model.should be_valid
     end
   end
 
