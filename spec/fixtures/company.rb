@@ -75,7 +75,8 @@ module DataMapper
 
         property :id, Serial
         belongs_to :product_company
-        property :description, Text, :required => true
+        property :description, Text, :required => false # Allow NULL values, enforce validation in the app
+        validates_presence_of :description
       end
 
       class Product

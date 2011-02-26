@@ -27,7 +27,36 @@ end
 
 describe 'DataMapper::Validations::Fixtures::ProductCompany' do
   before :all do
-    @model = DataMapper::Validations::Fixtures::ProductCompany.new(:title => "Apple", :flagship_product => "Macintosh")
+    @model = DataMapper::Validations::Fixtures::ProductCompany.create(:title => "Apple", :flagship_product => "Macintosh")
+  end
+
+  describe 'with no products loaded' do
+    it 'does not load or validate it' do
+      @model.reload
+      @model.valid?
+      @model.products.should_not be_loaded
+    end
+  end
+
+  describe 'with no profile loaded' do
+    it 'does not load or validate it' do
+      pending "Unsure how to test this"
+      @model.reload
+      @model.valid?
+      @model.profile.should_not be_loaded
+    end
+  end
+
+  describe 'with not dirty profile' do
+    before :all do
+      # Force an invalid, yet clean model. This should not happen in real
+      # code, but gives us an easy way to check whether the validations
+      # are getting run on the profile.
+      profile = DataMapper::Validations::Fixtures::Profile.create!(:product_company => @model)
+      @model.reload
+    end
+
+    it_should_behave_like "valid model"
   end
 
   describe 'with invalid products' do

@@ -260,9 +260,9 @@ module DataMapper
           end
 
           if cardinality == 1 || (cardinality.is_a?(Range) && cardinality.max == 1)
-            add_validation[lambda {|val| val && !val.valid? }]
+            add_validation[lambda {|val| val && val.dirty? && !val.valid? }]
           else
-            add_validation[lambda {|val| !val.map(&:valid?).all? }]
+            add_validation[lambda {|val| val.loaded? && !val.map(&:valid?).all? }]
           end
         end
       end
