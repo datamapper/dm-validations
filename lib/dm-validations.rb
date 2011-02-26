@@ -235,6 +235,34 @@ module DataMapper
           end
         end
       end
+
+      # Automatically adds a validation to all associations so that validation
+      # on parent models will return false when children are invalid. This
+      # matches the behaviour of #save, which returns false if child models
+      # cannot be saved.
+      #
+      # TODO: Validations are only run on dirty models (which includes new models),
+      # since clean ones are assumed to be valid. This prevents validations
+      # from cascading down to nested child models when not required.
+      def has(cardinality, property, *args)
+        super
+        add_validation = lambda do |conditional|
+          validates_with_block property do
+            value = send(property)
+            if conditional[value]
+              [false, "#{property.to_s.titleize} must be valid"]
+            else
+              true
+            end
+          end
+        end
+
+        if cardinality == 1 || (cardinality.is_a?(Range) && cardinality.max == 1)
+          add_validation[lambda {|val| val && !val.valid? }]
+        else
+          add_validation[lambda {|val| !val.map(&:valid?).all? }]
+        end
+      end
     end # module ClassMethods
   end # module Validations
 

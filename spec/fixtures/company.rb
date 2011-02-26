@@ -60,6 +60,18 @@ module DataMapper
 
         validates_presence_of :title, :message => "Product company must have a name"
         validates_presence_of :flagship_product
+
+        has n, :products, :child_key => [:company_id]
+        has 1, :profile
+        has 0..1, :alternate_profile, :model => "Profile"
+      end
+
+      class Profile
+        include DataMapper::Resource
+
+        property :id, Serial
+        belongs_to :product_company
+        property :description, Text, :required => true
       end
 
       class Product

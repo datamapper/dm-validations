@@ -24,3 +24,33 @@ describe 'DataMapper::Validations::Fixtures::Product' do
     end
   end
 end
+
+describe 'DataMapper::Validations::Fixtures::ProductCompany' do
+  before :all do
+    @model = DataMapper::Validations::Fixtures::ProductCompany.new(:title => "Apple", :flagship_product => "Macintosh")
+  end
+
+  describe 'with invalid products' do
+    before :all do
+      @model.products = [DataMapper::Validations::Fixtures::Product.new]
+    end
+
+    it_should_behave_like "invalid model"
+
+    it "has a meaningful error message" do
+      @model.errors.on(:products).should == [ 'Products must be valid' ]
+    end
+  end
+
+  describe 'with invalid profile' do
+    before :all do
+      @model.profile = DataMapper::Validations::Fixtures::Profile.new
+    end
+
+    it_should_behave_like "invalid model"
+
+    it "has a meaningful error message" do
+      @model.errors.on(:profile).should == [ 'Profile must be valid' ]
+    end
+  end
+end
