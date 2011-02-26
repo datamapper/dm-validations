@@ -64,6 +64,10 @@ module DataMapper
         has n, :products, :child_key => [:company_id]
         has 1, :profile
         has 0..1, :alternate_profile, :model => "Profile"
+
+        without_auto_validations do
+          has 0..1, :yet_another_profile, :model => "Profile"
+        end
       end
 
       class Profile

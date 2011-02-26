@@ -53,4 +53,12 @@ describe 'DataMapper::Validations::Fixtures::ProductCompany' do
       @model.errors.on(:profile).should == [ 'Profile must be valid' ]
     end
   end
+
+  describe 'with invalid yet_another_profile' do
+    before :all do
+      @model.yet_another_profile = DataMapper::Validations::Fixtures::Profile.new
+    end
+
+    it_should_behave_like "valid model"
+  end
 end
