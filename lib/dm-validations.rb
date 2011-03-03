@@ -15,15 +15,7 @@ rescue LoadError
   require 'extlib/blank'
 end
 
-begin
-  require 'active_support/ordered_hash'
-rescue LoadError
-  require 'extlib/dictionary'
-
-  module ::ActiveSupport
-    OrderedHash = ::Dictionary
-  end
-end
+require 'dm-validations/support/ordered_hash'
 
 class Object
   # If receiver is callable, calls it and

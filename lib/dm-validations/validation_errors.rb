@@ -48,7 +48,7 @@ module DataMapper
 
       def initialize(resource)
         @resource = resource
-        @errors   = ActiveSupport::OrderedHash.new { |h,k| h[k] = [] }
+        @errors   = DataMapper::Validations::OrderedHash.new { |h,k| h[k] = [] }
       end
 
       # Clear existing validation errors.
