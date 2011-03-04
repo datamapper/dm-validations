@@ -1,11 +1,9 @@
 module DataMapper
   module Validations
-
-    ##
-    #
     # @author Dirkjan Bussink
     # @since  0.9
     class PrimitiveTypeValidator < GenericValidator
+
       def call(target)
         value    = target.validation_property_value(field_name)
         property = target.validation_property(field_name)
@@ -21,19 +19,22 @@ module DataMapper
       protected
 
       def default_error(property)
-        ValidationErrors.default_error_message(:primitive, field_name, property.primitive)
+        ValidationErrors.default_error_message(
+          :primitive,
+          field_name,
+          property.primitive
+        )
       end
 
     end # class PrimitiveTypeValidator
 
     module ValidatesPrimitiveType
-
       extend Deprecate
 
-      ##
-      # Validates that the specified attribute is of the correct primitive type.
+      # Validates that the specified attribute is of the correct primitive
+      # type.
       #
-      # @example [Usage]
+      # @example Usage
       #   require 'dm-validations'
       #
       #   class Person
@@ -48,12 +49,14 @@ module DataMapper
       #     # casted into a Date object.
       #   end
       def validates_primitive_type_of(*fields)
-        opts = opts_from_validator_args(fields)
-        add_validator_to_context(opts, fields, DataMapper::Validations::PrimitiveTypeValidator)
+        add_validator_to_context(
+          opts_from_validator_args(fields),
+          fields,
+          DataMapper::Validations::PrimitiveTypeValidator
+        )
       end
 
       deprecate :validates_is_primitive, :validates_primitive_type_of
-
     end # module ValidatesPresent
   end # module Validations
 end # module DataMapper
