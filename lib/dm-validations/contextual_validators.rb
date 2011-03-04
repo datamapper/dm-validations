@@ -75,21 +75,27 @@ module DataMapper
         #      - those that don't reference any real properties (field-less
         #        block validators)
 
-        if target.kind_of?(DataMapper::Resource) and !target.new?
-          dirty_attrs = target.dirty_attributes.keys.map{ |p| p.name }
-          validators  = runnable_validators.select{ |v| dirty_attrs.include?(v.field_name) }
+        if (target.kind_of?(DataMapper::Resource) && !target.new?)
+          dirty_attrs = target.dirty_attributes.keys.map { |p| p.name }
+          validators  = runnable_validators.select do |v|
+            dirty_attrs.include?(v.field_name)
+          end
 
           # Load all lazy, not-yet-loaded properties that need validation,
           # all at once.
-          fields_to_load = validators.map{ |v| target.class.properties[v.field_name] }.select{ |p| p.lazy? && !p.loaded?(target) }
+          fields_to_load = validators.map do |v|
+            target.class.properties[v.field_name]
+          end
+          fields_to_load.select! { |p| p.lazy? && !p.loaded?(target) }
+
           target.__send__(:eager_load, fields_to_load)
 
           # Finally include any validators that should always run or don't
           # reference any real properties (field-less block vaildators).
           validators |= runnable_validators.select do |v|
-            [ MethodValidator, PresenceValidator, AbsenceValidator ].any? do |klass|
-              v.kind_of?(klass)
-            end
+            v.kind_of?(MethodValidator) ||
+            v.kind_of?(PresenceValidator) ||
+            v.kind_of?(AbsenceValidator)
           end
         end
 
