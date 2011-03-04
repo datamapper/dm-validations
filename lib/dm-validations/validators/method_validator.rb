@@ -1,8 +1,5 @@
 module DataMapper
   module Validations
-
-    ##
-    #
     # @author Guy van den Berg
     # @since  0.9
     class MethodValidator < GenericValidator
@@ -21,22 +18,22 @@ module DataMapper
       def ==(other)
         @options[:method] == other.instance_variable_get(:@options)[:method] && super
       end
+
     end # class MethodValidator
 
     module ValidatesWithMethod
-
-      ##
-      # Validate using method called on validated object. The method must to return
-      # either true, or a pair of [false, error message string], and is specified
-      # as a symbol passed with :method option.
+      # Validate using method called on validated object. The method must
+      # to return either true, or a pair of [false, error message string],
+      # and is specified as a symbol passed with :method option.
       #
-      # This validator does support multiple fields being specified at a time,
-      # but we encourage you to use it with one property/method at a time.
+      # This validator does support multiple fields being specified at a
+      # time, but we encourage you to use it with one property/method at a
+      # time.
       #
-      # Real world experience shows that method validation is often useful when
-      # attribute needs to be virtual and not a property name.
+      # Real world experience shows that method validation is often useful
+      # when attribute needs to be virtual and not a property name.
       #
-      # @example [Usage]
+      # @example Usage
       #   require 'dm-validations'
       #
       #  class Page
@@ -44,7 +41,8 @@ module DataMapper
       #
       #    property :zip_code, String
       #
-      #    validates_with_method :zip_code, :method => :in_the_right_location?
+      #    validates_with_method :zip_code,
+      #                          :method => :in_the_right_location?
       #
       #    def in_the_right_location?
       #      if @zip_code == "94301"
@@ -59,10 +57,12 @@ module DataMapper
       #    # wrong zip code" unless zip_code == "94301"
       #  end
       def validates_with_method(*fields)
-        opts = opts_from_validator_args(fields)
-        add_validator_to_context(opts, fields, DataMapper::Validations::MethodValidator)
+        add_validator_to_context(
+          opts_from_validator_args(fields)
+          fields,
+          DataMapper::Validations::MethodValidator
+        )
       end
-
     end # module ValidatesWithMethod
   end # module Validations
 end # module DataMapper
