@@ -8,13 +8,12 @@ module DataMapper
   module Validations
     class UnknownValidationFormat < ::ArgumentError; end
 
-    ##
-    #
     # @author Guy van den Berg
     # @since  0.9
     class FormatValidator < GenericValidator
 
       FORMATS = {}
+
       include DataMapper::Validations::Format::Email
       include DataMapper::Validations::Format::Url
 
@@ -29,9 +28,17 @@ module DataMapper
 
         value = target.validation_property_value(field_name)
 
-        error_message = @options[:message] || ValidationErrors.default_error_message(:invalid, field_name)
-        add_error(target, error_message.try_call(humanized_field_name, value), field_name)
+        error_message = (
+          @options[:message] || ValidationErrors.default_error_message(
+            :invalid, field_name
+          )
+        )
 
+        add_error(
+          target,
+          error_message.try_call(humanized_field_name, value),
+          field_name
+        )
         false
       end
 
@@ -43,37 +50,51 @@ module DataMapper
 
         validation = @options[:as] || @options[:with]
 
-        raise "No such predefined format '#{validation}'" if validation.is_a?(Symbol) && !FORMATS.has_key?(validation)
-        validator = validation.is_a?(Symbol) ? FORMATS[validation][0] : validation
+        if validation.is_a?(Symbol) && !FORMATS.has_key?(validation)
+          raise("No such predefined format '#{validation}'")
+        end
+
+        validator = if validation.is_a?(Symbol)
+                      FORMATS[validation][0]
+                    else
+                      validation
+                    end
 
         case validator
           when Proc   then validator.call(value)
           when Regexp then (value.kind_of?(Numeric) ? value.to_s : value) =~ validator
           else
-            raise UnknownValidationFormat, "Can't determine how to validate #{target.class}##{field_name} with #{validator.inspect}"
+            raise(UnknownValidationFormat, "Can't determine how to validate #{target.class}##{field_name} with #{validator.inspect}")
         end
       end
-    end # class FormatValidator
 
+    end # class FormatValidator
 
     module ValidatesFormat
       extend Deprecate
 
-      ##
-      # Validates that the attribute is in the specified format. You may use the
-      # :as (or :with, it's an alias) option to specify the pre-defined format
-      # that you want to validate against. You may also specify your own format
-      # via a Proc or Regexp passed to the the :as or :with options.
+      # Validates that the attribute is in the specified format. You may
+      # use the :as (or :with, it's an alias) option to specify the
+      # pre-defined format that you want to validate against. You may also
+      # specify your own format via a Proc or Regexp passed to the the :as
+      # or :with options.
       #
-      # @option :allow_nil<Boolean>         true/false (default is true)
-      # @option :allow_blank<Boolean>       true/false (default is true)
-      # @option :as<Format, Proc, Regexp>   the pre-defined format, Proc or Regexp to validate against
-      # @option :with<Format, Proc, Regexp> an alias for :as
+      # @option [Boolean] :allow_nil (true)
+      #   true or false.
+      #
+      # @option [Boolean] :allow_blank (true)
+      #   true or false.
+      #
+      # @option [Format, Proc, Regexp] :as
+      #   The pre-defined format, Proc or Regexp to validate against.
+      #
+      # @option [Format, Proc, Regexp] :with
+      #   An alias for :as.
       #
       #   :email_address (format is specified in DataMapper::Validations::Format::Email - note that unicode emails will *not* be matched under MRI1.8.7)
       #   :url (format is specified in DataMapper::Validations::Format::Url)
       #
-      # @example [Usage]
+      # @example Usage
       #   require 'dm-validations'
       #
       #   class Page
@@ -91,12 +112,14 @@ module DataMapper
       #     # zip_code is a string of 5 digits
       #
       def validates_format_of(*fields)
-        opts = opts_from_validator_args(fields)
-        add_validator_to_context(opts, fields, DataMapper::Validations::FormatValidator)
+        add_validator_to_context(
+          opts_from_validator_args(fields),
+          fields,
+          DataMapper::Validations::FormatValidator
+        )
       end
 
       deprecate :validates_format, :validates_format_of
-
     end # module ValidatesFormat
   end # module Validations
 end # module DataMapper
