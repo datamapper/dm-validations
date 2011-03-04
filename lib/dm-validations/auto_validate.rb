@@ -26,9 +26,9 @@ module DataMapper
 
       # disables generation of validations for
       # duration of given block
-      def without_auto_validations(&block)
+      def without_auto_validations
         @disable_auto_validations = true
-        block.call
+        yield
         @disable_auto_validations = false
       end
 
