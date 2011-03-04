@@ -2,8 +2,6 @@ require 'forwardable'
 
 module DataMapper
   module Validations
-
-    ##
     #
     # @author Guy van den Berg
     # @since  0.9
@@ -43,9 +41,9 @@ module DataMapper
         contexts.clear
       end
 
-      # Execute all validators in the named context against the target.  Load
-      # together any properties that are designated lazy but are not yet loaded.
-      # Optionally only validate dirty properties.
+      # Execute all validators in the named context against the target.
+      # Load together any properties that are designated lazy but are not
+      # yet loaded. Optionally only validate dirty properties.
       #
       # @param [Symbol]
       #   named_context the context we are validating against
@@ -59,7 +57,8 @@ module DataMapper
         runnable_validators = context(named_context).select{ |validator| validator.execute?(target) }
         validators = runnable_validators.dup
 
-        # By default we start the list with the full set of runnable validators.
+        # By default we start the list with the full set of runnable
+        # validators.
         #
         # In the case of a new Resource or regular ruby class instance,
         # everything needs to be validated completely, and no eager-loading
@@ -80,7 +79,8 @@ module DataMapper
           dirty_attrs = target.dirty_attributes.keys.map{ |p| p.name }
           validators  = runnable_validators.select{ |v| dirty_attrs.include?(v.field_name) }
 
-          # Load all lazy, not-yet-loaded properties that need validation, all at once.
+          # Load all lazy, not-yet-loaded properties that need validation,
+          # all at once.
           fields_to_load = validators.map{ |v| target.class.properties[v.field_name] }.select{ |p| p.lazy? && !p.loaded?(target) }
           target.__send__(:eager_load, fields_to_load)
 
