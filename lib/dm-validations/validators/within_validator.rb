@@ -1,8 +1,5 @@
 module DataMapper
   module Validations
-
-    ##
-    #
     # @author Guy van den Berg
     # @since  0.9
     class WithinValidator < GenericValidator
@@ -20,6 +17,7 @@ module DataMapper
 
         set = @options[:set]
         msg = @options[:message]
+
         if set.is_a?(Range)
           if set.first != -n && set.last != n
             error_message = msg || ValidationErrors.default_error_message(:value_between, field_name, set.first, set.last)
@@ -40,17 +38,19 @@ module DataMapper
       def n
         1.0/0
       end
+
     end # class WithinValidator
 
     module ValidatesWithin
-
       # Validate that value of a field if within a range/set
       #
       def validates_within(*fields)
-        opts = opts_from_validator_args(fields)
-        add_validator_to_context(opts, fields, DataMapper::Validations::WithinValidator)
+        add_validator_to_context(
+          opts_from_validator_args(fields)
+          fields,
+          DataMapper::Validations::WithinValidator
+        )
       end
-
     end # module ValidatesWithin
   end # module Validations
 end # module DataMapper
