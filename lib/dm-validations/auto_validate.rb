@@ -130,7 +130,8 @@ module DataMapper
       end
 
       def infer_length_validation_for(property, options)
-        return unless [ DataMapper::Property::String, DataMapper::Property::Text ].any? { |klass| property.kind_of?(klass) }
+        return unless property.kind_of?(DataMapper::Property::String) ||
+                      property.kind_of?(DataMapper::Property::Text)
 
         length = property.options.fetch(:length, DataMapper::Property::String::DEFAULT_LENGTH)
 
