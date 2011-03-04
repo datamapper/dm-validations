@@ -6,10 +6,9 @@ module DataMapper
       #
       # @param [Symbol] field_name
       #   the name of the field to validate
+      #
       # @param [Hash] options
       #   the validator options
-      #
-      # @return [undefined]
       #
       # @api semipublic
       def initialize(field_name, options)
@@ -48,7 +47,6 @@ module DataMapper
         return true unless error_message = error_message_for(value)
 
         add_error(target, error_message, field_name)
-
         false
       end
 
@@ -114,7 +112,12 @@ module DataMapper
       # @api private
       def validate_equals(length)
         return if length == @equal
-        ValidationErrors.default_error_message(:wrong_length, humanized_field_name, @equal)
+
+        ValidationErrors.default_error_message(
+          :wrong_length,
+          humanized_field_name,
+          @equal
+        )
       end
 
       # Validate the value length is within expected range
@@ -128,7 +131,13 @@ module DataMapper
       # @api private
       def validate_range(length)
         return if @range.include?(length)
-        ValidationErrors.default_error_message(:length_between, humanized_field_name, @range.min, @range.max)
+
+        ValidationErrors.default_error_message(
+          :length_between,
+          humanized_field_name,
+          @range.min,
+          @range.max
+        )
       end
 
       # Validate the minimum expected value length
@@ -142,7 +151,12 @@ module DataMapper
       # @api private
       def validate_min(length)
         return if length >= @min
-        ValidationErrors.default_error_message(:too_short, humanized_field_name, @min)
+
+        ValidationErrors.default_error_message(
+          :too_short,
+          humanized_field_name,
+          @min
+        )
       end
 
       # Validate the maximum expected value length
@@ -156,7 +170,12 @@ module DataMapper
       # @api private
       def validate_max(length)
         return if length <= @max
-        ValidationErrors.default_error_message(:too_long, humanized_field_name, @max)
+
+        ValidationErrors.default_error_message(
+          :too_long,
+          humanized_field_name,
+          @max
+        )
       end
 
     end # class LengthValidator
@@ -168,22 +187,40 @@ module DataMapper
       # greater than or within a certain range (depending upon the options
       # you specify).
       #
-      # @option :allow_nil<Boolean> true/false (default is true)
-      # @option :allow_blank<Boolean> true/false (default is true)
-      # @option :minimum    ensures that the attribute's length is greater than
-      #   or equal to the supplied value
-      # @option :min        alias for :minimum
-      # @option :maximum    ensures the attribute's length is less than or equal
-      #   to the supplied value
-      # @option :max        alias for :maximum
-      # @option :equals     ensures the attribute's length is equal to the
-      #   supplied value
-      # @option :is         alias for :equals
-      # @option :in<Range>  given a Range, ensures that the attributes length is
-      #   include?'ed in the Range
-      # @option :within<Range>  alias for :in
+      # @option [Boolean] :allow_nil (true)
+      #   true or false.
       #
-      # @example [Usage]
+      # @option [Boolean] :allow_blank (true)
+      #   true or false.
+      #
+      # @option [Boolean] :minimum
+      #   Ensures that the attribute's length is greater than or equal to
+      #   the supplied value.
+      #
+      # @option [Boolean] :min
+      #   Alias for :minimum.
+      #
+      # @option [Boolean] :maximum
+      #   Ensures the attribute's length is less than or equal to the
+      #   supplied value.
+      #
+      # @option [Boolean] :max
+      #   Alias for :maximum.
+      #
+      # @option [Boolean] :equals
+      #   Ensures the attribute's length is equal to the supplied value.
+      #
+      # @option [Boolean] :is
+      #   Alias for :equals.
+      #
+      # @option [Range] :in
+      #   Given a Range, ensures that the attributes length is include?'ed
+      #   in the Range.
+      #
+      # @option [Range] :within
+      #   Alias for :in.
+      #
+      # @example Usage
       #   require 'dm-validations'
       #
       #   class Page
@@ -203,12 +240,14 @@ module DataMapper
       #     # just_right is between 1 and 10 (inclusive of both 1 and 10)
       #
       def validates_length_of(*fields)
-        opts = opts_from_validator_args(fields)
-        add_validator_to_context(opts, fields, DataMapper::Validations::LengthValidator)
+        add_validator_to_context(
+          opts_from_validator_args(fields)
+          fields,
+          DataMapper::Validations::LengthValidator
+        )
       end
 
       deprecate :validates_length, :validates_length_of
-
     end # module ValidatesLength
   end # module Validations
 end # module DataMapper
