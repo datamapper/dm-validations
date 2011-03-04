@@ -1,7 +1,5 @@
 module DataMapper
   module Validations
-
-    ##
     #
     # @author Guy van den Berg
     # @since  0.9
@@ -56,48 +54,58 @@ module DataMapper
         errors.clear
       end
 
-      # Add a validation error. Use the field_name :general if the errors does
-      # not apply to a specific field of the Resource.
+      # Add a validation error. Use the field_name :general if the errors
+      # does not apply to a specific field of the Resource.
       #
-      # @param [Symbol] field_name the name of the field that caused the error
-      # @param [String] message    the message to add
+      # @param [Symbol] field_name
+      #   The name of the field that caused the error
+      #
+      # @param [String] message
+      #   The message to add
       def add(field_name, message)
         # see 6abe8fff in extlib, but don't enforce
         # it unless Edge version is installed
         if message.respond_to?(:try_call)
-
           # DM resource
-          message = if resource.respond_to?(:model) && resource.model.respond_to?(:properties)
-            message.try_call(resource, resource.model.properties[field_name])
-          else
-            # pure Ruby object
-            message.try_call(resource)
-          end
+          message = if (resource.respond_to?(:model) &&
+                        resource.model.respond_to?(:properties))
+                      message.try_call(
+                        resource,
+                        resource.model.properties[field_name]
+                      )
+                    else
+                      # pure Ruby object
+                      message.try_call(resource)
+                    end
         end
+
         (errors[field_name] ||= []) << message
       end
 
       # Collect all errors into a single list.
       def full_messages
-        errors.inject([]) do |list, pair|
-          list += pair.last
-        end
+        messages = []
+
+        errors.each { |pair| messages << pair.last }
+        messages
       end
 
       # Return validation errors for a particular field_name.
       #
-      # @param [Symbol] field_name the name of the field you want an error for
+      # @param [Symbol] field_name
+      #   The name of the field you want an error for.
+      #
       # @return [Array<DataMapper::Validations::Error>]
-      #   array of validation errors or empty array, if there are no errors on given field
+      #   Array of validation errors or empty array, if there are no errors
+      #   on given field
       def on(field_name)
         errors_for_field = errors[field_name]
         errors_for_field.blank? ? nil : errors_for_field.uniq
       end
 
       def each
-        errors.map.each do |k, v|
-          next if v.blank?
-          yield(v)
+        errors.each do |k, v|
+          yield(v) unless v.blank?
         end
       end
 
@@ -114,12 +122,13 @@ module DataMapper
       end
 
       def [](property_name)
-        if property_errors = errors[property_name.to_sym]
+        if (property_errors = errors[property_name.to_sym])
           property_errors
         end
       end
 
       private
+
       def errors
         @errors
       end
