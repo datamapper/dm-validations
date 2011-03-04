@@ -1,8 +1,5 @@
 module DataMapper
   module Validations
-
-    ##
-    #
     # @author Martin Kihlgren
     # @since  0.9
     class AcceptanceValidator < GenericValidator
@@ -19,7 +16,11 @@ module DataMapper
       def call(target)
         return true if valid?(target)
 
-        error_message = @options[:message] || ValidationErrors.default_error_message(:accepted, field_name)
+        error_message = (
+          @options[:message] || ValidationErrors.default_error_message(
+            :accepted, field_name
+          )
+        )
         add_error(target, error_message, field_name)
 
         false
@@ -36,20 +37,22 @@ module DataMapper
       def allow_nil?(value)
         @options[:allow_nil] && value.nil?
       end
+
     end # class AcceptanceValidator
 
     module ValidatesAcceptance
       extend Deprecate
 
-      ##
-      # Validates that the attributes's value is in the set of accepted values.
+      # Validates that the attributes's value is in the set of accepted
+      # values.
       #
-      # @option :allow_nil<Boolean> true if nil is allowed, false if not
-      #                             allowed. Default is true.
-      # @option :accept<Array>      a list of accepted values.
-      #                             Default are ["1", 1, "true", true, "t"]).
+      # @option [Boolean] :allow_nil (true)
+      #   true if nil is allowed, false if not allowed.
       #
-      # @example [Usage]
+      # @option [Array] :accept (["1", 1, "true", true, "t"])
+      #   A list of accepted values.
+      #
+      # @example Usage
       #   require 'dm-validations'
       #
       #   class Page
