@@ -7,7 +7,12 @@ module DataMapper
 
         def self.included(base)
           DataMapper::Validations::FormatValidator::FORMATS.merge!(
-            :email_address => [ EmailAddress, lambda { |field, value| '%s is not a valid email address'.t(value) }]
+            :email_address => [
+              EmailAddress,
+              lambda { |field, value|
+                '%s is not a valid email address'.t(value)
+              }
+            ]
           )
         end
 
