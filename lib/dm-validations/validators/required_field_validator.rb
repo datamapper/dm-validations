@@ -75,7 +75,7 @@ module DataMapper
       #   end
       def validates_presence_of(*fields)
         add_validator_to_context(
-          opts_from_validator_args(fields)
+          opts_from_validator_args(fields),
           fields,
           DataMapper::Validations::PresenceValidator
         )

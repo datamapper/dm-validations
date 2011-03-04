@@ -82,8 +82,11 @@ module DataMapper
       #     # email == email_repeated
       #
       def validates_confirmation_of(*fields)
-        opts = opts_from_validator_args(fields)
-        add_validator_to_context(opts, fields, DataMapper::Validations::ConfirmationValidator)
+        add_validator_to_context(
+          opts_from_validator_args(fields),
+          fields,
+          DataMapper::Validations::ConfirmationValidator
+        )
       end
 
       deprecate :validates_is_confirmed, :validates_confirmation_of

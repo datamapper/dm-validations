@@ -58,8 +58,11 @@ module DataMapper
       # Validate the uniqueness of a field
       #
       def validates_uniqueness_of(*fields)
-        opts = opts_from_validator_args(fields)
-        add_validator_to_context(opts, fields, DataMapper::Validations::UniquenessValidator)
+        add_validator_to_context(
+          opts_from_validator_args(fields),
+          fields,
+          DataMapper::Validations::UniquenessValidator
+        )
       end
 
       deprecate :validates_is_unique, :validates_uniqueness_of
