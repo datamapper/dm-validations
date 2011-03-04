@@ -83,10 +83,15 @@ module DataMapper
 
           # Load all lazy, not-yet-loaded properties that need validation,
           # all at once.
-          fields_to_load = validators.map do |v|
-            target.class.properties[v.field_name]
+          fields_to_load = []
+          
+          validators.each do |v|
+            field = target.class.properties[v.field_name]
+
+            if (field.lazy? && !(field.loaded?(target)))
+              fields_to_load << field
+            end
           end
-          fields_to_load.select! { |p| p.lazy? && !p.loaded?(target) }
 
           target.__send__(:eager_load, fields_to_load)
 
