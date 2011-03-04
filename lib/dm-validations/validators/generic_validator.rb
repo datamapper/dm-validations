@@ -1,12 +1,11 @@
 # -*- coding: utf-8 -*-
 module DataMapper
   module Validations
-
     # All validators extend this base class. Validators must:
     #
-    # * Implement the initialize method to capture its parameters, also calling
-    #   super to have this parent class capture the optional, general :if and
-    #   :unless parameters.
+    # * Implement the initialize method to capture its parameters, also
+    #   calling super to have this parent class capture the optional,
+    #   general :if and :unless parameters.
     # * Implement the call method, returning true or false. The call method
     #   provides the validation logic.
     #
@@ -17,16 +16,23 @@ module DataMapper
       attr_accessor :if_clause, :unless_clause
       attr_reader   :field_name, :options, :humanized_field_name
 
-      # Construct a validator. Capture the :if and :unless clauses when present.
+      # Construct a validator. Capture the :if and :unless clauses when
+      # present.
       #
-      # @param field<String, Symbol> The property specified for validation
+      # @param [String, Symbol] field
+      #   The property specified for validation.
       #
-      # @option :if<Symbol, Proc>   The name of a method or a Proc to call to
-      #                     determine if the validation should occur.
-      # @option :unless<Symbol, Proc> The name of a method or a Proc to call to
-      #                         determine if the validation should not occur
-      # All additional key/value pairs are passed through to the validator
-      # that is sub-classing this GenericValidator
+      # @option [Symbol, Proc] :if
+      #   The name of a method or a Proc to call to determine if the
+      #   validation should occur.
+      #
+      # @option [Symbol, Proc] :unless
+      #   The name of a method or a Proc to call to determine if the
+      #   validation should not occur.
+      #
+      # @note
+      #   All additional key/value pairs are passed through to the validator
+      #   that is sub-classing this GenericValidator
       #
       def initialize(field_name, options = {})
         @field_name           = field_name
@@ -36,26 +42,34 @@ module DataMapper
         @humanized_field_name = DataMapper::Inflector.humanize(@field_name)
       end
 
-      # Add an error message to a target resource. If the error corresponds to a
-      # specific field of the resource, add it to that field, otherwise add it
-      # as a :general message.
+      # Add an error message to a target resource. If the error corresponds
+      # to a specific field of the resource, add it to that field,
+      # otherwise add it as a :general message.
       #
-      # @param <Object> target the resource that has the error
-      # @param <String> message the message to add
-      # @param <Symbol> field_name the name of the field that caused the error
+      # @param [Object] target
+      #   The resource that has the error.
       #
-      # TODO - should the field_name for a general message be :default???
+      # @param [String] message
+      #   The message to add.
+      #
+      # @param [Symbol] field_name
+      #   The name of the field that caused the error.
       #
       def add_error(target, message, field_name = :general)
+        # TODO: should the field_name for a general message be :default???
         target.errors.add(field_name, message)
       end
 
-      # Call the validator. "call" is used so the operation is BoundMethod and
-      # Block compatible. This must be implemented in all concrete classes.
+      # Call the validator. "call" is used so the operation is BoundMethod
+      # and Block compatible. This must be implemented in all concrete
+      # classes.
       #
-      # @param <Object> target  the resource that the validator must be called
-      #                         against
-      # @return <Boolean> true if valid, otherwise false
+      # @param [Object] target
+      #   The resource that the validator must be called against.
+      #
+      # @return [Boolean]
+      #   true if valid, otherwise false.
+      #
       def call(target)
         raise NotImplementedError, "#{self.class}#call must be implemented"
       end
@@ -64,17 +78,31 @@ module DataMapper
       # target by evaluating the :if and :unless clauses
       # optionally passed while specifying any validator.
       #
-      # @param <Object> target the resource that we check against
-      # @return <Boolean> true if should be run, otherwise false
+      # @param [Object] target
+      #   The resource that we check against.
+      #
+      # @return [Boolean]
+      #   true if should be run, otherwise false.
+      #
       def execute?(target)
         if unless_clause = self.unless_clause
-          return !target.__send__(unless_clause) if unless_clause.kind_of?(Symbol)
-          return !unless_clause.call(target)     if unless_clause.respond_to?(:call)
+          if unless_clause.kind_of?(Symbol)
+            return !target.__send__(unless_clause)
+          end
+
+          if unless_clause.respond_to?(:call)
+            return !unless_clause.call(target)
+          end
         end
 
         if if_clause = self.if_clause
-          return target.__send__(if_clause) if if_clause.kind_of?(Symbol)
-          return if_clause.call(target)     if if_clause.respond_to?(:call)
+          if if_clause.kind_of?(Symbol)
+            return target.__send__(if_clause)
+          end
+
+          if if_clause.respond_to?(:call)
+            return if_clause.call(target)
+          end
         end
 
         true
@@ -83,7 +111,7 @@ module DataMapper
       # Set the default value for allow_nil and allow_blank
       #
       # @param [Boolean] default value
-      # @return <undefined>
+      #
       def set_optional_by_default(default = true)
         [ :allow_nil, :allow_blank ].each do |key|
           @options[key] = true unless options.key?(key)
@@ -94,11 +122,16 @@ module DataMapper
       # Note that allowing blank without explicitly denying nil allows nil
       # values, since nil.blank? is true.
       #
-      # @param <Object> value to test
-      # @return <Boolean> true if blank/nil is allowed, and the value is blank/nil
+      # @param [Object] value
+      #   The value to test.
+      #
+      # @return [Boolean]
+      #   true if blank/nil is allowed, and the value is blank/nil.
+      #
       def optional?(value)
         if value.nil?
-          @options[:allow_nil] || (@options[:allow_blank] && !@options.has_key?(:allow_nil))
+          @options[:allow_nil] ||
+          (@options[:allow_blank] && !@options.has_key?(:allow_nil))
         elsif value.blank?
           @options[:allow_blank]
         end
@@ -132,6 +165,7 @@ module DataMapper
       end
 
       alias_method :to_s, :inspect
+
     end # class GenericValidator
   end # module Validations
 end # module DataMapper
