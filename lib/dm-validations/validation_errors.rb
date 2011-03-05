@@ -84,10 +84,7 @@ module DataMapper
 
       # Collect all errors into a single list.
       def full_messages
-        messages = []
-
-        errors.each { |pair| messages << pair.last }
-        messages
+        errors.map { |pair| pair.last }
       end
 
       # Return validation errors for a particular field_name.
