@@ -26,10 +26,10 @@ describe "invalid model", :shared => true do
   end
 
   it "has error messages" do
-    @model.errors.should_not be_blank
+    @model.errors.should_not be_empty
   end
 
   it "has list of full error messages" do
-    @model.errors.full_messages.should_not be_blank
+    @model.errors.full_messages.should_not be_empty
   end
 end

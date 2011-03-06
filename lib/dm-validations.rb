@@ -9,12 +9,6 @@ rescue LoadError
   require 'extlib/class'
 end
 
-begin
-  require 'active_support/core_ext/object/blank'
-rescue LoadError
-  require 'extlib/blank'
-end
-
 require 'dm-validations/support/ordered_hash'
 
 class Object

@@ -91,12 +91,12 @@ module DataMapper
       #   array of validation errors or empty array, if there are no errors on given field
       def on(field_name)
         errors_for_field = errors[field_name]
-        errors_for_field.blank? ? nil : errors_for_field.uniq
+        DataMapper::Ext.blank?(errors_for_field) ? nil : errors_for_field.uniq
       end
 
       def each
         errors.map.each do |k, v|
-          next if v.blank?
+          next if DataMapper::Ext.blank?(v)
           yield(v)
         end
       end

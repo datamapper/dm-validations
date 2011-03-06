@@ -30,7 +30,7 @@ module DataMapper
       #
       def initialize(field_name, options = {})
         @field_name           = field_name
-        @options              = options.except(:if, :unless)
+        @options              = DataMapper::Ext::Hash.except(options, :if, :unless)
         @if_clause            = options[:if]
         @unless_clause        = options[:unless]
         @humanized_field_name = DataMapper::Inflector.humanize(@field_name)
@@ -99,7 +99,7 @@ module DataMapper
       def optional?(value)
         if value.nil?
           @options[:allow_nil] || (@options[:allow_blank] && !@options.has_key?(:allow_nil))
-        elsif value.blank?
+        elsif DataMapper::Ext.blank?(value)
           @options[:allow_blank]
         end
       end
