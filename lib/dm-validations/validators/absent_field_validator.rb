@@ -7,7 +7,8 @@ module DataMapper
     # @since  0.9
     class AbsenceValidator < GenericValidator
       def call(target)
-        return true if target.validation_property_value(field_name).blank?
+        value = target.validation_property_value(field_name)
+        return true if DataMapper::Ext.blank?(value)
 
         error_message = self.options[:message] || ValidationErrors.default_error_message(:absent, field_name)
         add_error(target, error_message, field_name)

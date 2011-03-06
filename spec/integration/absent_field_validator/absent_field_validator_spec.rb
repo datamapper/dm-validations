@@ -34,7 +34,7 @@ describe 'DataMapper::Validations::Fixtures::Kayak' do
     end
 
     it "has no error messages" do
-      @kayak.errors.on(:salesman).should be_blank
+      @kayak.errors.on(:salesman).should be_nil
     end
   end
 
@@ -49,7 +49,7 @@ describe 'DataMapper::Validations::Fixtures::Kayak' do
     end
 
     it "has no error messages" do
-      @kayak.errors.on(:salesman).should be_blank
+      @kayak.errors.on(:salesman).should be_nil
     end
   end
 
@@ -64,7 +64,7 @@ describe 'DataMapper::Validations::Fixtures::Kayak' do
     end
 
     it "has no error messages" do
-      @kayak.errors.on(:salesman).should be_blank
+      @kayak.errors.on(:salesman).should be_nil
     end
   end
 end

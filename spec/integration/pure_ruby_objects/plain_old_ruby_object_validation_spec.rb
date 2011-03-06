@@ -107,7 +107,7 @@ describe 'PureRubyObjects::Country' do
     it_should_behave_like "object invalid in default context"
 
     it "has errors on name" do
-      @model.errors.on(:name).should_not be_blank
+      @model.errors.on(:name).should_not be_empty
     end
 
     it "is valid in encyclopedia context" do

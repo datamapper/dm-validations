@@ -1,29 +1,5 @@
 require 'dm-core'
-
-begin
-  # We need array for extract_options! which attr_accessors uses, at least in AS
-  # 2.3.3.
-  require 'active_support/core_ext/array'
-  require 'active_support/core_ext/class/attribute_accessors'
-rescue LoadError
-  require 'extlib/class'
-end
-
-begin
-  require 'active_support/core_ext/object/blank'
-rescue LoadError
-  require 'extlib/blank'
-end
-
-begin
-  require 'active_support/ordered_hash'
-rescue LoadError
-  require 'extlib/dictionary'
-
-  module ::ActiveSupport
-    OrderedHash = ::Dictionary
-  end
-end
+require 'dm-validations/support/ordered_hash'
 
 class Object
   # If receiver is callable, calls it and

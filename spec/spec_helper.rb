@@ -5,6 +5,14 @@ require 'dm-validations'
 require 'dm-types'
 require 'dm-migrations'
 
+class Hash
+  def except(*keys)
+    hash = dup
+    keys.each { |key| hash.delete(key) }
+    hash
+  end
+end
+
 SPEC_ROOT = Pathname(__FILE__).dirname
 Pathname.glob((SPEC_ROOT + 'fixtures/**/*.rb').to_s).each { |file| require file }
 Pathname.glob((SPEC_ROOT + 'integration/shared/**/*.rb').to_s).each { |file| require file }

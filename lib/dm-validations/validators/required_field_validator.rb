@@ -23,7 +23,7 @@ module DataMapper
       # Other property types are considered present if non-blank.
       # Non-properties are considered present if non-blank.
       def present?(value, property)
-        boolean_type?(property) ? !value.nil? : !value.blank?
+        boolean_type?(property) ? !value.nil? : !DataMapper::Ext.blank?(value)
       end
 
       def default_error(property)

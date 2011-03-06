@@ -81,7 +81,7 @@ describe 'DataMapper::Validations::Fixtures::EthernetFrame' do
     it_should_behave_like "valid model"
 
     it "has blank error message" do
-      @model.errors.on(:payload).should be_blank
+      @model.errors.on(:payload).should be_nil
     end
   end
 end

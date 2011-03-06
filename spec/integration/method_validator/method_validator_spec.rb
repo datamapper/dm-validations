@@ -118,7 +118,7 @@ describe "C++" do
 
   it "is not approved by Linus" do
     @model.valid?(:hacking_on_the_kernel)
-    @model.errors.on(:ensure_approved_by_linus_himself).should_not be_blank
+    @model.errors.on(:ensure_approved_by_linus_himself).should_not be_empty
   end
 end
 

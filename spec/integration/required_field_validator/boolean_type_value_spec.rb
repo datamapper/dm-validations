@@ -35,7 +35,7 @@ describe 'required_field_validator/boolean_type_value_spec' do
 
       it "is valid for committing" do
         @operation.should be_valid_for_committing
-        @operation.errors.on(:network_connection).should be_blank
+        @operation.errors.on(:network_connection).should be_nil
       end
 
       it "is not valid for pushing" do
