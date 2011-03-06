@@ -1,14 +1,4 @@
 require 'dm-core'
-
-begin
-  # We need array for extract_options! which attr_accessors uses, at least in AS
-  # 2.3.3.
-  require 'active_support/core_ext/array'
-  require 'active_support/core_ext/class/attribute_accessors'
-rescue LoadError
-  require 'extlib/class'
-end
-
 require 'dm-validations/support/ordered_hash'
 
 class Object
