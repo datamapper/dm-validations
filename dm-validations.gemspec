@@ -9,7 +9,7 @@ Gem::Specification.new do |s|
 
   s.required_rubygems_version = Gem::Requirement.new("> 1.3.1") if s.respond_to? :required_rubygems_version=
   s.authors = ["Guy van den Berg"]
-  s.date = %q{2011-03-01}
+  s.date = %q{2011-03-06}
   s.description = %q{Library for performing validations on DM models and pure Ruby object}
   s.email = %q{vandenberg.guy [a] gmail [d] com}
   s.extra_rdoc_files = [
@@ -31,6 +31,7 @@ Gem::Specification.new do |s|
     "lib/dm-validations/formats/url.rb",
     "lib/dm-validations/support/context.rb",
     "lib/dm-validations/support/object.rb",
+    "lib/dm-validations/support/ordered_hash.rb",
     "lib/dm-validations/validation_errors.rb",
     "lib/dm-validations/validators/absent_field_validator.rb",
     "lib/dm-validations/validators/acceptance_validator.rb",
