@@ -41,4 +41,14 @@ describe 'DataMapper::Validations::Fixtures::Mittelschnauzer' do
 
     it_should_behave_like "entity with a name shorter than 2 characters"
   end
+
+  describe "persisted, with a single character owner" do
+    before :all do
+      @model.save
+      @model.owner = 'a'
+      @model.valid?
+    end
+
+    it_should_behave_like "invalid model"
+  end
 end
