@@ -75,13 +75,20 @@ module DataMapper
         #      - those that should always run (presence/absence)
         #      - those that don't reference any real properties (field-less
         #        block validators)
-
-        if target.kind_of?(DataMapper::Resource) and !target.new?
+        if target.kind_of?(DataMapper::Resource) && !target.new?
           dirty_attrs = target.dirty_attributes.keys.map{ |p| p.name }
-          validators  = runnable_validators.select{ |v| dirty_attrs.include?(v.field_name) }
+          validators  = runnable_validators.select{|v| 
+            dirty_attrs.include?(v.field_name) 
+          }
 
-          # Load all lazy, not-yet-loaded properties that need validation, all at once.
-          fields_to_load = validators.map{ |v| target.class.properties[v.field_name] }.select{ |p| p.lazy? && !p.loaded?(target) }
+          # Load all lazy, not-yet-loaded properties that need validation,
+          # all at once.
+          fields_to_load = validators.map{|v| 
+            target.class.properties[v.field_name] 
+          }.select {|p| 
+            p.lazy? && !p.loaded?(target)
+          }
+
           target.__send__(:eager_load, fields_to_load)
 
           # Finally include any validators that should always run or don't
