@@ -78,15 +78,15 @@ module DataMapper
         if target.kind_of?(DataMapper::Resource) && !target.new?
           attrs       = target.attributes.keys
           dirty_attrs = target.dirty_attributes.keys.map{ |p| p.name }
-          validators  = runnable_validators.select{|v| 
-            !attrs.include?(v.field_name) || dirty_attrs.include?(v.field_name) 
+          validators  = runnable_validators.select{|v|
+            !attrs.include?(v.field_name) || dirty_attrs.include?(v.field_name)
           }
 
           # Load all lazy, not-yet-loaded properties that need validation,
           # all at once.
-          fields_to_load = validators.map{|v| 
-            target.class.properties[v.field_name] 
-          }.compact.select {|p| 
+          fields_to_load = validators.map{|v|
+            target.class.properties[v.field_name]
+          }.compact.select {|p|
             p.lazy? && !p.loaded?(target)
           }
 
