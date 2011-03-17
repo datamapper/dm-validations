@@ -2,8 +2,6 @@ require 'forwardable'
 
 module DataMapper
   module Validations
-
-    ##
     #
     # @author Guy van den Berg
     # @since  0.9
@@ -43,9 +41,9 @@ module DataMapper
         contexts.clear
       end
 
-      # Execute all validators in the named context against the target.  Load
-      # together any properties that are designated lazy but are not yet loaded.
-      # Optionally only validate dirty properties.
+      # Execute all validators in the named context against the target.
+      # Load together any properties that are designated lazy but are not
+      # yet loaded. Optionally only validate dirty properties.
       #
       # @param [Symbol]
       #   named_context the context we are validating against
@@ -59,7 +57,8 @@ module DataMapper
         runnable_validators = context(named_context).select{ |validator| validator.execute?(target) }
         validators = runnable_validators.dup
 
-        # By default we start the list with the full set of runnable validators.
+        # By default we start the list with the full set of runnable
+        # validators.
         #
         # In the case of a new Resource or regular ruby class instance,
         # everything needs to be validated completely, and no eager-loading
@@ -95,9 +94,9 @@ module DataMapper
           # Finally include any validators that should always run or don't
           # reference any real properties (field-less block vaildators).
           validators |= runnable_validators.select do |v|
-            [ MethodValidator, PresenceValidator, AbsenceValidator ].any? do |klass|
-              v.kind_of?(klass)
-            end
+            v.kind_of?(MethodValidator) ||
+            v.kind_of?(PresenceValidator) ||
+            v.kind_of?(AbsenceValidator)
           end
         end
 

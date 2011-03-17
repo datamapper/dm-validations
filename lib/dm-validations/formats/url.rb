@@ -7,7 +7,12 @@ module DataMapper
 
         def self.included(base)
           DataMapper::Validations::FormatValidator::FORMATS.merge!(
-            :url => [ Url, lambda { |field, value| '%s is not a valid URL'.t(value) }]
+            :url => [
+              Url,
+              lambda { |field, value|
+                '%s is not a valid URL'.t(value)
+              }
+            ]
           )
         end
 

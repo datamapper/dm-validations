@@ -1,11 +1,9 @@
 module DataMapper
   module Validations
-
-    ##
-    #
     # @author Guy van den Berg
     # @since  0.9
     class PresenceValidator < GenericValidator
+
       def call(target)
         value = target.validation_property_value(field_name)
         property = target.validation_property(field_name)
@@ -31,11 +29,12 @@ module DataMapper
         ValidationErrors.default_error_message(actual, field_name)
       end
 
-      # Is +property+ a boolean property?
+      # Is the property a boolean property?
       #
-      # Returns true for Boolean, ParanoidBoolean, TrueClass, etc. properties.
-      # Returns false for other property types.
-      # Returns false for non-properties.
+      # @return [Boolean]
+      #   Returns true for Boolean, ParanoidBoolean, TrueClass and other
+      #   properties. Returns false for other property types or for
+      #   non-properties.
       def boolean_type?(property)
         property ? property.primitive == TrueClass : false
       end
@@ -55,9 +54,10 @@ module DataMapper
       #
       # @note
       #   dm-core's support lib adds the blank? method to many classes,
+      #
       # @see lib/dm-core/support/blank.rb (dm-core) for more information.
       #
-      # @example [Usage]
+      # @example Usage
       #   require 'dm-validations'
       #
       #   class Page
@@ -74,12 +74,14 @@ module DataMapper
       #     # all three attributes are !blank?
       #   end
       def validates_presence_of(*fields)
-        opts = opts_from_validator_args(fields)
-        add_validator_to_context(opts, fields, DataMapper::Validations::PresenceValidator)
+        add_validator_to_context(
+          opts_from_validator_args(fields),
+          fields,
+          DataMapper::Validations::PresenceValidator
+        )
       end
 
       deprecate :validates_present, :validates_presence_of
-
     end # module ValidatesPresent
   end # module Validations
 end # module DataMapper

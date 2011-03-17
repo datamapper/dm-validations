@@ -1,8 +1,5 @@
 module DataMapper
   module Validations
-
-    ##
-    #
     # @author Guy van den Berg
     # @since  0.9
     class NumericalityValidator < GenericValidator
@@ -37,7 +34,8 @@ module DataMapper
 
       def value_as_string(value)
         case value
-          when Float      then value.to_d.to_s('F')  # Avoid Scientific Notation in Float to_s
+          # Avoid Scientific Notation in Float to_s
+          when Float      then value.to_d.to_s('F')
           when BigDecimal then value.to_s('F')
           else value.to_s
         end
@@ -72,7 +70,11 @@ module DataMapper
         comparison = value.send(cmp, expected)
         return if negated ? !comparison : comparison
 
-        errors << ValidationErrors.default_error_message(error_message_name, field_name, expected)
+        errors << ValidationErrors.default_error_message(
+          error_message_name,
+          field_name,
+          expected
+        )
       end
 
       def validate_integer(value, errors)
@@ -124,59 +126,61 @@ module DataMapper
       def validate_ne(value, errors)
         validate_with_comparison(value, :==, options[:ne] || options[:not_equal_to], :not_equal_to, errors, true)
       end
+      
     end # class NumericalityValidator
 
     module ValidatesNumericality
       extend Deprecate
 
-      # Validate whether a field is numeric
+      # Validate whether a field is numeric.
       #
-      # Options are:
+      # @option [Boolean] :allow_nil
+      #   true if number can be nil, false if not.
       #
-      # :allow_nil => true | false
-      #   true if number can be nil, false if not
+      # @option [Boolean] :allow_blank
+      #   true if number can be blank, false if not.
       #
-      # :allow_blank => true | false
-      #   true if number can be blank, false if not
-      #
-      # :message => "Error message for %s"
+      # @option [String] :message
       #   Custom error message, also can be a callable object that takes
-      #   an object (for pure Ruby objects) or object and property (for DM resources)
+      #   an object (for pure Ruby objects) or object and property
+      #   (for DM resources).
       #
-      # :precision => 2
-      #   Required precision of a value
+      # @option [Numeric] :precision
+      #   Required precision of a value.
       #
-      # :scale => 2
-      #   Required scale of a value
+      # @option [Numeric] :scale
+      #   Required scale of a value.
       #
-      # :gte => 5.75
-      #   'Greater than or greater' requirement
+      # @option [Numeric] :gte
+      #   'Greater than or greater' requirement.
       #
-      # :lte => 5.75
-      #   'Less than or greater' requirement
+      # @option [Numeric] :lte
+      #   'Less than or greater' requirement.
       #
-      # :lt => 5.75
-      #   'Less than' requirement
+      # @option [Numeric] :lt
+      #   'Less than' requirement.
       #
-      # :gt => 5.75
-      #   'Greater than' requirement
+      # @option [Numeric] :gt
+      #   'Greater than' requirement.
       #
-      # :eq => 5.75
-      #   'Equal' requirement
+      # @option [Numeric] :eq
+      #   'Equal' requirement.
       #
-      # :ne => 5.75
-      #   'Not equal' requirement
+      # @option [Numeric] :ne
+      #   'Not equal' requirement.
       #
-      # :integer_only => true
-      #   Use to restrict allowed values to integers
+      # @option [Boolean] :integer_only
+      #   Use to restrict allowed values to integers.
       #
       def validates_numericality_of(*fields)
-        opts = opts_from_validator_args(fields)
-        add_validator_to_context(opts, fields, DataMapper::Validations::NumericalityValidator)
+        add_validator_to_context(
+          opts_from_validator_args(fields),
+          fields,
+          DataMapper::Validations::NumericalityValidator
+        )
       end
 
       deprecate :validates_is_number, :validates_numericality_of
-
     end # module ValidatesIsNumber
   end # module Validations
 end # module DataMapper

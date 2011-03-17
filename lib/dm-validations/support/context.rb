@@ -1,6 +1,5 @@
 module DataMapper
   module Validations
-
     # Module with validation context functionality.
     #
     # Contexts are implemented using a simple array based
@@ -41,7 +40,9 @@ module DataMapper
         Thread.current[:dm_validations_context_stack] ||= []
       end
 
-      # Returns the current validation context or nil if none has been pushed
+      # Returns the current validation context or nil if none has been
+      # pushed.
+      #
       # @api private
       def current_validation_context
         context = validation_context_stack.last
@@ -85,9 +86,9 @@ module DataMapper
           raise InvalidContextError, "#{context} is an invalid context, known contexts are #{contexts.keys.inspect}"
         end
       end
+
     end
 
     include Context
-
   end
 end

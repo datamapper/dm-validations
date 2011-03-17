@@ -1,9 +1,6 @@
 # -*- coding: utf-8 -*-
 module DataMapper
   module Validations
-
-    ##
-    #
     # @author Guy van den Berg
     # @since  0.9
     class ConfirmationValidator < GenericValidator
@@ -13,13 +10,19 @@ module DataMapper
 
         set_optional_by_default
 
-        @confirm_field_name  = (options[:confirm] || "#{field_name}_confirmation").to_sym
+        @confirm_field_name = (
+          options[:confirm] || "#{field_name}_confirmation"
+        ).to_sym
       end
 
       def call(target)
         return true if valid?(target)
 
-        error_message = @options[:message] || ValidationErrors.default_error_message(:confirmation, field_name)
+        error_message = (
+          @options[:message] || ValidationErrors.default_error_message(
+            :confirmation, field_name
+          )
+        )
         add_error(target, error_message, field_name)
 
         false
@@ -38,23 +41,28 @@ module DataMapper
         confirm_value = target.instance_variable_get("@#{@confirm_field_name}")
         value == confirm_value
       end
+
     end # class ConfirmationValidator
 
     module ValidatesConfirmation
       extend Deprecate
 
       ##
-      # Validates that the given attribute is confirmed by another attribute.
-      # A common use case scenario is when you require a user to confirm their
-      # password, for which you use both password and password_confirmation
-      # attributes.
+      # Validates that the given attribute is confirmed by another
+      # attribute. A common use case scenario is when you require a user to
+      # confirm their password, for which you use both password and
+      # password_confirmation attributes.
       #
-      # @option :allow_nil<Boolean>   true/false (default is true)
-      # @option :allow_blank<Boolean> true/false (default is true)
-      # @option :confirm<Symbol>      the attribute that you want to validate
-      #                               against (default is firstattr_confirmation)
+      # @option [Boolean] :allow_nil (true)
+      #   true or false.
       #
-      # @example [Usage]
+      # @option [Boolean] :allow_blank (true)
+      #   true or false.
+      #
+      # @option [Symbol] :confirm (firstattr_confirmation)
+      #   The attribute that you want to validate against.
+      #
+      # @example Usage
       #   require 'dm-validations'
       #
       #   class Page
@@ -74,8 +82,11 @@ module DataMapper
       #     # email == email_repeated
       #
       def validates_confirmation_of(*fields)
-        opts = opts_from_validator_args(fields)
-        add_validator_to_context(opts, fields, DataMapper::Validations::ConfirmationValidator)
+        add_validator_to_context(
+          opts_from_validator_args(fields),
+          fields,
+          DataMapper::Validations::ConfirmationValidator
+        )
       end
 
       deprecate :validates_is_confirmed, :validates_confirmation_of
