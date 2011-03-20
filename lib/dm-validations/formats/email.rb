@@ -22,7 +22,7 @@ module DataMapper
         # 99% of the time you do not want to allow these email addresses
         # in a public web application.
         EmailAddress = begin
-            alpha = "a-zA-Z\\p{Lu}\\p{Ll}" # Alpha characters, changed from RFC2822 to include unicode chars
+            alpha = "a-zA-Z\\p{L}" # Alpha characters, changed from RFC2822 to include unicode chars
             digit = "0-9"
             atext = "[#{alpha}#{digit}\!\#\$\%\&\'\*+\/\=\?\^\_\`\{\|\}\~\-]"
             dot_atom_text = "#{atext}+([.]#{atext}*)+" # Last char changed from * to +
