@@ -66,6 +66,9 @@ module DataMapper
           else
             raise(UnknownValidationFormat, "Can't determine how to validate #{target.class}##{field_name} with #{validator.inspect}")
         end
+      rescue Encoding::CompatibilityError
+        # This is to work around a bug in jruby - see formats/email.rb
+        false
       end
 
     end # class FormatValidator

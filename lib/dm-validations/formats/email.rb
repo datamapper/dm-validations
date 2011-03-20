@@ -22,7 +22,16 @@ module DataMapper
         # 99% of the time you do not want to allow these email addresses
         # in a public web application.
         EmailAddress = begin
-            alpha = "a-zA-Z\\p{L}" # Alpha characters, changed from RFC2822 to include unicode chars
+            if RUBY_VERSION == '1.9.2' && RUBY_ENGINE == 'jruby'
+              # There is an obscure bug in jruby 1.6 that prevents matching
+              # on unicode properties here. We can revert the commit that
+              # added this comment when it is fixed.
+              #
+              # http://jira.codehaus.org/browse/JRUBY-5622
+              alpha = "a-zA-Z"
+            else
+              alpha = "a-zA-Z\\p{L}" # Changed from RFC2822 to include unicode chars
+            end
             digit = "0-9"
             atext = "[#{alpha}#{digit}\!\#\$\%\&\'\*+\/\=\?\^\_\`\{\|\}\~\-]"
             dot_atom_text = "#{atext}+([.]#{atext}*)+" # Last char changed from * to +
