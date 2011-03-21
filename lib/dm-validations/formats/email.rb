@@ -52,7 +52,7 @@ module DataMapper
           obs_domain     = "#{atom}([.]#{atom})+" # Last char changed from * to +
           domain         = "(?:#{dot_atom}|#{domain_literal}|#{obs_domain})"
           addr_spec      = "#{local_part}\@#{domain}"
-          pattern        = /^#{addr_spec}$/u
+          pattern        = /\A#{addr_spec}\z/u
         end
 
       end # module Email
