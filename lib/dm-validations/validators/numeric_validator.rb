@@ -126,7 +126,7 @@ module DataMapper
       def validate_ne(value, errors)
         validate_with_comparison(value, :==, options[:ne] || options[:not_equal_to], :not_equal_to, errors, true)
       end
-      
+
     end # class NumericalityValidator
 
     module ValidatesNumericality
