@@ -28,12 +28,12 @@ module DataMapper
             # added this comment when it is fixed.
             #
             # http://jira.codehaus.org/browse/JRUBY-5622
-            alpha = 'a-zA-Z'
+            letter = 'a-zA-Z'
           else
-            alpha = 'a-zA-Z\p{L}'  # Changed from RFC2822 to include unicode chars
+            letter = 'a-zA-Z\p{L}'  # Changed from RFC2822 to include unicode chars
           end
           digit          = '0-9'
-          atext          = "[#{alpha}#{digit}\!\#\$\%\&\'\*+\/\=\?\^\_\`\{\|\}\~\-]"
+          atext          = "[#{letter}#{digit}\!\#\$\%\&\'\*+\/\=\?\^\_\`\{\|\}\~\-]"
           dot_atom_text  = "#{atext}+([.]#{atext}*)+"
           dot_atom       = dot_atom_text
           no_ws_ctl      = '\x01-\x08\x11\x12\x14-\x1f\x7f'
