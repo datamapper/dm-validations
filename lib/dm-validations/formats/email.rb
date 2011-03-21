@@ -24,8 +24,8 @@ module DataMapper
         EmailAddress = begin
           if RUBY_VERSION == '1.9.2' && RUBY_ENGINE == 'jruby' && JRUBY_VERSION <= '1.6.0'
             # There is an obscure bug in jruby 1.6 that prevents matching
-            # on unicode properties here. We can revert the commit that
-            # added this comment when it is fixed.
+            # on unicode properties here. Remove this logic branch once
+            # a stable jruby release fixes this.
             #
             # http://jira.codehaus.org/browse/JRUBY-5622
             letter = 'a-zA-Z'
