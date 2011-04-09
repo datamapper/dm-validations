@@ -27,7 +27,7 @@ module DataMapper
             error_message = msg || ValidationErrors.default_error_message(:greater_than_or_equal_to, field_name, set.first)
           end
         else
-          error_message = msg || ValidationErrors.default_error_message(:inclusion, field_name, set.join(', '))
+          error_message = msg || ValidationErrors.default_error_message(:inclusion, field_name, set.to_a.join(', '))
         end
 
         add_error(target, error_message, field_name)
