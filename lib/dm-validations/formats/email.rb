@@ -22,7 +22,7 @@ module DataMapper
         # 99% of the time you do not want to allow these email addresses
         # in a public web application.
         EmailAddress = begin
-          if RUBY_VERSION == '1.9.2' && RUBY_ENGINE == 'jruby' && JRUBY_VERSION <= '1.6.0'
+          if RUBY_VERSION == '1.9.2' && RUBY_ENGINE == 'jruby' && JRUBY_VERSION <= '1.6.1'
             # There is an obscure bug in jruby 1.6 that prevents matching
             # on unicode properties here. Remove this logic branch once
             # a stable jruby release fixes this.
