@@ -152,10 +152,10 @@ module DataMapper
       #   Required scale of a value.
       #
       # @option [Numeric] :gte
-      #   'Greater than or greater' requirement.
+      #   'Greater than or equal to' requirement.
       #
       # @option [Numeric] :lte
-      #   'Less than or greater' requirement.
+      #   'Less than or equal to' requirement.
       #
       # @option [Numeric] :lt
       #   'Less than' requirement.
