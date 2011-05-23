@@ -54,8 +54,7 @@ module DataMapper
       def execute(named_context, target)
         target.errors.clear!
 
-        runnable_validators = context(named_context).select{ |validator| validator.execute?(target) }
-        validators = runnable_validators.dup
+        runnable_validators = context(named_context).select { |v| v.execute?(target) }
 
         # By default we start the list with the full set of runnable
         # validators.
@@ -74,33 +73,48 @@ module DataMapper
         #      - those that should always run (presence/absence)
         #      - those that don't reference any real properties (field-less
         #        block validators, validations in virtual attributes)
-        if target.kind_of?(DataMapper::Resource) && !target.new?
-          attrs       = target.attributes.keys
-          dirty_attrs = target.dirty_attributes.keys.map{ |p| p.name }
-          validators  = runnable_validators.select{|v|
-            !attrs.include?(v.field_name) || dirty_attrs.include?(v.field_name)
-          }
-
-          # Load all lazy, not-yet-loaded properties that need validation,
-          # all at once.
-          fields_to_load = validators.map{|v|
-            target.class.properties[v.field_name]
-          }.compact.select {|p|
-            p.lazy? && !p.loaded?(target)
-          }
-
-          target.__send__(:eager_load, fields_to_load)
-
-          # Finally include any validators that should always run or don't
-          # reference any real properties (field-less block vaildators).
-          validators |= runnable_validators.select do |v|
-            v.kind_of?(MethodValidator) ||
-            v.kind_of?(PresenceValidator) ||
-            v.kind_of?(AbsenceValidator)
+        validators = 
+          if target.kind_of?(DataMapper::Resource) && !target.new?
+            validators_for_resource(target, runnable_validators)
+          else
+            runnable_validators.dup
           end
-        end
 
         validators.map { |validator| validator.call(target) }.all?
+      end
+
+      def validators_for_resource(resource, all_validators)
+        attrs       = resource.attributes
+        dirty_attrs = Hash[resource.dirty_attributes.map { |p, value| [p.name, value] }]
+        validators  = all_validators.select { |v|
+          !attrs.include?(v.field_name) || dirty_attrs.include?(v.field_name)
+        }
+
+        load_validated_properties(resource, validators)
+
+        # Finally include any validators that should always run or don't
+        # reference any real properties (field-less block vaildators).
+        validators |= all_validators.select do |v|
+          v.kind_of?(MethodValidator) ||
+          v.kind_of?(PresenceValidator) ||
+          v.kind_of?(AbsenceValidator)
+        end
+
+        validators
+      end
+
+      # Load all lazy, not-yet-loaded properties that need validation,
+      # all at once.
+      def load_validated_properties(resource, validators)
+        properties = resource.model.properties
+
+        properties_to_load = validators.map { |validator|
+          properties[validator.field_name]
+        }.compact.select { |property|
+          property.lazy? && !property.loaded?(resource)
+        }
+
+        resource.__send__(:eager_load, properties_to_load)
       end
 
     end # module ContextualValidators
