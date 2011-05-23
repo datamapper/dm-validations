@@ -1,8 +1,6 @@
 module DataMapper
-  class Property
-    # for options_with_message
-    accept_options :message, :messages, :set, :validates, :auto_validation, :format
-  end
+  # for options_with_message
+  Property.accept_options :message, :messages, :set, :validates, :auto_validation, :format
 
   module Validations
     module AutoValidations
