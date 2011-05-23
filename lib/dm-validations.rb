@@ -55,8 +55,6 @@ module DataMapper
 
     Model.append_inclusions self
 
-    extend Chainable
-
     def self.included(model)
       model.extend ClassMethods
     end
@@ -64,23 +62,18 @@ module DataMapper
     # Ensures the object is valid for the context provided, and otherwise
     # throws :halt and returns false.
     #
-    chainable do
-      def save(context = default_validation_context)
-        validation_context(context) { super() }
-      end
+    def save(context = default_validation_context)
+      validation_context(context) { super() }
     end
 
-    chainable do
-      def update(attributes = {}, context = default_validation_context)
-        validation_context(context) { super(attributes) }
-      end
+    def update(attributes = {}, context = default_validation_context)
+      validation_context(context) { super(attributes) }
     end
 
-    chainable do
-      def save_self(*)
-        return false unless !dirty_self? || validation_context_stack.empty? || valid?(current_validation_context)
-        super
-      end
+    def save_self(*)
+      return false if dirty_self? && validation_context_stack.any? && !valid?(current_validation_context)
+
+      super
     end
 
     # Return the ValidationErrors
