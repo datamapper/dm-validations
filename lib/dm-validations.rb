@@ -105,11 +105,13 @@ module DataMapper
 
     # Check if a resource is valid in a given context
     #
+    # @api public
     def valid?(context = :default)
       klass = respond_to?(:model) ? model : self.class
       klass.validators.execute(context, self)
     end
 
+    # @api semipublic
     def validation_property_value(name)
       __send__(name) if respond_to?(name, true)
     end

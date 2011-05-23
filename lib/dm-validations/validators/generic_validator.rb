@@ -84,6 +84,7 @@ module DataMapper
       # @return [Boolean]
       #   true if should be run, otherwise false.
       #
+      # @api private
       def execute?(target)
         if unless_clause = self.unless_clause
           if unless_clause.kind_of?(Symbol)
@@ -112,6 +113,7 @@ module DataMapper
       #
       # @param [Boolean] default value
       #
+      # @api private
       def set_optional_by_default(default = true)
         [ :allow_nil, :allow_blank ].each do |key|
           @options[key] = true unless options.key?(key)
@@ -128,6 +130,7 @@ module DataMapper
       # @return [Boolean]
       #   true if blank/nil is allowed, and the value is blank/nil.
       #
+      # @api private
       def optional?(value)
         if value.nil?
           @options[:allow_nil] ||

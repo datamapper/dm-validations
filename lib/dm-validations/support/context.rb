@@ -86,7 +86,6 @@ module DataMapper
           raise InvalidContextError, "#{context} is an invalid context, known contexts are #{contexts.keys.inspect}"
         end
       end
-
     end
 
     include Context
