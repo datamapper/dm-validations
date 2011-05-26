@@ -6,7 +6,7 @@ module DataMapper
 
       def call(target)
         value    = target.validation_property_value(field_name)
-        property = target.validation_property(field_name)
+        property = get_resource_property(target, field_name)
 
         return true if value.nil? || property.primitive?(value)
 

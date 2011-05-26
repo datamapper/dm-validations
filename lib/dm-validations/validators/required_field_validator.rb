@@ -5,8 +5,8 @@ module DataMapper
     class PresenceValidator < GenericValidator
 
       def call(target)
-        value = target.validation_property_value(field_name)
-        property = target.validation_property(field_name)
+        value    = target.validation_property_value(field_name)
+        property = get_resource_property(target, field_name)
         return true if present?(value, property)
 
         error_message = @options[:message] || default_error(property)

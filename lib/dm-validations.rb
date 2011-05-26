@@ -114,16 +114,6 @@ module DataMapper
       __send__(name) if respond_to?(name, true)
     end
 
-    # Get the corresponding Resource property, if it exists.
-    #
-    # Note: DataMapper validations can be used on non-DataMapper resources.
-    # In such cases, the return value will be nil.
-    def validation_property(field_name)
-      if respond_to?(:model) && (properties = model.properties(repository.name)) && properties.named?(field_name)
-        properties[field_name]
-      end
-    end
-
     module ClassMethods
       include DataMapper::Validations::ValidatesPresence
       include DataMapper::Validations::ValidatesAbsence

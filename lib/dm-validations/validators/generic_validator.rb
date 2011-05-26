@@ -166,6 +166,21 @@ module DataMapper
 
       alias_method :to_s, :inspect
 
+    private
+
+      # Get the corresponding Resource property, if it exists.
+      #
+      # Note: DataMapper validations can be used on non-DataMapper resources.
+      # In such cases, the return value will be nil.
+      # 
+      # @api private
+      def get_resource_property(resource, property_name)
+        model = resource.model if resource.respond_to?(:model)
+        repository = resource.repository               if model
+        properties = model.properties(repository.name) if model
+        properties[property_name] if properties
+      end
+
     end # class GenericValidator
   end # module Validations
 end # module DataMapper
