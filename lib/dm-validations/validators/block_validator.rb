@@ -50,10 +50,11 @@ module DataMapper
         method_name = "__validates_with_block_#{@__validates_with_block_count}".to_sym
         define_method(method_name, block)
 
-        opts = opts_from_validator_args(fields)
+        opts = DataMapper::Validations.opts_from_validator_args(fields)
         opts[:method] = method_name
 
-        add_validator_to_context(
+        DataMapper::Validations.add_validator_to_context(
+          self,
           opts,
           fields.empty? ? [method_name] : fields,
           DataMapper::Validations::MethodValidator

@@ -57,8 +57,9 @@ module DataMapper
       #    # wrong zip code" unless zip_code == "94301"
       #  end
       def validates_with_method(*fields)
-        add_validator_to_context(
-          opts_from_validator_args(fields),
+        DataMapper::Validations.add_validator_to_context(
+          self,
+          DataMapper::Validations.opts_from_validator_args(fields),
           fields,
           DataMapper::Validations::MethodValidator
         )

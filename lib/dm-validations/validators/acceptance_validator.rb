@@ -69,8 +69,9 @@ module DataMapper
       #     # terms_accepted is one of ["1", 1, "true", true, "t"]
       #
       def validates_acceptance_of(*fields)
-        add_validator_to_context(
-          opts_from_validator_args(fields),
+        DataMapper::Validations.add_validator_to_context(
+          self,
+          DataMapper::Validations.opts_from_validator_args(fields),
           fields,
           DataMapper::Validations::AcceptanceValidator
         )

@@ -49,8 +49,9 @@ module DataMapper
       #     # casted into a Date object.
       #   end
       def validates_primitive_type_of(*fields)
-        add_validator_to_context(
-          opts_from_validator_args(fields),
+        DataMapper::Validations.add_validator_to_context(
+          self,
+          DataMapper::Validations.opts_from_validator_args(fields),
           fields,
           DataMapper::Validations::PrimitiveTypeValidator
         )

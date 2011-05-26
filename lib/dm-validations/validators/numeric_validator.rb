@@ -173,8 +173,9 @@ module DataMapper
       #   Use to restrict allowed values to integers.
       #
       def validates_numericality_of(*fields)
-        add_validator_to_context(
-          opts_from_validator_args(fields),
+        DataMapper::Validations.add_validator_to_context(
+          self,
+          DataMapper::Validations.opts_from_validator_args(fields),
           fields,
           DataMapper::Validations::NumericalityValidator
         )

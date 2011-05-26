@@ -240,8 +240,9 @@ module DataMapper
       #     # just_right is between 1 and 10 (inclusive of both 1 and 10)
       #
       def validates_length_of(*fields)
-        add_validator_to_context(
-          opts_from_validator_args(fields),
+        DataMapper::Validations.add_validator_to_context(
+          self,
+          DataMapper::Validations.opts_from_validator_args(fields),
           fields,
           DataMapper::Validations::LengthValidator
         )
