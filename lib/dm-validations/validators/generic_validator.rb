@@ -87,26 +87,21 @@ module DataMapper
       # @api private
       def execute?(target)
         if unless_clause = self.unless_clause
-          if unless_clause.kind_of?(Symbol)
-            return !target.__send__(unless_clause)
-          end
-
-          if unless_clause.respond_to?(:call)
-            return !unless_clause.call(target)
-          end
+          !evaluate_conditional_clause(target, unless_clause)
+        elsif if_clause = self.if_clause
+          evaluate_conditional_clause(target, if_clause)
+        else
+          true
         end
+      end
 
-        if if_clause = self.if_clause
-          if if_clause.kind_of?(Symbol)
-            return target.__send__(if_clause)
-          end
-
-          if if_clause.respond_to?(:call)
-            return if_clause.call(target)
-          end
+      # @api private
+      def evaluate_conditional_clause(target, clause)
+        if clause.kind_of?(Symbol)
+          target.__send__(clause)
+        elsif clause.respond_to?(:call)
+          clause.call(target)
         end
-
-        true
       end
 
       # Set the default value for allow_nil and allow_blank
