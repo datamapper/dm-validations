@@ -48,8 +48,8 @@ module DataMapper
       #     # all three attributes are blank
       #   end
       #
-      def validates_absence_of(*args)
-        validators.add(AbsenceValidator, *args)
+      def validates_absence_of(*fields)
+        validators.add(AbsenceValidator, *fields)
       end
 
       deprecate :validates_absent, :validates_absence_of

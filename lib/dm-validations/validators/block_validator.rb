@@ -54,7 +54,7 @@ module DataMapper
         options[:method] = method_name
         fields = [method_name] if fields.empty?
 
-        validators.add(MethodValidator, fields, options)
+        validators.add(MethodValidator, *fields + [options])
       end
     end # module ValidatesWithMethod
   end # module Validations

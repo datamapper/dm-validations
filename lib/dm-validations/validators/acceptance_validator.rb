@@ -68,8 +68,8 @@ module DataMapper
       #     # and
       #     # terms_accepted is one of ["1", 1, "true", true, "t"]
       #
-      def validates_acceptance_of(*args)
-        validators.add(AcceptanceValidator, *args)
+      def validates_acceptance_of(*fields)
+        validators.add(AcceptanceValidator, *fields)
       end
 
       deprecate :validates_is_accepted, :validates_acceptance_of
