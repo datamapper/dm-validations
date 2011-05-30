@@ -15,11 +15,12 @@ module DataMapper
       def_delegators :@contexts, :empty?, :each
       include Enumerable
 
-      attr_reader :contexts
+      attr_reader :contexts, :attributes
 
       def initialize(model)
         @model      = model
         @contexts   = {}
+        @attributes = {}
       end
 
       #
@@ -36,10 +37,23 @@ module DataMapper
         contexts[name] ||= OrderedSet.new
       end
 
+      # Return an array of validators for a named property
+      #
+      # @param [Symbol]
+      #   Property name for which to return validators
+      # @return [Array<DataMapper::Validations::GenericValidator>]
+      #   An array of validators bound to the given property
+      def attribute(name)
+        attributes[name] ||= OrderedSet.new
+      end
+
       # Clear all named context validators off of the resource
       #
       def clear!
         contexts.clear
+        attributes.clear
+      end
+
       # Create a new validator of the given klazz and push it onto the
       # requested context for each of the attributes in +attributes+
       # 
