@@ -74,12 +74,7 @@ module DataMapper
       #     # all three attributes are !blank?
       #   end
       def validates_presence_of(*fields)
-        DataMapper::Validations.add_validator_to_context(
-          self,
-          DataMapper::Validations.opts_from_validator_args(fields),
-          fields,
-          DataMapper::Validations::PresenceValidator
-        )
+        validators.add(PresenceValidator, *fields)
       end
 
       deprecate :validates_present, :validates_presence_of

@@ -115,12 +115,7 @@ module DataMapper
       #     # zip_code is a string of 5 digits
       #
       def validates_format_of(*fields)
-        DataMapper::Validations.add_validator_to_context(
-          self,
-          DataMapper::Validations.opts_from_validator_args(fields),
-          fields,
-          DataMapper::Validations::FormatValidator
-        )
+        validators.add(FormatValidator, *fields)
       end
 
       deprecate :validates_format, :validates_format_of

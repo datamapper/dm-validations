@@ -178,7 +178,7 @@ module DataMapper
         model = resource.model if resource.respond_to?(:model)
         repository = resource.repository               if model
         properties = model.properties(repository.name) if model
-        properties[property_name] if properties
+        properties[property_name]                      if properties
       end
 
     end # class GenericValidator

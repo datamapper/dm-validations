@@ -45,12 +45,7 @@ module DataMapper
       # Validate that value of a field if within a range/set
       #
       def validates_within(*fields)
-        DataMapper::Validations.add_validator_to_context(
-          self,
-          DataMapper::Validations.opts_from_validator_args(fields),
-          fields,
-          DataMapper::Validations::WithinValidator
-        )
+        validators.add(WithinValidator, *fields)
       end
     end # module ValidatesWithin
   end # module Validations
