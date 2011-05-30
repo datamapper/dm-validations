@@ -17,7 +17,7 @@ module DataMapper
 
       attr_reader :contexts, :attributes
 
-      def initialize(model)
+      def initialize(model = nil)
         @model      = model
         @contexts   = {}
         @attributes = {}
@@ -80,7 +80,7 @@ module DataMapper
             next if context_validators.include?(validator)
             context_validators << validator
             # TODO: eliminate this, then eliminate the @model ivar entirely
-            Validations::ClassMethods.create_context_instance_methods(@model, context)
+            Validations::ClassMethods.create_context_instance_methods(@model, context) if @model
           end
         end
       end
