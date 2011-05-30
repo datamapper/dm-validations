@@ -5,10 +5,13 @@ describe 'DataMapper::Validations::Fixtures::Product' do
     DataMapper::Validations::Fixtures::ProductCompany.auto_migrate!
     DataMapper::Validations::Fixtures::Product.auto_migrate!
 
-    @parent = DataMapper::Validations::Fixtures::ProductCompany.create(:title => "Apple", :flagship_product => "Macintosh")
+    parent_model = DataMapper::Validations::Fixtures::ProductCompany
+    @parent = parent_model.new(:title => "Apple", :flagship_product => "Macintosh")
     @parent.should be_valid
+    @parent.save.should be_true
 
-    @model  = DataMapper::Validations::Fixtures::Product.new(:name => "MacBook Pro", :company => @parent)
+    model_model = DataMapper::Validations::Fixtures::Product
+    @model = model_model.new(:name => "MacBook Pro", :company => @parent)
     @model.should be_valid
   end
 
