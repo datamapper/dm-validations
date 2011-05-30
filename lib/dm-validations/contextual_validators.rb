@@ -33,7 +33,7 @@ module DataMapper
       # @return [Array<DataMapper::Validations::GenericValidator>]
       #   An array of validators
       def context(name)
-        contexts[name] ||= []
+        contexts[name] ||= OrderedSet.new
       end
 
       # Clear all named context validators off of the resource
