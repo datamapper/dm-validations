@@ -137,8 +137,10 @@ module DataMapper
 
       def inherited(base)
         super
-        validators.contexts.each do |context, validators|
-          base.validators.context(context).concat(validators)
+        self.validators.contexts.each do |context, validators|
+          validators.each do |v|
+            base.validators.add(v.class, v.field_name, :context => context)
+          end
         end
       end
 
@@ -150,26 +152,15 @@ module DataMapper
 
       private
 
-      # Clean up the argument list and return a opts hash, including the
-      # merging of any default opts. Set the context to default if none is
-      # provided. Also allow :context to be aliased to :on, :when & group
-      #
-      def opts_from_validator_args(args, defaults = nil)
-        opts = args.last.kind_of?(Hash) ? args.pop.dup : {}
-        context = opts.delete(:group) || opts.delete(:on) || opts.delete(:when) || opts.delete(:context) || :default
-        opts[:context] = Array(context)
-        opts.update(defaults) unless defaults.nil?
-        opts
-      end
-
       # Given a new context create an instance method of
       # valid_for_<context>? which simply calls valid?(context)
       # if it does not already exist
       #
-      def create_context_instance_methods(context)
-        name = "valid_for_#{context.to_s}?"
-        unless respond_to?(:resource_method_defined) ? resource_method_defined?(name) : instance_methods.include?(name)
-          class_eval <<-RUBY, __FILE__, __LINE__ + 1
+      def self.create_context_instance_methods(model, context)
+        name = "valid_for_#{context}?"
+        present = model.respond_to?(:resource_method_defined) ? model.resource_method_defined?(name) : model.instance_methods.include?(name)
+        unless present
+          model.class_eval <<-RUBY, __FILE__, __LINE__ + 1
             def #{name}                          # def valid_for_signup?
               valid?(#{context.to_sym.inspect})  #   valid?(:signup)
             end                                  # end
@@ -177,30 +168,6 @@ module DataMapper
         end
       end
 
-      # Create a new validator of the given klazz and push it onto the
-      # requested context for each of the attributes in the fields list
-      # @param [Hash]          opts
-      #    Options supplied to validation macro, example:
-      #    {:context=>:default, :maximum=>50, :allow_nil=>true, :message=>nil}
-      #
-      # @param [Array<Symbol>] fields
-      #    Fields given to validation macro, example:
-      #    [:first_name, :last_name] in validates_presence_of :first_name, :last_name
-      #
-      # @param [Class] klazz
-      #    Validator class, example: DataMapper::Validations::LengthValidator
-      def add_validator_to_context(opts, fields, validator_class)
-        fields.each do |field|
-          validator = validator_class.new(field, opts.dup)
-
-          opts[:context].each do |context|
-            validator_contexts = validators.context(context)
-            next if validator_contexts.include?(validator)
-            validator_contexts << validator
-            create_context_instance_methods(context)
-          end
-        end
-      end
     end # module ClassMethods
   end # module Validations
 

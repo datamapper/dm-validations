@@ -29,9 +29,9 @@ module DataMapper
       # Return an array of validators for a named context
       #
       # @param  [String]
-      #   Context name for which return validators
+      #   Context name for which to return validators
       # @return [Array<DataMapper::Validations::GenericValidator>]
-      #   An array of validators
+      #   An array of validators bound to the given context
       def context(name)
         contexts[name] ||= OrderedSet.new
       end
@@ -40,16 +40,60 @@ module DataMapper
       #
       def clear!
         contexts.clear
+      # Create a new validator of the given klazz and push it onto the
+      # requested context for each of the attributes in +attributes+
+      # 
+      # @param [DataMapper::Validations::GenericValidator] validator_class
+      #    Validator class, example: DataMapper::Validations::LengthValidator
+      #
+      # @param [Array<Symbol>] attributes
+      #    Attribute names given to validation macro, example:
+      #    [:first_name, :last_name] in validates_presence_of :first_name, :last_name
+      # 
+      # @param [Hash]          opts
+      #    Options supplied to validation macro, example:
+      #    {:context=>:default, :maximum=>50, :allow_nil=>true, :message=>nil}
+      
+      def add(validator_class, *attributes)
+        options = attributes.last.kind_of?(Hash) ? attributes.pop.dup : {}
+        normalize_options(options)
+
+        attributes.each do |attribute|
+          validator = validator_class.new(attribute, options.dup)
+
+          options[:context].each do |context|
+            context_validators = self.context(context)
+            next if context_validators.include?(validator)
+            context_validators << validator
+            # TODO: eliminate this, then eliminate the @model ivar entirely
+            Validations.create_context_instance_methods(@model, context)
+          end
+        end
+      end
+
+      # Clean up the argument list and return a opts hash, including the
+      # merging of any default opts. Set the context to default if none is
+      # provided. Also allow :context to be aliased to :on, :when & group
+      #
+      def normalize_options(options, defaults = nil)
+        context   = options.delete(:group)
+        context ||= options.delete(:on)
+        context ||= options.delete(:when)
+        context ||= options.delete(:context)
+
+        options[:context] = Array(context || :default)
+        options.update(defaults) unless defaults.nil?
+        options
       end
 
       # Execute all validators in the named context against the target.
       # Load together any properties that are designated lazy but are not
       # yet loaded. Optionally only validate dirty properties.
       #
-      # @param [Symbol]
-      #   named_context the context we are validating against
-      # @param [Object]
-      #   target        the resource that we are validating
+      # @param [Symbol] named_context
+      #   the context we are validating against
+      # @param [Object] target
+      #   the resource that we are validating
       # @return [Boolean]
       #   true if all are valid, otherwise false
       def execute(named_context, target)
@@ -72,7 +116,7 @@ module DataMapper
         #   2. Limit run validators to
         #      - those applied to dirty attributes only,
         #      - those that should always run (presence/absence)
-        #      - those that don't reference any real properties (field-less
+        #      - those that don't reference any real properties (attribute-less
         #        block validators, validations in virtual attributes)
         validators = 
           if target.kind_of?(DataMapper::Resource) && !target.new?
