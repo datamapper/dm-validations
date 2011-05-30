@@ -74,6 +74,8 @@ module DataMapper
 
         attributes.each do |attribute|
           validator = validator_class.new(attribute, options.dup)
+          attribute_validators = self.attribute(attribute)
+          attribute_validators << validator unless attribute_validators.include?(validator)
 
           options[:context].each do |context|
             context_validators = self.context(context)
