@@ -155,13 +155,18 @@ module DataMapper
       # if it does not already exist
       #
       def self.create_context_instance_methods(model, context)
+        # TODO: deprecate `valid_for_#{context}?`
+        # what's wrong with requiring the caller to pass the context as an arg?
+        #   eg, `valid?(:context)`
+        context = context.to_sym
+
         name = "valid_for_#{context}?"
         present = model.respond_to?(:resource_method_defined) ? model.resource_method_defined?(name) : model.instance_methods.include?(name)
         unless present
           model.class_eval <<-RUBY, __FILE__, __LINE__ + 1
-            def #{name}                          # def valid_for_signup?
-              valid?(#{context.to_sym.inspect})  #   valid?(:signup)
-            end                                  # end
+            def #{name}                         # def valid_for_signup?
+              valid?(#{context.inspect})        #   valid?(:signup)
+            end                                 # end
           RUBY
         end
       end
