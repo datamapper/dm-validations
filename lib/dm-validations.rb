@@ -137,6 +137,12 @@ module DataMapper
 
       def inherited(base)
         super
+        # TODO: use ContextualValidators#add
+        # self.validators.contexts.each do |context, validators|
+        #   validators.each do |v|
+        #     base.validators.add(v.class, v.field_name, :context => context)
+        #   end
+        # end
         validators.contexts.each do |context, validators|
           base.validators.context(context).concat(validators)
         end
