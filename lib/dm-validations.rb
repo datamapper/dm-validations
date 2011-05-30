@@ -132,7 +132,7 @@ module DataMapper
       # Return the set of contextual validators or create a new one
       #
       def validators
-        @validators ||= ContextualValidators.new
+        @validators ||= ContextualValidators.new(self)
       end
 
       def inherited(base)

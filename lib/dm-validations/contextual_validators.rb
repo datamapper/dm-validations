@@ -17,8 +17,9 @@ module DataMapper
 
       attr_reader :contexts
 
-      def initialize
-        @contexts = {}
+      def initialize(model)
+        @model      = model
+        @contexts   = {}
       end
 
       #
