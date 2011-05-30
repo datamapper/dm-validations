@@ -87,15 +87,26 @@ module DataMapper
 
       # Clean up the argument list and return a opts hash, including the
       # merging of any default opts. Set the context to default if none is
-      # provided. Also allow :context to be aliased to :on, :when & group
-      #
+      # provided. Also allow :context to be aliased to :on, :when & :group
+      # 
+      # @param [Hash] options
+      #   the options to be normalized
+      # @param [NilClass, Hash] defaults
+      #   default keys/values to set on normalized options
+      # 
+      # @return [Hash]
+      #   the normalized options
+      # 
+      # @api private
       def normalize_options(options, defaults = nil)
-        context   = options.delete(:group)
-        context ||= options.delete(:on)
-        context ||= options.delete(:when)
-        context ||= options.delete(:context)
+        context = [
+          options.delete(:group),
+          options.delete(:on),
+          options.delete(:when),
+          options.delete(:context)
+        ].compact.first || :default
 
-        options[:context] = Array(context || :default)
+        options[:context] = Array(context)
         options.update(defaults) unless defaults.nil?
         options
       end
