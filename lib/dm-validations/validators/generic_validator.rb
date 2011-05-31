@@ -157,7 +157,7 @@ module DataMapper
         self.field_name == other.field_name &&
         self.if_clause == other.if_clause &&
         self.unless_clause == other.unless_clause &&
-        self.instance_variable_get(:@options) == other.instance_variable_get(:@options)
+        self.options == other.options
       end
 
       def inspect
