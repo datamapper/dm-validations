@@ -93,7 +93,7 @@ module DataMapper
 
     # Mark this resource as validatable. When we validate associations of a
     # resource we can check if they respond to validatable? before trying to
-    # recursivly validate them
+    # recursively validate them
     #
     def validatable?
       true
@@ -101,6 +101,7 @@ module DataMapper
 
     # Alias for valid?(:default)
     #
+    # TODO: deprecate
     def valid_for_default?
       valid?(:default)
     end
@@ -108,8 +109,8 @@ module DataMapper
     # Check if a resource is valid in a given context
     #
     def valid?(context = :default)
-      klass = respond_to?(:model) ? model : self.class
-      klass.validators.execute(context, self)
+      model = respond_to?(:model) ? self.model : self.class
+      model.validators.execute(context, self)
     end
 
     def validation_property_value(name)

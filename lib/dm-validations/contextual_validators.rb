@@ -76,7 +76,7 @@ module DataMapper
         contexts.empty? || contexts.include?(context)
       end
 
-      # Assert that the context is valid for this model
+      # Assert that the given context is valid for this model
       #
       # @param [Symbol] context
       #   the context to test
