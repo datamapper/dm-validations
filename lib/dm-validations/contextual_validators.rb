@@ -58,7 +58,7 @@ module DataMapper
       # TODO: simplify the semantics of #current_context, #valid?
       def current_context
         context = Validations::Context.current
-        valid?(context) ? context : :default
+        valid_context?(context) ? context : :default
       end
 
       # Test if the context is valid for the model
@@ -72,7 +72,7 @@ module DataMapper
       # @api private
       # 
       # TODO: investigate removing the `contexts.empty?` test here.
-      def valid?(context)
+      def valid_context?(context)
         contexts.empty? || contexts.include?(context)
       end
 
@@ -88,7 +88,7 @@ module DataMapper
       # 
       # TODO: is this method actually needed?
       def assert_valid(context)
-        unless valid?(context)
+        unless valid_context?(context)
           raise InvalidContextError, "#{context} is an invalid context, known contexts are #{contexts.keys.inspect}"
         end
       end

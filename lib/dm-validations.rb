@@ -66,19 +66,21 @@ module DataMapper
     #
     chainable do
       def save(context = default_validation_context)
+        model.validators.assert_valid(context)
         Validations::Context.in_context(context) { super() }
       end
     end
 
     chainable do
       def update(attributes = {}, context = default_validation_context)
+        model.validators.assert_valid(context)
         Validations::Context.in_context(context) { super(attributes) }
       end
     end
 
     chainable do
       def save_self(*)
-        return false unless !dirty_self? || validation_context_stack.empty? || valid?(current_validation_context)
+        return false unless !dirty_self? || Validations::Context.stack.empty? || valid?(model.validators.current_context)
         super
       end
     end
