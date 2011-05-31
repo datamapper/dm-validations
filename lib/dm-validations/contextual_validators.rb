@@ -13,6 +13,7 @@ module DataMapper
       #
 
       def_delegators :@contexts, :empty?, :each
+      def_delegators :@attributes, :[]
       include Enumerable
 
       attr_reader :contexts, :attributes
