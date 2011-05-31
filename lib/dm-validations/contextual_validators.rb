@@ -64,10 +64,16 @@ module DataMapper
       #    Attribute names given to validation macro, example:
       #    [:first_name, :last_name] in validates_presence_of :first_name, :last_name
       # 
-      # @param [Hash]          opts
+      # @param [Hash] options
       #    Options supplied to validation macro, example:
       #    {:context=>:default, :maximum=>50, :allow_nil=>true, :message=>nil}
-      
+      # 
+      # @option [Symbol] :context
+      #   the context in which the new validator should be run
+      # @option [Boolean] :allow_nil
+      #   whether or not the new validator should allow nil values
+      # @option [Boolean] :message
+      #   the error message the new validator will provide on validation failure
       def add(validator_class, *attributes)
         options = attributes.last.kind_of?(Hash) ? attributes.pop.dup : {}
         normalize_options(options)
