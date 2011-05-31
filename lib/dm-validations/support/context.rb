@@ -29,7 +29,7 @@ module DataMapper
 
       # @api semipublic
       def default_validation_context
-        current_validation_context || :default
+        model.validators.current_context || :default
       end
 
       protected
@@ -58,8 +58,7 @@ module DataMapper
       #
       # @api private
       def current_validation_context
-        context = validation_context_stack.last
-        valid_context?(context) ? context : :default
+        model.validators.current_context
       end
 
       # Return the contexts for the model
@@ -82,7 +81,7 @@ module DataMapper
       #
       # @api private
       def valid_context?(context)
-        contexts.empty? || contexts.key?(context)
+        model.validators.valid?(context)
       end
 
       # Assert that the context is valid for this model
@@ -95,9 +94,7 @@ module DataMapper
       #
       # @api private
       def assert_valid_context(context)
-        unless valid_context?(context)
-          raise InvalidContextError, "#{context} is an invalid context, known contexts are #{contexts.keys.inspect}"
-        end
+        model.validators.assert_valid(context)
       end
 
     end

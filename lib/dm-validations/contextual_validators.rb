@@ -41,6 +41,58 @@ module DataMapper
         contexts.clear
       end
 
+      # Returns the current validation context on the stack if valid for this model,
+      # nil if no contexts are defined for the model (and no contexts are on
+      # the validation stack), or :default if the current context is invalid for
+      # this model or no contexts have been defined for this model and
+      # no context is on the stack.
+      #
+      # @return [Symbol]
+      #   the current validation context from the stack (if valid for this model),
+      #   nil if no context is on the stack and no contexts are defined for this model,
+      #   or :default if the context on the stack is invalid for this model or
+      #   no context is on the stack and this model has at least one validation context
+      # 
+      # @api private
+      # 
+      # TODO: simplify the semantics of #current_context, #valid?
+      def current_context
+        context = Validations::Context.current
+        valid?(context) ? context : :default
+      end
+
+      # Test if the context is valid for the model
+      #
+      # @param [Symbol] context
+      #   the context to test
+      #
+      # @return [Boolean]
+      #   true if the context is valid for the model
+      #
+      # @api private
+      # 
+      # TODO: investigate removing the `contexts.empty?` test here.
+      def valid?(context)
+        contexts.empty? || contexts.include?(context)
+      end
+
+      # Assert that the context is valid for this model
+      #
+      # @param [Symbol] context
+      #   the context to test
+      #
+      # @raise [InvalidContextError]
+      #   raised if the context is not valid for this model
+      #
+      # @api private
+      # 
+      # TODO: is this method actually needed?
+      def assert_valid(context)
+        unless valid?(context)
+          raise InvalidContextError, "#{context} is an invalid context, known contexts are #{contexts.keys.inspect}"
+        end
+      end
+
       # Execute all validators in the named context against the target.
       # Load together any properties that are designated lazy but are not
       # yet loaded. Optionally only validate dirty properties.
