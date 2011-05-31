@@ -132,35 +132,37 @@ module DataMapper
       def execute(named_context, target)
         target.errors.clear!
 
-        runnable_validators = context(named_context).select { |v| v.execute?(target) }
+        available_validators  = context(named_context)
+        executable_validators = available_validators.select { |v| v.execute?(target) }
 
-        # By default we start the list with the full set of runnable
+        # By default we start the list with the full set of executable
         # validators.
         #
         # In the case of a new Resource or regular ruby class instance,
         # everything needs to be validated completely, and no eager-loading
         # logic should apply.
         #
-        # In the case of a DM::Resource that isn't new, we optimize:
-        #
-        #   1. Eager-load all lazy, not-yet-loaded properties that need
-        #      validation, all at once.
-        #
-        #   2. Limit run validators to
-        #      - those applied to dirty attributes only,
-        #      - those that should always run (presence/absence)
-        #      - those that don't reference any real properties (attribute-less
-        #        block validators, validations in virtual attributes)
+        # @see #validators_for_resource
         validators = 
           if target.kind_of?(DataMapper::Resource) && !target.new?
-            validators_for_resource(target, runnable_validators)
+            validators_for_resource(target, executable_validators)
           else
-            runnable_validators.dup
+            executable_validators
           end
 
         validators.map { |validator| validator.call(target) }.all?
       end
 
+      # In the case of a DM::Resource that isn't new, we optimize:
+      #
+      #   1. Eager-load all lazy, not-yet-loaded properties that need
+      #      validation, all at once.
+      #
+      #   2. Limit run validators to
+      #      - those applied to dirty attributes only,
+      #      - those that should always run (presence/absence)
+      #      - those that don't reference any real properties (attribute-less
+      #        block validators, validations in virtual attributes)
       def validators_for_resource(resource, all_validators)
         attrs       = resource.attributes
         dirty_attrs = Hash[resource.dirty_attributes.map { |p, value| [p.name, value] }]
