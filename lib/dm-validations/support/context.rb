@@ -10,7 +10,24 @@ module DataMapper
     module Context
 
       # TODO: document
-      # @api private
+      # @api semipublic
+      def self.in_context(context)
+        stack << context
+        yield
+      ensure
+        stack.pop
+      end
+
+      def self.current
+        stack.last
+      end
+
+      # @api semipublic
+      def self.stack
+        Thread.current[:dm_validations_context_stack] ||= []
+      end
+
+      # @api semipublic
       def default_validation_context
         current_validation_context || :default
       end
@@ -24,12 +41,8 @@ module DataMapper
       # @api private
       def validation_context(context = default_validation_context)
         assert_valid_context(context)
-        validation_context_stack << context
-        begin
-          yield
-        ensure
-          validation_context_stack.pop
-        end
+
+        Validations::Context.in_context(context) { yield }
       end
 
       private
@@ -37,7 +50,7 @@ module DataMapper
       # Initializes (if necessary) and returns current scope stack
       # @api private
       def validation_context_stack
-        Thread.current[:dm_validations_context_stack] ||= []
+        Validations::Context.stack
       end
 
       # Returns the current validation context or nil if none has been
