@@ -66,13 +66,13 @@ module DataMapper
     #
     chainable do
       def save(context = default_validation_context)
-        validation_context(context) { super() }
+        Validations::Context.in_context(context) { super() }
       end
     end
 
     chainable do
       def update(attributes = {}, context = default_validation_context)
-        validation_context(context) { super(attributes) }
+        Validations::Context.in_context(context) { super(attributes) }
       end
     end
 
