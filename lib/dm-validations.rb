@@ -161,6 +161,10 @@ module DataMapper
         # TODO: deprecate `valid_for_#{context}?`
         # what's wrong with requiring the caller to pass the context as an arg?
         #   eg, `valid?(:context)`
+        # these methods are handy for symbol-based callbacks,
+        #   eg. `:if => :valid_for_context?`
+        # but these methods are so trivial to add where needed, making it
+        # overkill to do this for all contexts on all validated objects.
         context = context.to_sym
 
         name = "valid_for_#{context}?"
