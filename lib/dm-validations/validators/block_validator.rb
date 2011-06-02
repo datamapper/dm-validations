@@ -44,20 +44,17 @@ module DataMapper
 
         # create method and pass it to MethodValidator
         unless block_given?
-          raise ArgumentError.new('You need to pass a block to validates_with_block method')
+          raise ArgumentError, 'You need to pass a block to validates_with_block method'
         end
 
         method_name = "__validates_with_block_#{@__validates_with_block_count}".to_sym
-        define_method(method_name, block)
+        define_method(method_name, &block)
 
-        opts = opts_from_validator_args(fields)
-        opts[:method] = method_name
+        options = fields.last.is_a?(Hash) ? fields.last.pop.dup : {}
+        options[:method] = method_name
+        fields = [method_name] if fields.empty?
 
-        add_validator_to_context(
-          opts,
-          fields.empty? ? [method_name] : fields,
-          DataMapper::Validations::MethodValidator
-        )
+        validators.add(MethodValidator, *fields + [options])
       end
     end # module ValidatesWithMethod
   end # module Validations

@@ -84,34 +84,31 @@ module DataMapper
       # @return [Boolean]
       #   true if should be run, otherwise false.
       #
+      # @api private
       def execute?(target)
         if unless_clause = self.unless_clause
-          if unless_clause.kind_of?(Symbol)
-            return !target.__send__(unless_clause)
-          end
-
-          if unless_clause.respond_to?(:call)
-            return !unless_clause.call(target)
-          end
+          !evaluate_conditional_clause(target, unless_clause)
+        elsif if_clause = self.if_clause
+          evaluate_conditional_clause(target, if_clause)
+        else
+          true
         end
+      end
 
-        if if_clause = self.if_clause
-          if if_clause.kind_of?(Symbol)
-            return target.__send__(if_clause)
-          end
-
-          if if_clause.respond_to?(:call)
-            return if_clause.call(target)
-          end
+      # @api private
+      def evaluate_conditional_clause(target, clause)
+        if clause.kind_of?(Symbol)
+          target.__send__(clause)
+        elsif clause.respond_to?(:call)
+          clause.call(target)
         end
-
-        true
       end
 
       # Set the default value for allow_nil and allow_blank
       #
       # @param [Boolean] default value
       #
+      # @api private
       def set_optional_by_default(default = true)
         [ :allow_nil, :allow_blank ].each do |key|
           @options[key] = true unless options.key?(key)
@@ -128,6 +125,7 @@ module DataMapper
       # @return [Boolean]
       #   true if blank/nil is allowed, and the value is blank/nil.
       #
+      # @api private
       def optional?(value)
         if value.nil?
           @options[:allow_nil] ||
@@ -157,7 +155,7 @@ module DataMapper
         self.field_name == other.field_name &&
         self.if_clause == other.if_clause &&
         self.unless_clause == other.unless_clause &&
-        self.instance_variable_get(:@options) == other.instance_variable_get(:@options)
+        self.options == other.options
       end
 
       def inspect
@@ -165,6 +163,21 @@ module DataMapper
       end
 
       alias_method :to_s, :inspect
+
+    private
+
+      # Get the corresponding Resource property, if it exists.
+      #
+      # Note: DataMapper validations can be used on non-DataMapper resources.
+      # In such cases, the return value will be nil.
+      # 
+      # @api private
+      def get_resource_property(resource, property_name)
+        model = resource.model if resource.respond_to?(:model)
+        repository = resource.repository               if model
+        properties = model.properties(repository.name) if model
+        properties[property_name]                      if properties
+      end
 
     end # class GenericValidator
   end # module Validations

@@ -6,7 +6,7 @@ module DataMapper
 
       def call(target)
         value    = target.validation_property_value(field_name)
-        property = target.validation_property(field_name)
+        property = get_resource_property(target, field_name)
 
         return true if value.nil? || property.primitive?(value)
 
@@ -49,11 +49,7 @@ module DataMapper
       #     # casted into a Date object.
       #   end
       def validates_primitive_type_of(*fields)
-        add_validator_to_context(
-          opts_from_validator_args(fields),
-          fields,
-          DataMapper::Validations::PrimitiveTypeValidator
-        )
+        validators.add(PrimitiveTypeValidator, *fields)
       end
 
       deprecate :validates_is_primitive, :validates_primitive_type_of

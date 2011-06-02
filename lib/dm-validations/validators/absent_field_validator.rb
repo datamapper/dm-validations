@@ -49,11 +49,7 @@ module DataMapper
       #   end
       #
       def validates_absence_of(*fields)
-        add_validator_to_context(
-          opts_from_validator_args(fields),
-          fields,
-          DataMapper::Validations::AbsenceValidator
-        )
+        validators.add(AbsenceValidator, *fields)
       end
 
       deprecate :validates_absent, :validates_absence_of

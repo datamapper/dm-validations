@@ -2,93 +2,56 @@ module DataMapper
   module Validations
     # Module with validation context functionality.
     #
-    # Contexts are implemented using a simple array based
-    # stack that is thread local. The default context can be
-    # altered by overwriting default_validation_context or
-    # will default to :default
+    # Contexts are implemented using a thread-local array-based stack.
     #
     module Context
 
-      # TODO: document
-      # @api private
-      def default_validation_context
-        current_validation_context || :default
+      # Execute a block of code within a specific validation context
+      # 
+      # @param [Symbol] context
+      #   the context to execute the block of code within
+      # 
+      # @api semipublic
+      def self.in_context(context)
+        stack << context
+        yield
+      ensure
+        stack.pop
       end
 
-      protected
-
-      # Pushes given context on top of context stack and yields
-      # given block, then pops the stack. During block execution
-      # contexts previously pushed onto the stack have no effect.
-      #
-      # @api private
-      def validation_context(context = default_validation_context)
-        assert_valid_context(context)
-        validation_context_stack << context
-        begin
-          yield
-        ensure
-          validation_context_stack.pop
-        end
+      # Get the current validation context or nil (if no context is on the stack).
+      # 
+      # @return [Symbol, NilClass]
+      #   The current validation context (for the current thread),
+      #   or nil if no current context is on the stack
+      def self.current
+        stack.last
       end
 
-      private
-
-      # Initializes (if necessary) and returns current scope stack
-      # @api private
-      def validation_context_stack
+      # The (thread-local) validation context stack
+      # This allows object graphs to be saved within potentially nested contexts
+      # without having to pass the validation context throughout
+      # 
+      # @api semipublic
+      def self.stack
         Thread.current[:dm_validations_context_stack] ||= []
       end
 
-      # Returns the current validation context or nil if none has been
-      # pushed.
-      #
-      # @api private
-      def current_validation_context
-        context = validation_context_stack.last
-        valid_context?(context) ? context : :default
+      # The default validation context for this Resource.
+      # This Resource's default context can be overridden by implementing
+      # #default_validation_context
+      # 
+      # @return [Symbol]
+      #   the current validation context from the context stack
+      #   (if valid for this model), or :default
+      # 
+      # @api semipublic
+      def default_validation_context
+        model.validators.current_context || :default
       end
 
-      # Return the contexts for the model
-      #
-      # @return [Hash]
-      #   the hash of contexts for the model
-      #
-      # @api private
-      def contexts
-        model.validators.contexts
-      end
-
-      # Test if the context is valid for the model
-      #
-      # @param [Symbol] context
-      #   the context to test
-      #
-      # @return [Boolean]
-      #   true if the context is valid for the model
-      #
-      # @api private
-      def valid_context?(context)
-        contexts.empty? || contexts.key?(context)
-      end
-
-      # Assert that the context is valid for this model
-      #
-      # @param [Symbol] context
-      #   the context to test
-      #
-      # @raise [InvalidContextError]
-      #   raised if the context is not valid for this model
-      #
-      # @api private
-      def assert_valid_context(context)
-        unless valid_context?(context)
-          raise InvalidContextError, "#{context} is an invalid context, known contexts are #{contexts.keys.inspect}"
-        end
-      end
-
-    end
+    end # module Context
 
     include Context
-  end
-end
+  end # module Validations
+end # module DataMapper

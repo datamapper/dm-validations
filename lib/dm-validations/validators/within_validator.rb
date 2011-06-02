@@ -15,6 +15,7 @@ module DataMapper
         return true if optional?(value)
         return true if @options[:set].include?(value)
 
+        n = 1.0/0
         set = @options[:set]
         msg = @options[:message]
 
@@ -35,9 +36,6 @@ module DataMapper
         false
       end
 
-      def n
-        1.0/0
-      end
 
     end # class WithinValidator
 
@@ -45,11 +43,7 @@ module DataMapper
       # Validate that value of a field if within a range/set
       #
       def validates_within(*fields)
-        add_validator_to_context(
-          opts_from_validator_args(fields),
-          fields,
-          DataMapper::Validations::WithinValidator
-        )
+        validators.add(WithinValidator, *fields)
       end
     end # module ValidatesWithin
   end # module Validations

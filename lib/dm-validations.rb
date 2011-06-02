@@ -17,16 +17,22 @@ class Object
 end
 
 module DataMapper
-  class Property
-    def self.new(model, name, options = {})
-      property = super
-      property.model.auto_generate_validations(property)
+  module Validations
+    module PropertyExtensions
+      # @api private
+      def new(*)
+        property = super
 
-      # FIXME: explicit return needed for YARD to parse this properly
-      return property
-    end
-  end
-end
+        property.model.auto_generate_validations(property)
+
+        # FIXME: explicit return needed for YARD to parse this properly
+        return property
+      end
+    end # module PropertyExtensions
+  end # module Validations
+
+  Property.extend Validations::PropertyExtensions
+end # module DataMapper
 
 require 'dm-validations/exceptions'
 require 'dm-validations/validation_errors'
@@ -55,8 +61,6 @@ module DataMapper
 
     Model.append_inclusions self
 
-    extend Chainable
-
     def self.included(model)
       model.extend ClassMethods
     end
@@ -64,23 +68,19 @@ module DataMapper
     # Ensures the object is valid for the context provided, and otherwise
     # throws :halt and returns false.
     #
-    chainable do
-      def save(context = default_validation_context)
-        validation_context(context) { super() }
-      end
+    def save(context = default_validation_context)
+      model.validators.assert_valid(context)
+      Validations::Context.in_context(context) { super() }
     end
 
-    chainable do
-      def update(attributes = {}, context = default_validation_context)
-        validation_context(context) { super(attributes) }
-      end
+    def update(attributes = {}, context = default_validation_context)
+      model.validators.assert_valid(context)
+      Validations::Context.in_context(context) { super(attributes) }
     end
 
-    chainable do
-      def save_self(*)
-        return false unless !dirty_self? || validation_context_stack.empty? || valid?(current_validation_context)
-        super
-      end
+    def save_self(*)
+      return false unless !dirty_self? || Validations::Context.stack.empty? || valid?(model.validators.current_context)
+      super
     end
 
     # Return the ValidationErrors
@@ -91,7 +91,7 @@ module DataMapper
 
     # Mark this resource as validatable. When we validate associations of a
     # resource we can check if they respond to validatable? before trying to
-    # recursivly validate them
+    # recursively validate them
     #
     def validatable?
       true
@@ -99,29 +99,22 @@ module DataMapper
 
     # Alias for valid?(:default)
     #
+    # TODO: deprecate
     def valid_for_default?
       valid?(:default)
     end
 
     # Check if a resource is valid in a given context
     #
+    # @api public
     def valid?(context = :default)
-      klass = respond_to?(:model) ? model : self.class
-      klass.validators.execute(context, self)
+      model = respond_to?(:model) ? self.model : self.class
+      model.validators.execute(context, self)
     end
 
+    # @api semipublic
     def validation_property_value(name)
       __send__(name) if respond_to?(name, true)
-    end
-
-    # Get the corresponding Resource property, if it exists.
-    #
-    # Note: DataMapper validations can be used on non-DataMapper resources.
-    # In such cases, the return value will be nil.
-    def validation_property(field_name)
-      if respond_to?(:model) && (properties = model.properties(repository.name)) && properties.named?(field_name)
-        properties[field_name]
-      end
     end
 
     module ClassMethods
@@ -142,13 +135,16 @@ module DataMapper
       # Return the set of contextual validators or create a new one
       #
       def validators
-        @validators ||= ContextualValidators.new
+        @validators ||= ContextualValidators.new(self)
       end
 
       def inherited(base)
         super
-        validators.contexts.each do |context, validators|
-          base.validators.context(context).concat(validators)
+        self.validators.contexts.each do |context, validators|
+          validators.each do |v|
+            options = v.options.merge(:context => context)
+            base.validators.add(v.class, v.field_name, options)
+          end
         end
       end
 
@@ -160,57 +156,31 @@ module DataMapper
 
       private
 
-      # Clean up the argument list and return a opts hash, including the
-      # merging of any default opts. Set the context to default if none is
-      # provided. Also allow :context to be aliased to :on, :when & group
-      #
-      def opts_from_validator_args(args, defaults = nil)
-        opts = args.last.kind_of?(Hash) ? args.pop.dup : {}
-        context = opts.delete(:group) || opts.delete(:on) || opts.delete(:when) || opts.delete(:context) || :default
-        opts[:context] = Array(context)
-        opts.update(defaults) unless defaults.nil?
-        opts
-      end
-
       # Given a new context create an instance method of
       # valid_for_<context>? which simply calls valid?(context)
       # if it does not already exist
       #
-      def create_context_instance_methods(context)
-        name = "valid_for_#{context.to_s}?"
-        unless respond_to?(:resource_method_defined) ? resource_method_defined?(name) : instance_methods.include?(name)
-          class_eval <<-RUBY, __FILE__, __LINE__ + 1
-            def #{name}                          # def valid_for_signup?
-              valid?(#{context.to_sym.inspect})  #   valid?(:signup)
-            end                                  # end
+      def self.create_context_instance_methods(model, context)
+        # TODO: deprecate `valid_for_#{context}?`
+        # what's wrong with requiring the caller to pass the context as an arg?
+        #   eg, `valid?(:context)`
+        # these methods are handy for symbol-based callbacks,
+        #   eg. `:if => :valid_for_context?`
+        # but these methods are so trivial to add where needed, making it
+        # overkill to do this for all contexts on all validated objects.
+        context = context.to_sym
+
+        name = "valid_for_#{context}?"
+        present = model.respond_to?(:resource_method_defined) ? model.resource_method_defined?(name) : model.instance_methods.include?(name)
+        unless present
+          model.class_eval <<-RUBY, __FILE__, __LINE__ + 1
+            def #{name}                         # def valid_for_signup?
+              valid?(#{context.inspect})        #   valid?(:signup)
+            end                                 # end
           RUBY
         end
       end
 
-      # Create a new validator of the given klazz and push it onto the
-      # requested context for each of the attributes in the fields list
-      # @param [Hash]          opts
-      #    Options supplied to validation macro, example:
-      #    {:context=>:default, :maximum=>50, :allow_nil=>true, :message=>nil}
-      #
-      # @param [Array<Symbol>] fields
-      #    Fields given to validation macro, example:
-      #    [:first_name, :last_name] in validates_presence_of :first_name, :last_name
-      #
-      # @param [Class] klazz
-      #    Validator class, example: DataMapper::Validations::LengthValidator
-      def add_validator_to_context(opts, fields, validator_class)
-        fields.each do |field|
-          validator = validator_class.new(field, opts.dup)
-
-          opts[:context].each do |context|
-            validator_contexts = validators.context(context)
-            next if validator_contexts.include?(validator)
-            validator_contexts << validator
-            create_context_instance_methods(context)
-          end
-        end
-      end
     end # module ClassMethods
   end # module Validations
 
