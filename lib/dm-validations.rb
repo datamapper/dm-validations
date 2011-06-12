@@ -7,6 +7,7 @@ class Object
   # itself
   #
   # @return [Object]
+  # @api private
   def try_call(*args)
     if self.respond_to?(:call)
       self.call(*args)
