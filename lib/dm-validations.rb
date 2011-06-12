@@ -80,8 +80,11 @@ module DataMapper
     end
 
     def save_self(*)
-      return false unless !dirty_self? || Validations::Context.stack.empty? || valid?(model.validators.current_context)
-      super
+      if dirty_self? && Validations::Context.stack.any? && !valid?(model.validators.current_context)
+        false
+      else
+        super
+      end
     end
 
     # Return the ValidationErrors
