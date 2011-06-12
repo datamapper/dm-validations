@@ -16,24 +16,6 @@ module DataMapper
 
       Property.extend Validations::PropertyExtensions
 
-      @disable_auto_validations = false
-
-      # adds message for validator
-      # 
-      # @api private
-      def options_with_message(base_options, property, validator_name)
-        options = base_options.clone
-        opts    = property.options
-
-        if opts.key?(:messages)
-          options[:message] = opts[:messages][validator_name]
-        elsif opts.key?(:message)
-          options[:message] = opts[:message]
-        end
-
-        options
-      end
-
       # TODO: why are there 3 entry points to this ivar?
       # #disable_auto_validations, #disabled_auto_validations?, #auto_validations_disabled?
       attr_reader :disable_auto_validations
