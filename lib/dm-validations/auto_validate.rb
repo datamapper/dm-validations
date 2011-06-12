@@ -4,6 +4,18 @@ module DataMapper
 
   module Validations
     module AutoValidations
+      module PropertyExtensions
+        # @api private
+        def new(*)
+          property = super
+          AutoValidations.generate_for(property)
+          # FIXME: explicit return needed for YARD to parse this properly
+          return property
+        end
+      end # module PropertyExtensions
+
+      Property.extend Validations::PropertyExtensions
+
       @disable_auto_validations = false
 
       # adds message for validator

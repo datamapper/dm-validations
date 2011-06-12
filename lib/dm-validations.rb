@@ -17,24 +17,6 @@ class Object
   end
 end
 
-module DataMapper
-  module Validations
-    module PropertyExtensions
-      # @api private
-      def new(*)
-        property = super
-
-        property.model.auto_generate_validations(property)
-
-        # FIXME: explicit return needed for YARD to parse this properly
-        return property
-      end
-    end # module PropertyExtensions
-  end # module Validations
-
-  Property.extend Validations::PropertyExtensions
-end # module DataMapper
-
 require 'dm-validations/exceptions'
 require 'dm-validations/validation_errors'
 require 'dm-validations/contextual_validators'
