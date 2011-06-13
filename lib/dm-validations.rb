@@ -34,16 +34,19 @@ module DataMapper
     # Ensures the object is valid for the context provided, and otherwise
     # throws :halt and returns false.
     #
+    # @api public
     def save(context = default_validation_context)
       model.validators.assert_valid(context)
       Validations::Context.in_context(context) { super() }
     end
 
+    # @api public
     def update(attributes = {}, context = default_validation_context)
       model.validators.assert_valid(context)
       Validations::Context.in_context(context) { super(attributes) }
     end
 
+    # @api private
     def save_self(*)
       if dirty_self? && Validations::Context.any? && !valid?(model.validators.current_context)
         false
@@ -54,6 +57,7 @@ module DataMapper
 
     # Return the ValidationErrors
     #
+    # @api public
     def errors
       @errors ||= ValidationErrors.new(self)
     end
@@ -62,6 +66,7 @@ module DataMapper
     # resource we can check if they respond to validatable? before trying to
     # recursively validate them
     #
+    # @api semipublic
     def validatable?
       true
     end
@@ -103,10 +108,12 @@ module DataMapper
 
       # Return the set of contextual validators or create a new one
       #
+      # @api public
       def validators
         @validators ||= ContextualValidators.new(self)
       end
 
+      # @api private
       def inherited(base)
         super
         self.validators.contexts.each do |context, validators|
@@ -117,18 +124,20 @@ module DataMapper
         end
       end
 
+      # @api public
       def create(attributes = {}, *args)
         resource = new(attributes)
         resource.save(*args)
         resource
       end
 
-      private
+    private
 
       # Given a new context create an instance method of
       # valid_for_<context>? which simply calls valid?(context)
       # if it does not already exist
       #
+      # @api private
       def self.create_context_instance_methods(model, context)
         # TODO: deprecate `valid_for_#{context}?`
         # what's wrong with requiring the caller to pass the context as an arg?
