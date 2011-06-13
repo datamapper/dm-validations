@@ -62,7 +62,7 @@ module DataMapper
     end
 
     def save_self(*)
-      if dirty_self? && Validations::Context.stack.any? && !valid?(model.validators.current_context)
+      if dirty_self? && Validations::Context.any? && !valid?(model.validators.current_context)
         false
       else
         super
