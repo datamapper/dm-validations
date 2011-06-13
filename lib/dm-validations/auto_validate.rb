@@ -9,7 +9,7 @@ module DataMapper
         # @api private
         def property(*)
           property = super
-          AutoValidations.generate_for(property)
+          AutoValidations.generate_for_property(property)
           # FIXME: explicit return needed for YARD to parse this properly
           return property
         end
@@ -98,7 +98,7 @@ module DataMapper
       #       It is just shortcut if only one validation option is set
       #
       # @api private
-      def self.generate_for(property)
+      def self.generate_for_property(property)
         return if (property.model.disabled_auto_validations? ||
                    skip_auto_validation_for?(property))
 
@@ -116,7 +116,7 @@ module DataMapper
         infer_uniqueness_validation_for(property, opts.dup)
         infer_within_validation_for(property, opts.dup)
         infer_type_validation_for(property, opts.dup)
-      end # auto_generate_validations
+      end # generate_for_property
 
     private
 
