@@ -1,10 +1,12 @@
 require 'dm-core'
 require 'dm-validations/support/ordered_hash'
+require 'dm-validations/support/object'
 
 require 'dm-validations/exceptions'
 require 'dm-validations/validation_errors'
 require 'dm-validations/contextual_validators'
 require 'dm-validations/auto_validate'
+require 'dm-validations/context'
 
 require 'dm-validations/validators/generic_validator'
 require 'dm-validations/validators/required_field_validator'
@@ -19,9 +21,6 @@ require 'dm-validations/validators/method_validator'
 require 'dm-validations/validators/block_validator'
 require 'dm-validations/validators/uniqueness_validator'
 require 'dm-validations/validators/acceptance_validator'
-
-require 'dm-validations/context'
-require 'dm-validations/support/object'
 
 module DataMapper
   module Validations
