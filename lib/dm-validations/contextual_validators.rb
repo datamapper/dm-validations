@@ -78,11 +78,11 @@ module DataMapper
       def add(validator_class, *attributes)
         options = attributes.last.kind_of?(Hash) ? attributes.pop.dup : {}
         normalize_options(options)
+        validator_options = DataMapper::Ext::Hash.except(options, :context)
 
         attributes.each do |attribute|
           # TODO: is :context part of the Validator state (ie, intrinsic),
           # or is it just membership in a collection?
-          validator_options = DataMapper::Ext::Hash.except(options, :context)
           validator = validator_class.new(attribute, validator_options)
           attribute_validators = self.attribute(attribute)
           attribute_validators << validator unless attribute_validators.include?(validator)
@@ -116,9 +116,9 @@ module DataMapper
           options.delete(:on),
           options.delete(:when),
           options.delete(:context)
-        ].compact.first || :default
+        ].compact.first
 
-        options[:context] = Array(context)
+        options[:context] = Array(context || :default)
         options.update(defaults) unless defaults.nil?
         options
       end
