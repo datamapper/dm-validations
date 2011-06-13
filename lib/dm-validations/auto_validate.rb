@@ -4,17 +4,19 @@ module DataMapper
 
   module Validations
     module AutoValidations
-      module PropertyExtensions
+
+      module ModelExtension
         # @api private
-        def new(*)
+        def property(*)
           property = super
           AutoValidations.generate_for(property)
           # FIXME: explicit return needed for YARD to parse this properly
           return property
         end
-      end # module PropertyExtensions
 
-      Property.extend Validations::PropertyExtensions
+        Model.append_extensions self
+      end # module ModelExtension
+
 
       # TODO: why are there 3 entry points to this ivar?
       # #disable_auto_validations, #disabled_auto_validations?, #auto_validations_disabled?
