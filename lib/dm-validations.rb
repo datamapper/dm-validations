@@ -36,7 +36,7 @@ require 'dm-validations/validators/block_validator'
 require 'dm-validations/validators/uniqueness_validator'
 require 'dm-validations/validators/acceptance_validator'
 
-require 'dm-validations/support/context'
+require 'dm-validations/context'
 require 'dm-validations/support/object'
 
 module DataMapper
