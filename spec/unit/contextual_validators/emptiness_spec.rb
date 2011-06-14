@@ -4,47 +4,47 @@ require 'unit/contextual_validators/spec_helper'
 
 describe 'DataMapper::Validations::ContextualValidators' do
   before :all do
-    @model = DataMapper::Validations::ContextualValidators.new
+    @validators = DataMapper::Validations::ContextualValidators.new
   end
 
   describe "initially" do
     it "is empty" do
-      @model.should be_empty
+      @validators.should be_empty
     end
   end
 
 
   describe "after first reference to context" do
     before :all do
-      @model.context(:create)
+      @validators.context(:create)
     end
 
     it "initializes list of validators for referred context" do
-      @model.context(:create).should be_empty
+      @validators.context(:create).should be_empty
     end
   end
 
 
   describe "after a context being added" do
     before :all do
-      @model.context(:default) << DataMapper::Validations::PresenceValidator.new(:toc, :when => [:publishing])
+      @validators.context(:default) << DataMapper::Validations::PresenceValidator.new(:toc, :when => [:publishing])
     end
 
     it "is no longer empty" do
-      @model.should_not be_empty
+      @validators.should_not be_empty
     end
   end
 
 
   describe "when cleared" do
     before :all do
-      @model.context(:default) << DataMapper::Validations::PresenceValidator.new(:toc, :when => [:publishing])
-      @model.should_not be_empty
-      @model.clear!
+      @validators.context(:default) << DataMapper::Validations::PresenceValidator.new(:toc, :when => [:publishing])
+      @validators.should_not be_empty
+      @validators.clear!
     end
 
     it "becomes empty again" do
-      @model.should be_empty
+      @validators.should be_empty
     end
   end
 end

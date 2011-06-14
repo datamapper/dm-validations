@@ -1,43 +1,12 @@
 require 'dm-core'
 require 'dm-validations/support/ordered_hash'
-
-class Object
-  # If receiver is callable, calls it and
-  # returns result. If not, just returns receiver
-  # itself
-  #
-  # @return [Object]
-  def try_call(*args)
-    if self.respond_to?(:call)
-      self.call(*args)
-    else
-      self
-    end
-  end
-end
-
-module DataMapper
-  module Validations
-    module PropertyExtensions
-      # @api private
-      def new(*)
-        property = super
-
-        property.model.auto_generate_validations(property)
-
-        # FIXME: explicit return needed for YARD to parse this properly
-        return property
-      end
-    end # module PropertyExtensions
-  end # module Validations
-
-  Property.extend Validations::PropertyExtensions
-end # module DataMapper
+require 'dm-validations/support/object'
 
 require 'dm-validations/exceptions'
 require 'dm-validations/validation_errors'
 require 'dm-validations/contextual_validators'
 require 'dm-validations/auto_validate'
+require 'dm-validations/context'
 
 require 'dm-validations/validators/generic_validator'
 require 'dm-validations/validators/required_field_validator'
@@ -53,9 +22,6 @@ require 'dm-validations/validators/block_validator'
 require 'dm-validations/validators/uniqueness_validator'
 require 'dm-validations/validators/acceptance_validator'
 
-require 'dm-validations/support/context'
-require 'dm-validations/support/object'
-
 module DataMapper
   module Validations
 
@@ -68,23 +34,30 @@ module DataMapper
     # Ensures the object is valid for the context provided, and otherwise
     # throws :halt and returns false.
     #
+    # @api public
     def save(context = default_validation_context)
       model.validators.assert_valid(context)
       Validations::Context.in_context(context) { super() }
     end
 
+    # @api public
     def update(attributes = {}, context = default_validation_context)
       model.validators.assert_valid(context)
       Validations::Context.in_context(context) { super(attributes) }
     end
 
+    # @api private
     def save_self(*)
-      return false unless !dirty_self? || Validations::Context.stack.empty? || valid?(model.validators.current_context)
-      super
+      if dirty_self? && Validations::Context.any? && !valid?(model.validators.current_context)
+        false
+      else
+        super
+      end
     end
 
     # Return the ValidationErrors
     #
+    # @api public
     def errors
       @errors ||= ValidationErrors.new(self)
     end
@@ -93,6 +66,7 @@ module DataMapper
     # resource we can check if they respond to validatable? before trying to
     # recursively validate them
     #
+    # @api semipublic
     def validatable?
       true
     end
@@ -134,10 +108,12 @@ module DataMapper
 
       # Return the set of contextual validators or create a new one
       #
+      # @api public
       def validators
         @validators ||= ContextualValidators.new(self)
       end
 
+      # @api private
       def inherited(base)
         super
         self.validators.contexts.each do |context, validators|
@@ -148,18 +124,20 @@ module DataMapper
         end
       end
 
+      # @api public
       def create(attributes = {}, *args)
         resource = new(attributes)
         resource.save(*args)
         resource
       end
 
-      private
+    private
 
       # Given a new context create an instance method of
       # valid_for_<context>? which simply calls valid?(context)
       # if it does not already exist
       #
+      # @api private
       def self.create_context_instance_methods(model, context)
         # TODO: deprecate `valid_for_#{context}?`
         # what's wrong with requiring the caller to pass the context as an arg?

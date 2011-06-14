@@ -5,7 +5,6 @@ module DataMapper
     # Contexts are implemented using a thread-local array-based stack.
     #
     module Context
-
       # Execute a block of code within a specific validation context
       # 
       # @param [Symbol] context
@@ -28,11 +27,21 @@ module DataMapper
         stack.last
       end
 
+      # Are there any contexts on the stack?
+      # 
+      # @return [Boolean]
+      #   true/false whether there are any contexts on the context stack
+      # 
+      # @api semipublic
+      def self.any?(&block)
+        stack.any?(&block)
+      end
+
       # The (thread-local) validation context stack
       # This allows object graphs to be saved within potentially nested contexts
       # without having to pass the validation context throughout
       # 
-      # @api semipublic
+      # @api private
       def self.stack
         Thread.current[:dm_validations_context_stack] ||= []
       end
