@@ -8,8 +8,8 @@ Gem::Specification.new do |s|
   s.version = "1.1.1"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
-  s.authors = ["Guy van den Berg"]
-  s.date = %q{2011-04-28}
+  s.authors = [%q{Guy van den Berg}]
+  s.date = %q{2011-06-15}
   s.description = %q{Library for performing validations on DM models and pure Ruby object}
   s.email = %q{vandenberg.guy [a] gmail [d] com}
   s.extra_rdoc_files = [
@@ -25,11 +25,11 @@ Gem::Specification.new do |s|
     "dm-validations.gemspec",
     "lib/dm-validations.rb",
     "lib/dm-validations/auto_validate.rb",
+    "lib/dm-validations/context.rb",
     "lib/dm-validations/contextual_validators.rb",
     "lib/dm-validations/exceptions.rb",
     "lib/dm-validations/formats/email.rb",
     "lib/dm-validations/formats/url.rb",
-    "lib/dm-validations/support/context.rb",
     "lib/dm-validations/support/object.rb",
     "lib/dm-validations/support/ordered_hash.rb",
     "lib/dm-validations/validation_errors.rb",
@@ -165,9 +165,9 @@ Gem::Specification.new do |s|
     "tasks/yardstick.rake"
   ]
   s.homepage = %q{http://github.com/datamapper/dm-validations}
-  s.require_paths = ["lib"]
+  s.require_paths = [%q{lib}]
   s.rubyforge_project = %q{datamapper}
-  s.rubygems_version = %q{1.6.2}
+  s.rubygems_version = %q{1.8.5}
   s.summary = %q{Library for performing validations on DM models and pure Ruby object}
   s.test_files = [
     "spec/fixtures/barcode.rb",
