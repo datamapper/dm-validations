@@ -130,8 +130,8 @@ module DataMapper
       #
       # @api private
       def self.skip_auto_validation_for?(property)
-        (property.options.key?(:auto_validation) &&
-         !property.options[:auto_validation])
+        # TODO: only support explicit false here? currently supports nil/false
+        !property.options.fetch(:auto_validation, true)
       end
 
       # @api private
