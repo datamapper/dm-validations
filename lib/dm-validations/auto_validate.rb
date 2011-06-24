@@ -152,7 +152,7 @@ module DataMapper
         return unless (property.kind_of?(DataMapper::Property::String) ||
                        property.kind_of?(DataMapper::Property::Text))
 
-        length = property.options.fetch(:length, DataMapper::Property::String::DEFAULT_LENGTH)
+        length = property.options.fetch(:length, Property::String.length)
 
 
         if length.is_a?(Range)
