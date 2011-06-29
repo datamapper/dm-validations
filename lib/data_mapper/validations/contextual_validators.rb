@@ -71,6 +71,13 @@ module DataMapper
 
           contexts.each do |context|
             self.context(context) << validator
+
+            # TODO: eliminate ModelExtensions#create_context_instance_methods,
+            #   then eliminate the @model ivar entirely
+            # In the meantime, update this method to return the context names
+            #   to which validators were added, then override the Model methods
+            #   in Validators to add these context shortcuts (as a deprecated shim)
+            ModelExtensions.create_context_instance_methods(@model, context) if @model
           end
         end
       end
@@ -111,9 +118,6 @@ module DataMapper
       def validate(context_name, resource)
         context(context_name).validate(resource)
       end
-
-      # TODO: deprecate #execute
-      alias_method :execute, :validate
 
       # Returns the current validation context on the stack if valid for this model,
       # nil if no contexts are defined for the model (and no contexts are on

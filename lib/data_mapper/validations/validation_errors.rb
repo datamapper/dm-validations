@@ -126,7 +126,7 @@ module DataMapper
         end
       end
 
-      private
+    private
 
       def errors
         @errors

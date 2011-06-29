@@ -1,6 +1,6 @@
 module DataMapper
   # for options_with_message
-  # TODO: rename :auto_validation => :auto_validate
+  # TODO: rename :auto_validation => :infer_validation
   Property.accept_options :auto_validation, :validates, :set, :format, :message, :messages
 
   module Validations
@@ -14,14 +14,13 @@ module DataMapper
           # FIXME: explicit return needed for YARD to parse this properly
           return property
         end
-
-        Model.append_extensions self
-
       end # module ModelExtension
+
+      Model.append_extensions Inferred::ModelExtension
 
 
       # TODO: remove all the other @disabled_auto_validations reader methods
-      def auto_validate?
+      def infer_validations?
         !@disable_auto_validations
       end
 
@@ -55,30 +54,29 @@ module DataMapper
         @disable_auto_validations = previous
       end
 
-      # Auto-generate validations for a given property. This will only occur
+      # Infer validations for a given property. This will only occur
       # if the option :auto_validation is either true or left undefined.
       #
       #   Triggers that generate validator creation
       #
       #   :required => true
       #       Setting the option :required to true causes a
-      #       validates_presence_of validator to be automatically created on
-      #       the property
+      #       validates_presence_of validator to be created for the property
       #
       #   :length => 20
       #       Setting the option :length causes a validates_length_of
-      #       validator to be automatically created on the property. If the
+      #       validator to be created for the property. If the
       #       value is a Integer the validation will set :maximum => value
       #       if the value is a Range the validation will set
       #       :within => value
       #
       #   :format => :predefined / lambda / Proc
       #       Setting the :format option causes a validates_format_of
-      #       validator to be automatically created on the property
+      #       validator to be created for the property
       #
       #   :set => ["foo", "bar", "baz"]
       #       Setting the :set option causes a validates_within
-      #       validator to be automatically created on the property
+      #       validator to be created for the property
       #
       #   Integer type
       #       Using a Integer type causes a validates_numericality_of
@@ -106,9 +104,9 @@ module DataMapper
       #
       # @api private
       def self.generate_for_property(property)
-        return unless property.model.auto_validate? && property.auto_validation
+        return unless property.model.infer_validations? && property.auto_validation
 
-        # all auto-validations (aside from Presence/Absence) should be skipped
+        # all inferred validations (aside from Presence/Absence) should be skipped
         # validation when the value is nil
         opts = { :allow_nil => true }
 

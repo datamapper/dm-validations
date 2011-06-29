@@ -3,19 +3,30 @@ require "data_mapper/support/ordered_set"
 module DataMapper
   module Validations
     class ValidationContext < OrderedSet
+      # Holds a collection of Validator instances that should be run against
+      # Resources to validate the Resources in a specific context
+
+
       # Execute all validators in the named context against the resource.
       # Load together any properties that are designated lazy but are not
       # yet loaded. Optionally only validate dirty properties.
       #
-      # @param [Symbol] named_context
-      #   the context we are validating against
       # @param [Object] resource
       #   the resource that we are validating
+      # 
       # @return [Boolean]
       #   true if all are valid, otherwise false
       def validate(resource)
         resource.errors.clear!
 
+        validators = validators_for_resource(resource)
+
+        validators.map { |validator| validator.call(resource) }.all?
+      end
+
+    private
+
+      def validators_for_resource(resource)
         executable_validators = entries.select { |v| v.execute?(resource) }
 
         # By default we start the list with the full set of executable
@@ -25,18 +36,13 @@ module DataMapper
         # everything needs to be validated completely, and no eager-loading
         # logic should apply.
         #
-        # @see #validators_for_resource
-        validators = 
-          if resource.kind_of?(DataMapper::Resource) && !resource.new?
-            validators_for_resource(resource, executable_validators)
-          else
-            executable_validators
-          end
-
-        validators.map { |validator| validator.call(resource) }.all?
+        # @see #validators_for_persisted_resource
+        if resource.kind_of?(DataMapper::Resource) && !resource.new?
+          validators_for_persisted_resource(resource, executable_validators)
+        else
+          executable_validators
+        end
       end
-
-    private
 
       # In the case of a DM::Resource that isn't new, we optimize:
       #
@@ -48,7 +54,7 @@ module DataMapper
       #      - those that should always run (presence/absence)
       #      - those that don't reference any real properties (attribute-less
       #        block validators, validations in virtual attributes)
-      def validators_for_resource(resource, all_validators)
+      def validators_for_persisted_resource(resource, all_validators)
         attrs       = resource.attributes
         dirty_attrs = Hash[resource.dirty_attributes.map { |p, value| [p.name, value] }]
         validators  = all_validators.select { |v|

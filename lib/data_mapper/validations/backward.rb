@@ -7,6 +7,12 @@ module DataMapper
     #   is there *any* reason not to remove it?
     class ValidationError < StandardError; end
 
+    class ContextualValidators
+      extend Deprecate
+
+      deprecate :execute, :validate
+    end
+
     module Validators
       extend Deprecate
 
