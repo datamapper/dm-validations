@@ -20,14 +20,6 @@ module DataMapper
 
 
       # TODO: remove all the other @disabled_auto_validations reader methods
-      def infer_validations?
-        !@disable_auto_validations
-      end
-
-      # TODO: why are there 3 entry points to this ivar?
-      # #disable_auto_validations, #disabled_auto_validations?, #auto_validations_disabled?
-      attr_reader :disable_auto_validations
-
       # Checks whether auto validations are currently
       # disabled (see +disable_auto_validations+ method
       # that takes a block)
@@ -35,23 +27,19 @@ module DataMapper
       # @return [TrueClass, FalseClass]
       #   true if auto validation is currently disabled
       #
-      # @api semipublic
-      def disabled_auto_validations?
-        !!@disable_auto_validations
+      # @api public
+      def infer_validations?
+        @infer_validations
       end
 
-      # TODO: deprecate all but one of these 3 variants
-      alias_method :auto_validations_disabled?, :disabled_auto_validations?
-
-      # disables generation of validations for
-      # duration of given block
+      # Disable generation of validations for the duration of the given block
       # 
       # @api public
-      def without_auto_validations
-        previous, @disable_auto_validations = @disable_auto_validations, true
+      def without_inferred_validations
+        previous, @infer_validations = @infer_validations, true
         yield
       ensure
-        @disable_auto_validations = previous
+        @infer_validations = previous
       end
 
       # Infer validations for a given property. This will only occur
