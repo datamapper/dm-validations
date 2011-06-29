@@ -1,6 +1,6 @@
 # -*- encoding: utf-8 -*-
 
-require 'data_mapper/validations/validators/abstract'
+require 'data_mapper/validations/validator'
 
 module DataMapper
   module Validations
@@ -245,8 +245,6 @@ module DataMapper
       def validates_length_of(*attributes)
         validators.add(Validators::Length, *attributes)
       end
-
-      deprecate :validates_length, :validates_length_of
 
     end # module Validators
   end # module Validations

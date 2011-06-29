@@ -1,13 +1,11 @@
 # -*- encoding: utf-8 -*-
 
-require 'data_mapper/validations/validators/abstract'
+require 'data_mapper/validations/validator'
 
 module DataMapper
   module Validations
     module Validators
-      # @author Dirkjan Bussink
-      # @since  0.9
-      class PrimitiveType < Abstract
+      class PrimitiveType < Validator
 
         def call(target)
           value    = target.validation_property_value(field_name)
@@ -31,7 +29,7 @@ module DataMapper
           )
         end
 
-      end # class PrimitiveTypeValidator
+      end # class PrimitiveType
 
 
       # Validates that the specified attribute is of the correct primitive
@@ -54,8 +52,6 @@ module DataMapper
       def validates_primitive_type_of(*fields)
         validators.add(Validators::PrimitiveType, *fields)
       end
-
-      deprecate :validates_is_primitive, :validates_primitive_type_of
 
     end # module Validators
   end # module Validations

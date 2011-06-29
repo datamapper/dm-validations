@@ -1,13 +1,11 @@
 # -*- encoding: utf-8 -*-
 
-require 'data_mapper/validations/validators/abstract'
+require 'data_mapper/validations/validator'
 
 module DataMapper
   module Validations
     module Validators
-      # @author Martin Kihlgren
-      # @since  0.9
-      class Acceptance < Abstract
+      class Acceptance < Validator
 
         def initialize(field_name, options = {})
           super
@@ -73,8 +71,6 @@ module DataMapper
       def validates_acceptance_of(*attributes)
         validators.add(Validators::Acceptance, *attributes)
       end
-
-      deprecate :validates_is_accepted, :validates_acceptance_of
 
     end # module Validators
   end # module Validations

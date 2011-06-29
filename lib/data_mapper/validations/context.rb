@@ -1,10 +1,11 @@
 module DataMapper
   module Validations
-    # Module with validation context functionality.
-    #
-    # Contexts are implemented using a thread-local array-based stack.
-    #
     module Context
+      # Module with validation context functionality.
+      #
+      # Contexts are implemented using a thread-local array-based stack.
+      #
+
       # Execute a block of code within a specific validation context
       # 
       # @param [Symbol] context
@@ -47,7 +48,5 @@ module DataMapper
       end
 
     end # module Context
-
-    include Context
   end # module Validations
 end # module DataMapper

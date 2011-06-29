@@ -1,21 +1,22 @@
 module DataMapper
   # for options_with_message
   # TODO: rename :auto_validation => :auto_validate
-  Property.accept_options :message, :messages, :set, :validates, :auto_validation, :format
+  Property.accept_options :auto_validation, :validates, :set, :format, :message, :messages
 
   module Validations
-    module AutoValidations
+    module Inferred
 
       module ModelExtension
         # @api private
         def property(*)
           property = super
-          AutoValidations.generate_for_property(property)
+          Validations::Inferred.generate_for_property(property)
           # FIXME: explicit return needed for YARD to parse this properly
           return property
         end
 
         Model.append_extensions self
+
       end # module ModelExtension
 
 
@@ -117,7 +118,7 @@ module DataMapper
 
         # TODO: update these methods to return an array of:
         #   [Validator::Abstract, attribute_name, validator_options]
-        # Then iterate over that list and call:
+        # Then iterate over *that* list and call:
         #   property.model.validators.add(*args)
         infer_presence_validation_for(property, opts.dup)
         infer_length_validation_for(property, opts.dup)
@@ -131,15 +132,10 @@ module DataMapper
 
       # @api private
       def self.infer_presence_validation_for(property, options)
-        return if skip_presence_validation?(property)
+        return if property.allow_blank? || property.serial?
 
         validation_options = options_with_message(options, property, :presence)
         property.model.validates_presence_of property.name, validation_options
-      end
-
-      # @api private
-      def self.skip_presence_validation?(property)
-        property.allow_blank? || property.serial?
       end
 
       # @api private
@@ -149,9 +145,10 @@ module DataMapper
 
         length = property.options.fetch(:length, Property::String.length)
 
-
         if length.is_a?(Range)
-          raise ArgumentError, "Infinity is no valid upper bound for a length range" if length.last == Infinity
+          if length.last == Infinity
+            raise ArgumentError, "Infinity is not a valid upper bound for a length range"
+          end
           options[:within]  = length
         else
           options[:maximum] = length
@@ -242,6 +239,6 @@ module DataMapper
 
         options
       end
-    end # module AutoValidations
+    end # module Inferred
   end # module Validations
 end # module DataMapper

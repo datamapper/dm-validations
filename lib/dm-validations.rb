@@ -12,8 +12,6 @@ require 'data_mapper/validations/validators'
 module DataMapper
   module Validations
 
-    class ValidationError < StandardError; end
-
     class InvalidContextError < StandardError; end
 
   end

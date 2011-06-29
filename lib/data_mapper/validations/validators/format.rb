@@ -1,10 +1,8 @@
 # -*- encoding: utf-8 -*-
 
-#require File.dirname(__FILE__) + '/formats/email'
-
 require 'pathname'
 
-require 'data_mapper/validations/validators/abstract'
+require 'data_mapper/validations/validator'
 
 require 'data_mapper/validations/formats/email'
 require 'data_mapper/validations/formats/url'
@@ -16,7 +14,7 @@ module DataMapper
     module Validators
       # @author Guy van den Berg
       # @since  0.9
-      class Format < Abstract
+      class Format < Validator
 
         FORMATS = {}
 
@@ -121,8 +119,6 @@ module DataMapper
       def validates_format_of(*attributes)
         validators.add(Validators::Format, *attributes)
       end
-
-      deprecate :validates_format, :validates_format_of
 
     end # module Validators
   end # module Validations

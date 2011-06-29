@@ -1,13 +1,11 @@
 # -*- encoding: utf-8 -*-
 
-require 'data_mapper/validations/validators/abstract'
+require 'data_mapper/validations/validator'
+require 'data_mapper/validations/validators/method'
 
 module DataMapper
   module Validations
     module Validators
-      # @author teamon
-      # @since  0.9
-
       # Validate using the given block. The block given needs to return:
       # [result::<Boolean>, Error Message::<String>]
       #

@@ -1,13 +1,11 @@
 # -*- encoding: utf-8 -*-
 
-require 'data_mapper/validations/validators/abstract'
+require 'data_mapper/validations/validator'
 
 module DataMapper
   module Validations
     module Validators
-      # @author Guy van den Berg
-      # @since  0.9
-      class Uniqueness < Abstract
+      class Uniqueness < Validator
 
         include DataMapper::Assertions
 
@@ -55,15 +53,13 @@ module DataMapper
           target.saved? && resource.key == target.key
         end
 
-      end # class UniquenessValidator
+      end # class Uniqueness
 
       # Validate the uniqueness of a field
       #
       def validates_uniqueness_of(*attributes)
         validators.add(Validators::Uniqueness, *attributes)
       end
-
-      deprecate :validates_is_unique, :validates_uniqueness_of
 
     end # module Validators
   end # module Validations

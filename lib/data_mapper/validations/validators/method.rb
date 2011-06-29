@@ -1,13 +1,11 @@
 # -*- encoding: utf-8 -*-
 
-require 'data_mapper/validations/validators/abstract'
+require 'data_mapper/validations/validator'
 
 module DataMapper
   module Validations
     module Validators
-      # @author Guy van den Berg
-      # @since  0.9
-      class MethodValidator < GenericValidator
+      class Method < Validator
 
         attr_reader :method
 
@@ -26,7 +24,7 @@ module DataMapper
           method == other.method && super
         end
 
-      end # class MethodValidator
+      end # class Method
 
 
       # Validate using method called on validated object. The method must

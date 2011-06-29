@@ -1,13 +1,11 @@
 # -*- encoding: utf-8 -*-
 
-require 'data_mapper/validations/validators/abstract'
+require 'data_mapper/validations/validator'
 
 module DataMapper
   module Validations
     module Validators
-      # @author Guy van den Berg
-      # @since  0.9
-      class Confirmation < Abstract
+      class Confirmation < Validator
 
         def initialize(field_name, options = {})
           super
@@ -84,8 +82,6 @@ module DataMapper
       def validates_confirmation_of(*attributes)
         validators.add(Validators::Confirmation, *attributes)
       end
-
-      deprecate :validates_is_confirmed, :validates_confirmation_of
 
     end # module Validators
   end # module Validations

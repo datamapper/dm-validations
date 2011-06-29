@@ -1,13 +1,11 @@
 # -*- encoding: utf-8 -*-
 
-require 'data_mapper/validations/validators/abstract'
+require 'data_mapper/validations/validator'
 
 module DataMapper
   module Validations
     module Validators
-      # @author Guy van den Berg
-      # @since  0.9
-      class Within < Abstract
+      class Within < Validator
 
         attr_reader :set
 

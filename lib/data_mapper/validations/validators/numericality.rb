@@ -1,13 +1,11 @@
 # -*- encoding: utf-8 -*-
 
-require 'data_mapper/validations/validators/abstract'
+require 'data_mapper/validations/validator'
 
 module DataMapper
   module Validations
     module Validators
-      # @author Guy van den Berg
-      # @since  0.9
-      class Numericality < Abstract
+      class Numericality < Validator
 
         def call(target)
           value = target.validation_property_value(field_name)
@@ -178,8 +176,6 @@ module DataMapper
       def validates_numericality_of(*fields)
         validators.add(Validators::Numericality, *fields)
       end
-
-      deprecate :validates_is_number, :validates_numericality_of
 
     end # module Validators
   end # module Validations

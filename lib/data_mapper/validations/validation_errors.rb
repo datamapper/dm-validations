@@ -44,6 +44,8 @@ module DataMapper
 
       attr_reader :resource
 
+      # TODO: merge in gix's Violation/MessageTransformer work
+      # then replace OrderedHash with OrderedSet and remove OrderedHash entirely
       def initialize(resource)
         @resource = resource
         @errors   = DataMapper::Validations::OrderedHash.new { |h,k| h[k] = [] }
