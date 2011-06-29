@@ -1,5 +1,6 @@
 module DataMapper
   # for options_with_message
+  # TODO: rename :auto_validation => :auto_validate
   Property.accept_options :message, :messages, :set, :validates, :auto_validation, :format
 
   module Validations
@@ -18,6 +19,11 @@ module DataMapper
       end # module ModelExtension
 
 
+      # TODO: remove all the other @disabled_auto_validations reader methods
+      def auto_validate?
+        !@disable_auto_validations
+      end
+
       # TODO: why are there 3 entry points to this ivar?
       # #disable_auto_validations, #disabled_auto_validations?, #auto_validations_disabled?
       attr_reader :disable_auto_validations
@@ -31,7 +37,7 @@ module DataMapper
       #
       # @api semipublic
       def disabled_auto_validations?
-        @disable_auto_validations || false
+        !!@disable_auto_validations
       end
 
       # TODO: deprecate all but one of these 3 variants
@@ -99,10 +105,9 @@ module DataMapper
       #
       # @api private
       def self.generate_for_property(property)
-        return if (property.model.disabled_auto_validations? ||
-                   skip_auto_validation_for?(property))
+        return unless property.model.auto_validate? && property.auto_validation
 
-        # all auto-validations (aside from presence) should skip
+        # all auto-validations (aside from Presence/Absence) should be skipped
         # validation when the value is nil
         opts = { :allow_nil => true }
 
@@ -110,29 +115,19 @@ module DataMapper
           opts[:context] = property.options[:validates]
         end
 
+        # TODO: update these methods to return an array of:
+        #   [Validator::Abstract, attribute_name, validator_options]
+        # Then iterate over that list and call:
+        #   property.model.validators.add(*args)
         infer_presence_validation_for(property, opts.dup)
         infer_length_validation_for(property, opts.dup)
         infer_format_validation_for(property, opts.dup)
         infer_uniqueness_validation_for(property, opts.dup)
         infer_within_validation_for(property, opts.dup)
         infer_type_validation_for(property, opts.dup)
-      end # generate_for_property
+      end
 
     private
-
-      # Checks whether or not property should be auto validated.
-      # It is the case for properties with :auto_validation option
-      # given and it's value evaluates to true
-      #
-      # @return [TrueClass, FalseClass]
-      #   true for properties with :auto_validation option that has
-      #   positive value
-      #
-      # @api private
-      def self.skip_auto_validation_for?(property)
-        # TODO: only support explicit false here? currently supports nil/false
-        !property.options.fetch(:auto_validation, true)
-      end
 
       # @api private
       def self.infer_presence_validation_for(property, options)

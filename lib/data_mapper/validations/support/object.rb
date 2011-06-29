@@ -1,3 +1,4 @@
+# TODO: remove Object#try_call
 class Object
   # If receiver is callable, calls it and returns result.
   # If not, just returns receiver itself

@@ -63,8 +63,6 @@ module DataMapper
       # @param [String] message
       #   The message to add
       def add(field_name, message)
-        # see 6abe8fff in extlib, but don't enforce
-        # it unless Edge version is installed
         if message.respond_to?(:try_call)
           # DM resource
           message = if (resource.respond_to?(:model) &&

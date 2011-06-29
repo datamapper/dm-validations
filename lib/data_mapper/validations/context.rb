@@ -46,19 +46,6 @@ module DataMapper
         Thread.current[:dm_validations_context_stack] ||= []
       end
 
-      # The default validation context for this Resource.
-      # This Resource's default context can be overridden by implementing
-      # #default_validation_context
-      # 
-      # @return [Symbol]
-      #   the current validation context from the context stack
-      #   (if valid for this model), or :default
-      # 
-      # @api semipublic
-      def default_validation_context
-        model.validators.current_context || :default
-      end
-
     end # module Context
 
     include Context

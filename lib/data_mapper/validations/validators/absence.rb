@@ -1,28 +1,30 @@
+# -*- encoding: utf-8 -*-
+
+require 'data_mapper/validations/validators/abstract'
+
 module DataMapper
   module Validations
-    #
-    # @author Guy van den Berg
-    # @since  0.9
-    class AbsenceValidator < GenericValidator
+    module Validators
+      #
+      # @author Guy van den Berg
+      # @since  0.9
+      class Absence < Abstract
 
-      def call(target)
-        value = target.validation_property_value(field_name)
-        return true if DataMapper::Ext.blank?(value)
+        def call(target)
+          value = target.validation_property_value(field_name)
+          return true if DataMapper::Ext.blank?(value)
 
-        error_message = (
-          self.options[:message] || ValidationErrors.default_error_message(
-            :absent, field_name
+          error_message = (
+            self.options[:message] || ValidationErrors.default_error_message(
+              :absent, field_name
+            )
           )
-        )
 
-        add_error(target, error_message, field_name)
-        false
-      end
+          add_error(target, error_message, field_name)
+          false
+        end
 
-    end # class AbsenceValidator
-
-    module ValidatesAbsence
-      extend Deprecate
+      end # class AbsenceValidator
 
       # Validates that the specified attribute is "blank" via the
       # attribute's #blank? method.
@@ -48,11 +50,11 @@ module DataMapper
       #     # all three attributes are blank
       #   end
       #
-      def validates_absence_of(*fields)
-        validators.add(AbsenceValidator, *fields)
+      def validates_absence_of(*attributes)
+        validators.add(Validators::Absence, *attributes)
       end
 
       deprecate :validates_absent, :validates_absence_of
-    end # module ValidatesAbsent
+    end # module Validators
   end # module Validations
 end # module DataMapper

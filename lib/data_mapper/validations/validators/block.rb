@@ -1,8 +1,13 @@
+# -*- encoding: utf-8 -*-
+
+require 'data_mapper/validations/validators/abstract'
+
 module DataMapper
   module Validations
-    # @author teamon
-    # @since  0.9
-    module ValidatesWithBlock
+    module Validators
+      # @author teamon
+      # @since  0.9
+
       # Validate using the given block. The block given needs to return:
       # [result::<Boolean>, Error Message::<String>]
       #
@@ -38,7 +43,7 @@ module DataMapper
       #
       #     # it will add returned error message to :zip_code field
       #
-      def validates_with_block(*fields, &block)
+      def validates_with_block(*attributes, &block)
         @__validates_with_block_count ||= 0
         @__validates_with_block_count += 1
 
@@ -50,12 +55,13 @@ module DataMapper
         method_name = "__validates_with_block_#{@__validates_with_block_count}".to_sym
         define_method(method_name, &block)
 
-        options = fields.last.is_a?(Hash) ? fields.last.pop.dup : {}
+        options = attributes.last.is_a?(Hash) ? attributes.last.pop.dup : {}
         options[:method] = method_name
-        fields = [method_name] if fields.empty?
+        attributes = [method_name] if attributes.empty?
 
-        validators.add(MethodValidator, *fields + [options])
+        validators.add(Validators::Method, *attributes + [options])
       end
-    end # module ValidatesWithMethod
+
+    end # module Validators
   end # module Validations
 end # module DataMapper

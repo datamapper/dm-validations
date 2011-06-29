@@ -1,32 +1,39 @@
+# -*- encoding: utf-8 -*-
+
+require 'data_mapper/validations/validators/abstract'
+
 module DataMapper
   module Validations
-    # @author Guy van den Berg
-    # @since  0.9
-    class MethodValidator < GenericValidator
+    module Validators
+      # @author Guy van den Berg
+      # @since  0.9
+      class MethodValidator < GenericValidator
 
-      def initialize(field_name, options={})
-        super
-        @options[:method] = @field_name unless @options.key?(:method)
-      end
+        attr_reader :method
 
-      def call(target)
-        result, message = target.__send__(@options[:method])
-        add_error(target, message, field_name) unless result
-        result
-      end
+        def initialize(field_name, options={})
+          super
+          @method = @options.fetch(:method, @field_name)
+        end
 
-      def ==(other)
-        @options[:method] == other.instance_variable_get(:@options)[:method] && super
-      end
+        def call(target)
+          result, message = target.__send__(method)
+          add_error(target, message, field_name) unless result
+          result
+        end
 
-    end # class MethodValidator
+        def ==(other)
+          method == other.method && super
+        end
 
-    module ValidatesWithMethod
+      end # class MethodValidator
+
+
       # Validate using method called on validated object. The method must
       # to return either true, or a pair of [false, error message string],
       # and is specified as a symbol passed with :method option.
       #
-      # This validator does support multiple fields being specified at a
+      # This validator does support multiple attributes being specified at a
       # time, but we encourage you to use it with one property/method at a
       # time.
       #
@@ -56,9 +63,10 @@ module DataMapper
       #    # populate the object's errors with "You're in the
       #    # wrong zip code" unless zip_code == "94301"
       #  end
-      def validates_with_method(*fields)
-        validators.add(MethodValidator, *fields)
+      def validates_with_method(*attributes)
+        validators.add(Validators::Method, *attributes)
       end
-    end # module ValidatesWithMethod
+
+    end # module Validators
   end # module Validations
 end # module DataMapper
