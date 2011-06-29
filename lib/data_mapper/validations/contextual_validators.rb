@@ -1,26 +1,31 @@
 # -*- encoding: utf-8 -*-
 
 require 'forwardable'
-
 require 'data_mapper/validations/validation_context'
 
 module DataMapper
   module Validations
-    #
-    # @author Guy van den Berg
-    # @since  0.9
-
     class ContextualValidators
-      extend Forwardable
       include Enumerable
 
-      def_delegators :contexts, :each, :empty?
-
+      # @api private
       attr_reader :contexts
 
       def initialize(model = nil)
         @model    = model
         @contexts = Hash.new { |h,k| h[k] = ValidationContext.new }
+      end
+
+      # Delegate #validate to ValidationContext
+      # 
+      # @api public
+      def validate(context_name, resource)
+        context(context_name).validate(resource)
+      end
+
+      # @api public
+      def each
+        contexts.each { |context| yield context }
       end
 
       # Return an array of validators for a named context
@@ -29,6 +34,8 @@ module DataMapper
       #   Context name for which to return validators
       # @return [Array<Validations::Validators::Abstract>]
       #   An array of validators bound to the given context
+      # 
+      # @api public
       def context(name)
         contexts[name]
       end
@@ -67,8 +74,6 @@ module DataMapper
         attribute_names.each do |attribute_name|
           validator = validator_class.new(attribute_name, options)
 
-          self.attribute(attribute_name) << validator
-
           contexts.each do |context|
             self.context(context) << validator
 
@@ -77,7 +82,7 @@ module DataMapper
             # In the meantime, update this method to return the context names
             #   to which validators were added, then override the Model methods
             #   in Validators to add these context shortcuts (as a deprecated shim)
-            ModelExtensions.create_context_instance_methods(@model, context) if @model
+            ContextualValidators.create_context_instance_methods(@model, context) if @model
           end
         end
       end
@@ -90,33 +95,6 @@ module DataMapper
             descendant_validators.add(v.class, v.field_name, options)
           end
         end
-      end
-
-      # Allow :context to be aliased to :group, :on, & :when
-      # 
-      # @param [Hash] options
-      #   the options from which +context+ is to be extracted
-      # 
-      # @return [Array(Symbol)]
-      #   the context(s) from +options+
-      # 
-      # @api private
-      def extract_contexts(options)
-        context = [
-          options.delete(:group),
-          options.delete(:on),
-          options.delete(:when),
-          options.delete(:context)
-        ].compact.first
-
-        Array(context || :default)
-      end
-
-      # Delegate #validate to ValidationContext
-      # 
-      # @api public
-      def validate(context_name, resource)
-        context(context_name).validate(resource)
       end
 
       # Returns the current validation context on the stack if valid for this model,
@@ -154,6 +132,28 @@ module DataMapper
         contexts.empty? || contexts.include?(context)
       end
 
+    private
+
+      # Allow :context to be aliased to :group, :on, & :when
+      # 
+      # @param [Hash] options
+      #   the options from which +context+ is to be extracted
+      # 
+      # @return [Array(Symbol)]
+      #   the context(s) from +options+
+      # 
+      # @api private
+      def extract_contexts(options)
+        context = [
+          options.delete(:group),
+          options.delete(:on),
+          options.delete(:when),
+          options.delete(:context)
+        ].compact.first
+
+        Array(context || :default)
+      end
+
       # Assert that the given context is valid for this model
       #
       # @param [Symbol] context
@@ -171,51 +171,32 @@ module DataMapper
         end
       end
 
+      # Given a new context create an instance method of
+      # valid_for_<context>? which simply calls validate(context)
+      # if it does not already exist
+      #
+      # @api private
+      def self.create_context_instance_methods(model, context)
+        # TODO: deprecate `valid_for_#{context}?`
+        # what's wrong with requiring the caller to pass the context as an arg?
+        #   eg, `validate(:context)`
+        # these methods *are* handy for symbol-based callbacks,
+        #   eg. `:if => :valid_for_context?`
+        # but they're so trivial to add where needed that it's
+        # overkill to do this for all contexts on all validated objects.
+        context = context.to_sym
 
-      module ModelExtensions
-        # Return the set of contextual validators or create a new one
-        #
-        # @api public
-        def validators
-          @validators ||= ContextualValidators.new(self)
+        name = "valid_for_#{context}?"
+        present = model.respond_to?(:resource_method_defined) ? model.resource_method_defined?(name) : model.instance_methods.include?(name)
+        unless present
+          model.class_eval <<-RUBY, __FILE__, __LINE__ + 1
+            def #{name}                         # def valid_for_signup?
+              validate(#{context.inspect})      #   validate(:signup)
+            end                                 # end
+          RUBY
         end
+      end
 
-        # @api private
-        def inherited(base)
-          super
-          self.validators.inherited(base.validators)
-        end
-
-        # Given a new context create an instance method of
-        # valid_for_<context>? which simply calls validate(context)
-        # if it does not already exist
-        #
-        # @api private
-        def self.create_context_instance_methods(model, context)
-          # TODO: deprecate `valid_for_#{context}?`
-          # what's wrong with requiring the caller to pass the context as an arg?
-          #   eg, `validate(:context)`
-          # these methods *are* handy for symbol-based callbacks,
-          #   eg. `:if => :valid_for_context?`
-          # but they're so trivial to add where needed that it's
-          # overkill to do this for all contexts on all validated objects.
-          context = context.to_sym
-
-          name = "valid_for_#{context}?"
-          present = model.respond_to?(:resource_method_defined) ? model.resource_method_defined?(name) : model.instance_methods.include?(name)
-          unless present
-            model.class_eval <<-RUBY, __FILE__, __LINE__ + 1
-              def #{name}                         # def valid_for_signup?
-                validate(#{context.inspect})      #   validate(:signup)
-              end                                 # end
-            RUBY
-          end
-        end
-
-      end # module ModelExtensions
     end # class ContextualValidators
   end # module Validations
-
-  Model.append_extensions Validations::ContextualValidators::ModelExtensions
-
 end # module DataMapper

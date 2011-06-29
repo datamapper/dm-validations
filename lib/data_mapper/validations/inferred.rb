@@ -6,18 +6,13 @@ module DataMapper
   module Validations
     module Inferred
 
-      module ModelExtension
-        # @api private
-        def property(*)
-          property = super
-          Validations::Inferred.generate_for_property(property)
-          # FIXME: explicit return needed for YARD to parse this properly
-          return property
-        end
-      end # module ModelExtension
-
-      Model.append_extensions Inferred::ModelExtension
-
+      # @api private
+      def property(*)
+        property = super
+        Validations::Inferred.generate_for_property(property)
+        # FIXME: explicit return needed for YARD to parse this properly
+        return property
+      end
 
       # TODO: remove all the other @disabled_auto_validations reader methods
       # Checks whether auto validations are currently
@@ -92,7 +87,9 @@ module DataMapper
       #
       # @api private
       def self.generate_for_property(property)
-        return unless property.model.infer_validations? && property.auto_validation
+        unless property.model.infer_validations? && property.options.fetch(:auto_validation, true)
+          return false
+        end
 
         # all inferred validations (aside from Presence/Absence) should be skipped
         # validation when the value is nil
@@ -227,4 +224,7 @@ module DataMapper
       end
     end # module Inferred
   end # module Validations
+
+  Model.append_extensions Validations::Inferred
+
 end # module DataMapper

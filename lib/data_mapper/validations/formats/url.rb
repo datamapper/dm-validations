@@ -6,7 +6,7 @@ module DataMapper
       module Url
 
         def self.included(base)
-          DataMapper::Validations::FormatValidator::FORMATS.merge!(
+          Validators::Format::FORMATS.merge!(
             :url => [
               Url,
               lambda { |field, value|

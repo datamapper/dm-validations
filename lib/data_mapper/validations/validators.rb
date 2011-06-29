@@ -14,9 +14,3 @@ require 'data_mapper/validations/validators/presence'
 require 'data_mapper/validations/validators/primitive_type'
 require 'data_mapper/validations/validators/uniqueness'
 require 'data_mapper/validations/validators/within'
-
-module DataMapper
-
-  Model.append_extensions Validations::Validators
-
-end # module DataMapper

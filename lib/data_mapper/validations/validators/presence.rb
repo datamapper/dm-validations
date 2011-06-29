@@ -77,8 +77,6 @@ module DataMapper
         validators.add(Validators::Presence, *attributes)
       end
 
-      deprecate :validates_present, :validates_presence_of
-
     end # module Validators
   end # module Validations
 end # module DataMapper

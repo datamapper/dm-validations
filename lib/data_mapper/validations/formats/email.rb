@@ -1,12 +1,14 @@
 # encoding: UTF-8
 
+require 'data_mapper/validations/validators/format'
+
 module DataMapper
   module Validations
     module Format
       module Email
 
         def self.included(base)
-          DataMapper::Validations::FormatValidator::FORMATS.merge!(
+          Validators::Format::FORMATS.merge!(
             :email_address => [
               EmailAddress,
               lambda { |field, value|

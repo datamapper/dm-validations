@@ -5,7 +5,7 @@ require 'data_mapper/validations/validator'
 module DataMapper
   module Validations
     module Validators
-      class Length < Abstract
+      class Length < Validator
 
         # Initialize a length validator
         #

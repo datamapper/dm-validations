@@ -1,10 +1,8 @@
 module DataMapper
   module Validations
 
-    AutoValidations = Inferred
-
-    # TODO: this Exception class is not reference with dm-validations
-    #   is there *any* reason not to remove it?
+    # TODO: this Exception class is not referenced within dm-validations
+    #   any reason not to remove it?
     class ValidationError < StandardError; end
 
     class ContextualValidators
@@ -16,14 +14,15 @@ module DataMapper
     module Validators
       extend Deprecate
 
+      deprecate :validates_absent,        :validates_absence_of
+      deprecate :validates_format,        :validates_format_of
+      deprecate :validates_present,       :validates_presence_of
+      deprecate :validates_length,        :validates_length_of
       deprecate :validates_is_accepted,   :validates_acceptance_of
       deprecate :validates_is_confirmed,  :validates_confirmation_of
-      deprecate :validates_length,        :validates_length_of
       deprecate :validates_is_number,     :validates_numericality_of
       deprecate :validates_is_primitive,  :validates_primitive_type_of
       deprecate :validates_is_unique,     :validates_uniqueness_of
-      deprecate :validates_absent,        :validates_absence_of
-      deprecate :validates_format,        :validates_format_of
     end
 
     module Inferred
@@ -47,10 +46,13 @@ module DataMapper
         !infer_validations?
       end
 
-      deprecate :auto_validations_disabled?, :disabled_auto_validations?
-      deprecate :without_auto_validations, :without_inferred_validations
+      deprecate :auto_validations_disabled?,  :disabled_auto_validations?
+      deprecate :without_auto_validations,    :without_inferred_validations
 
     end # module Inferred
+
+    AutoValidations = Inferred
+
   end # module Validations
 
   Validate = Validations

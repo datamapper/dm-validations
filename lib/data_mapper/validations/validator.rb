@@ -21,8 +21,8 @@ module DataMapper
       # Construct a validator. Capture the :if and :unless clauses when
       # present.
       #
-      # @param [String, Symbol] field
-      #   The property specified for validation.
+      # @param [String, Symbol] attribute_name
+      #   The name of the attribute to validate.
       #
       # @option [Symbol, Proc] :if
       #   The name of a method or a Proc to call to determine if the
@@ -47,22 +47,23 @@ module DataMapper
         DataMapper::Inflector.humanize(attribute_name)
       end
 
-      # Add an error message to a target resource. If the error corresponds
-      # to a specific field of the resource, add it to that field,
-      # otherwise add it as a :general message.
+      # Add an error message to a target resource. If the error corresponds to
+      # a specific attribute name of the resource, add it to the errors for that
+      # attribute name, otherwise add it under the :general attribute name
       #
       # @param [Object] target
       #   The resource that has the error.
-      #
       # @param [String] message
       #   The message to add.
-      #
       # @param [Symbol] attribute_name
       #   The name of the field that caused the error.
       #
+      # @return [Validator]
+      #   The receiver (self)
       def add_error(target, message, attribute_name = :general)
         # TODO: should the attribute_name for a general message be :default???
         target.errors.add(attribute_name, message)
+        self
       end
 
       # Call the validator. "call" is used so the operation is BoundMethod
@@ -154,7 +155,9 @@ module DataMapper
       # explicitly given validations with different option
       # (usually as Range vs. max limit for inferred validation)
       #
-      # @api semipublic
+      # TODO: replace this custom equivalency implementation with Equalizer
+      # 
+      # @api public
       def ==(other)
         self.class == other.class &&
         self.attribute_name == other.attribute_name &&
