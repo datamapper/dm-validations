@@ -6,6 +6,16 @@ require 'data_mapper/validations/validators/method'
 module DataMapper
   module Validations
     module Validators
+
+      # TODO: re-implement this in a way that doesn't pollute the validated
+      # class. It shouldn't be that hard. Maybe start with this?
+      # class Block < Method
+      #   def initialize(attribute_name, options = {})
+      #     
+      #   end
+      # end
+
+
       # Validate using the given block. The block given needs to return:
       # [result::<Boolean>, Error Message::<String>]
       #
