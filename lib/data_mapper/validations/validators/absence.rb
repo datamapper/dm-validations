@@ -8,16 +8,16 @@ module DataMapper
       class Absence < Validator
 
         def call(target)
-          value = target.validation_property_value(field_name)
+          value = target.validation_property_value(attribute_name)
           return true if DataMapper::Ext.blank?(value)
 
           error_message = (
             self.options[:message] || ValidationErrors.default_error_message(
-              :absent, field_name
+              :absent, attribute_name
             )
           )
 
-          add_error(target, error_message, field_name)
+          add_error(target, error_message, attribute_name)
           false
         end
 
@@ -43,7 +43,7 @@ module DataMapper
       #     validates_absence_of :unwanted_attribute
       #     validates_absence_of :another_unwanted, :yet_again
       #
-      #     # a call to valid? will return false unless
+      #     # a call to #validate will return false unless
       #     # all three attributes are blank
       #   end
       #

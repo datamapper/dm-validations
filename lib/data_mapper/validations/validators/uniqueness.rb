@@ -9,7 +9,7 @@ module DataMapper
 
         include DataMapper::Assertions
 
-        def initialize(field_name, options = {})
+        def initialize(attribute_name, options = {})
           if options.has_key?(:scope)
             assert_kind_of('scope', options[:scope], Array, Symbol)
           end
@@ -22,19 +22,19 @@ module DataMapper
         def call(target)
           return true if valid?(target)
 
-          error_message = @options[:message] || ValidationErrors.default_error_message(:taken, field_name)
-          add_error(target, error_message, field_name)
+          error_message = @options[:message] || ValidationErrors.default_error_message(:taken, attribute_name)
+          add_error(target, error_message, attribute_name)
 
           false
         end
 
         def valid?(target)
-          value = target.validation_property_value(field_name)
+          value = target.validation_property_value(attribute_name)
           return true if optional?(value)
 
           opts = {
-            :fields    => target.model.key(target.repository.name),
-            field_name => value,
+            :fields        => target.model.key(target.repository.name),
+            attribute_name => value,
           }
 
           Array(@options[:scope]).each { |subject|

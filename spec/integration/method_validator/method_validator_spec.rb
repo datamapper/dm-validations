@@ -181,20 +181,21 @@ end
 
 describe "Haskell" do
   before :all do
-    @model = ::DataMapper::Validations::Fixtures::ProgrammingLanguage.new(:name                                     => "Haskell",
-                                                                       :allows_system_calls                      => false,
-                                                                       :allows_manual_memory_management          => false,
-                                                                       :approved_by_linus                        => false,
-                                                                       :compiler_excels_at_utilizing_cpu_cache   => true,
-                                                                       :is_very_high_level                       => true,
-                                                                       :does_not_require_explicit_return_keyword => true,
-                                                                       # operators are not different from any other function
-                                                                       :allows_operator_overload                 => true,
-                                                                       # or, allows explicit parentheses? who cares, we
-                                                                       # are just trying to come up with a relatively
-                                                                       # non-stupid spec example
-                                                                       :allows_optional_parentheses              => true
-                                                                       )
+    @model = ::DataMapper::Validations::Fixtures::ProgrammingLanguage.new(
+      :name                                     => "Haskell",
+      :allows_system_calls                      => false,
+      :allows_manual_memory_management          => false,
+      :approved_by_linus                        => false,
+      :compiler_excels_at_utilizing_cpu_cache   => true,
+      :is_very_high_level                       => true,
+      :does_not_require_explicit_return_keyword => true,
+      # operators are not different from any other function
+      :allows_operator_overload                 => true,
+      # or, allows explicit parentheses? who cares, we
+      # are just trying to come up with a relatively
+      # non-stupid spec example
+      :allows_optional_parentheses              => true
+    )
   end
 
   it_should_behave_like "a good fit for DSLs"

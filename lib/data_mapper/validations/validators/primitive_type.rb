@@ -8,13 +8,13 @@ module DataMapper
       class PrimitiveType < Validator
 
         def call(target)
-          value    = target.validation_property_value(field_name)
-          property = get_resource_property(target, field_name)
+          value    = target.validation_property_value(attribute_name)
+          property = get_resource_property(target, attribute_name)
 
           return true if value.nil? || property.primitive?(value)
 
           error_message = @options[:message] || default_error(property)
-          add_error(target, error_message, field_name)
+          add_error(target, error_message, attribute_name)
 
           false
         end
@@ -24,7 +24,7 @@ module DataMapper
         def default_error(property)
           ValidationErrors.default_error_message(
             :primitive,
-            field_name,
+            attribute_name,
             property.primitive
           )
         end

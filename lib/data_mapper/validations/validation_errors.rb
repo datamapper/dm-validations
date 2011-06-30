@@ -56,22 +56,22 @@ module DataMapper
         errors.clear
       end
 
-      # Add a validation error. Use the field_name :general if the errors
+      # Add a validation error. Use the attribute_name :general if the errors
       # does not apply to a specific field of the Resource.
       #
-      # @param [Symbol] field_name
+      # @param [Symbol] attribute_name
       #   The name of the field that caused the error
       #
       # @param [String] message
       #   The message to add
-      def add(field_name, message)
+      def add(attribute_name, message)
         if message.respond_to?(:try_call)
           # DM resource
           message = if (resource.respond_to?(:model) &&
                         resource.model.respond_to?(:properties))
                       message.try_call(
                         resource,
-                        resource.model.properties[field_name]
+                        resource.model.properties[attribute_name]
                       )
                     else
                       # pure Ruby object
@@ -79,7 +79,7 @@ module DataMapper
                     end
         end
 
-        (errors[field_name] ||= []) << message
+        (errors[attribute_name] ||= []) << message
       end
 
       # Collect all errors into a single list.
@@ -89,16 +89,16 @@ module DataMapper
         end
       end
 
-      # Return validation errors for a particular field_name.
+      # Return validation errors for a particular attribute_name.
       #
-      # @param [Symbol] field_name
+      # @param [Symbol] attribute_name
       #   The name of the field you want an error for.
       #
       # @return [Array<DataMapper::Validations::Error>]
       #   Array of validation errors or empty array, if there are no errors
       #   on given field
-      def on(field_name)
-        errors_for_field = errors[field_name]
+      def on(attribute_name)
+        errors_for_field = errors[attribute_name]
         DataMapper::Ext.blank?(errors_for_field) ? nil : errors_for_field.uniq
       end
 

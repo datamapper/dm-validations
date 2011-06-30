@@ -38,9 +38,9 @@ module DataMapper
       #
       def initialize(attribute_name, options = {})
         @attribute_name = attribute_name
-        @if_clause      = options.delete(:if)
-        @unless_clause  = options.delete(:unless)
-        @options        = options
+        @options        = DataMapper::Ext::Hash.except(options, :if, :unless)
+        @if_clause      = options[:if]
+        @unless_clause  = options[:unless]
       end
 
       def humanized_field_name
@@ -167,7 +167,10 @@ module DataMapper
       end
 
       def inspect
-        "<##{self.class.name} @attribute_name='#{@attribute_name}' @if_clause=#{@if_clause.inspect} @unless_clause=#{@unless_clause.inspect} @options=#{@options.inspect}>"
+        out = "#<#{self.class.name} @attribute_name=#{attribute_name.inspect} "
+        out << "@if_clause=#{if_clause.inspect} "         if if_clause
+        out << "@unless_clause=#{unless_clause.inspect} " if unless_clause
+        out << "@options=#{options.inspect}>"
       end
 
       alias_method :to_s, :inspect

@@ -8,12 +8,12 @@ module DataMapper
       class Presence < Validator
 
         def call(target)
-          value    = target.validation_property_value(field_name)
-          property = get_resource_property(target, field_name)
+          value    = target.validation_property_value(attribute_name)
+          property = get_resource_property(target, attribute_name)
           return true if present?(value, property)
 
           error_message = @options[:message] || default_error(property)
-          add_error(target, error_message, field_name)
+          add_error(target, error_message, attribute_name)
 
           false
         end
@@ -29,7 +29,7 @@ module DataMapper
 
         def default_error(property)
           actual = boolean_type?(property) ? :nil : :blank
-          ValidationErrors.default_error_message(actual, field_name)
+          ValidationErrors.default_error_message(actual, attribute_name)
         end
 
         # Is the property a boolean property?

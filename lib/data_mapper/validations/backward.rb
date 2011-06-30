@@ -30,9 +30,9 @@ module DataMapper
 
       # TODO: why are there 3 entry points to this ivar?
       # #disable_auto_validations, #disabled_auto_validations?, #auto_validations_disabled?
-      def disable_auto_validations
-        !infer_validations?
-      end
+      # def disable_auto_validations
+      #   !infer_validations?
+      # end
 
       # Checks whether auto validations are currently
       # disabled (see +disable_auto_validations+ method
@@ -42,12 +42,12 @@ module DataMapper
       #   true if auto validation is currently disabled
       #
       # @api semipublic
-      def disabled_auto_validations?
-        !infer_validations?
-      end
+      # def disabled_auto_validations?
+      #   !infer_validations?
+      # end
 
-      deprecate :auto_validations_disabled?,  :disabled_auto_validations?
-      deprecate :without_auto_validations,    :without_inferred_validations
+      # deprecate :auto_validations_disabled?,  :disabled_auto_validations?
+      # deprecate :without_auto_validations,    :without_inferred_validations
 
     end # module Inferred
 

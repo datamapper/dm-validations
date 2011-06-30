@@ -7,7 +7,7 @@ module DataMapper
     module Validators
       class Acceptance < Validator
 
-        def initialize(field_name, options = {})
+        def initialize(attribute_name, options = {})
           super
 
           @options[:allow_nil] = true unless @options.key?(:allow_nil)
@@ -21,10 +21,10 @@ module DataMapper
 
           error_message = (
             @options[:message] || ValidationErrors.default_error_message(
-              :accepted, field_name
+              :accepted, attribute_name
             )
           )
-          add_error(target, error_message, field_name)
+          add_error(target, error_message, attribute_name)
 
           false
         end
@@ -32,7 +32,7 @@ module DataMapper
       private
 
         def valid?(target)
-          value = target.validation_property_value(field_name)
+          value = target.validation_property_value(attribute_name)
           return true if allow_nil?(value)
           @options[:accept].include?(value)
         end

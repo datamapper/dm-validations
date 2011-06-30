@@ -14,6 +14,8 @@ module DataMapper
         return property
       end
 
+      # attr_accessor :infer_validations
+
       # TODO: remove all the other @disabled_auto_validations reader methods
       # Checks whether auto validations are currently
       # disabled (see +disable_auto_validations+ method
@@ -23,18 +25,37 @@ module DataMapper
       #   true if auto validation is currently disabled
       #
       # @api public
-      def infer_validations?
-        @infer_validations
+      # def infer_validations?
+      #   defined?(@infer_validations) ? @infer_validations : true
+      # end
+
+      # TODO: why are there 3 entry points to this ivar?
+      # #disable_auto_validations, #disabled_auto_validations?, #auto_validations_disabled?
+      attr_reader :disable_auto_validations
+
+      # Checks whether auto validations are currently
+      # disabled (see +disable_auto_validations+ method
+      # that takes a block)
+      #
+      # @return [TrueClass, FalseClass]
+      #   true if auto validation is currently disabled
+      #
+      # @api semipublic
+      def disabled_auto_validations?
+        @disable_auto_validations || false
       end
+
+      # TODO: deprecate all but one of these 3 variants
+      alias_method :auto_validations_disabled?, :disabled_auto_validations?
 
       # Disable generation of validations for the duration of the given block
       # 
       # @api public
-      def without_inferred_validations
-        previous, @infer_validations = @infer_validations, true
+      def without_auto_validations
+        previous, @disable_auto_validations = @disable_auto_validations, true
         yield
       ensure
-        @infer_validations = previous
+        @disable_auto_validations = previous
       end
 
       # Infer validations for a given property. This will only occur
@@ -87,9 +108,10 @@ module DataMapper
       #
       # @api private
       def self.generate_for_property(property)
-        unless property.model.infer_validations? && property.options.fetch(:auto_validation, true)
-          return false
-        end
+        # TODO: restate this as a positive assertion, instead of a negative one
+        return if property.model.disabled_auto_validations? ||
+                  skip_auto_validation_for?(property)
+                  # property.options.fetch(:auto_validation, true)
 
         # all inferred validations (aside from Presence/Absence) should be skipped
         # validation when the value is nil
@@ -111,6 +133,11 @@ module DataMapper
         infer_type_validation_for(property, opts.dup)
       end
 
+      def self.skip_auto_validation_for?(property)
+        (property.options.key?(:auto_validation) &&
+         !property.options[:auto_validation])
+      end
+
     private
 
       # @api private
@@ -129,9 +156,7 @@ module DataMapper
         length = property.options.fetch(:length, Property::String.length)
 
         if length.is_a?(Range)
-          if length.last == Infinity
-            raise ArgumentError, "Infinity is not a valid upper bound for a length range"
-          end
+          raise ArgumentError, "Infinity is not a valid upper bound for a length range" if length.last == Infinity
           options[:within]  = length
         else
           options[:maximum] = length

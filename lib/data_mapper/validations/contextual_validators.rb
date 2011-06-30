@@ -1,6 +1,5 @@
 # -*- encoding: utf-8 -*-
 
-require 'forwardable'
 require 'data_mapper/validations/validation_context'
 
 module DataMapper
@@ -26,6 +25,11 @@ module DataMapper
       # @api public
       def each
         contexts.each { |context| yield context }
+      end
+
+      # @api public
+      def empty?
+        contexts.empty?
       end
 
       # Return an array of validators for a named context
@@ -77,6 +81,8 @@ module DataMapper
           contexts.each do |context|
             self.context(context) << validator
 
+            raise self.context(context).inspect if @model.respond_to?(:properties) && @model.properties.include?(:bool)
+
             # TODO: eliminate ModelExtensions#create_context_instance_methods,
             #   then eliminate the @model ivar entirely
             # In the meantime, update this method to return the context names
@@ -92,7 +98,7 @@ module DataMapper
           validators.each do |v|
             # TODO: move :context arg out of the options hash
             options = v.options.merge(:context => context)
-            descendant_validators.add(v.class, v.field_name, options)
+            descendant_validators.add(v.class, v.attribute_name, options)
           end
         end
       end
@@ -132,28 +138,6 @@ module DataMapper
         contexts.empty? || contexts.include?(context)
       end
 
-    private
-
-      # Allow :context to be aliased to :group, :on, & :when
-      # 
-      # @param [Hash] options
-      #   the options from which +context+ is to be extracted
-      # 
-      # @return [Array(Symbol)]
-      #   the context(s) from +options+
-      # 
-      # @api private
-      def extract_contexts(options)
-        context = [
-          options.delete(:group),
-          options.delete(:on),
-          options.delete(:when),
-          options.delete(:context)
-        ].compact.first
-
-        Array(context || :default)
-      end
-
       # Assert that the given context is valid for this model
       #
       # @param [Symbol] context
@@ -169,6 +153,28 @@ module DataMapper
         unless valid_context?(context)
           raise InvalidContextError, "#{context} is an invalid context, known contexts are #{contexts.keys.inspect}"
         end
+      end
+
+    private
+
+      # Allow :context to be aliased to :group, :on, & :when
+      # 
+      # @param [Hash] options
+      #   the options from which +context+ is to be extracted
+      # 
+      # @return [Array(Symbol)]
+      #   the context(s) from +options+
+      # 
+      # @api private
+      def extract_contexts(options)
+        context = [
+          options.delete(:context),
+          options.delete(:group),
+          options.delete(:when),
+          options.delete(:on)
+        ].compact.first
+
+        Array(context || :default)
       end
 
       # Given a new context create an instance method of

@@ -9,45 +9,48 @@ module DataMapper
 
         attr_reader :set
 
-        def initialize(field_name, options={})
+        def initialize(attribute_name, options={})
           super
 
           @set = @options.fetch(:set, [])
         end
 
         def call(target)
-          value = target.validation_property_value(field_name)
+          value = target.validation_property_value(attribute_name)
           return true if optional?(value)
           return true if set.include?(value)
 
-          error_message = @options[:message] || self.error_message
+          error_message = @options[:message] || get_error_message
 
-          add_error(target, error_message, field_name)
+          add_error(target, error_message, attribute_name)
 
           false
         end
 
       private
 
-        def error_message
+        def get_error_message
           if set.is_a?(Range)
             error_message_for_range_set
           else
-            ValidationErrors.default_error_message(:inclusion, field_name, set.to_a.join(', '))
+            ValidationErrors.default_error_message(:inclusion, attribute_name, set.to_a.join(', '))
           end
         end
 
         def error_message_for_range_set
           # TODO: just use Infinity directly here
           n = 1.0/0
+          
+          error_message_args =
+            if set.first != -n && set.last != n
+              [ :value_between,             attribute_name, set.first, set.last ]
+            elsif set.first == -n
+              [ :less_than_or_equal_to,     attribute_name, set.last ]
+            elsif set.last == n
+              [ :greater_than_or_equal_to,  attribute_name, set.first ]
+            end
 
-          if set.first != -n && set.last != n
-            ValidationErrors.default_error_message(:value_between, field_name, set.first, set.last)
-          elsif set.first == -n
-            ValidationErrors.default_error_message(:less_than_or_equal_to, field_name, set.last)
-          elsif set.last == n
-            ValidationErrors.default_error_message(:greater_than_or_equal_to, field_name, set.first)
-          end
+          ValidationErrors.default_error_message(*error_message_args)
         end
 
       end # class Within

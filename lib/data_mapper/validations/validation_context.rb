@@ -24,6 +24,10 @@ module DataMapper
         validators.map { |validator| validator.call(resource) }.all?
       end
 
+      def inspect
+        "#<#{ self.class } {#{ entries.map { |e| e.inspect }.join( ', ' ) }}>"
+      end
+
     private
 
       def validators_for_resource(resource)
@@ -58,7 +62,7 @@ module DataMapper
         attrs       = resource.attributes
         dirty_attrs = Hash[resource.dirty_attributes.map { |p, value| [p.name, value] }]
         validators  = all_validators.select { |v|
-          !attrs.include?(v.field_name) || dirty_attrs.include?(v.field_name)
+          !attrs.include?(v.attribute_name) || dirty_attrs.include?(v.attribute_name)
         }
 
         load_validated_properties(resource, validators)

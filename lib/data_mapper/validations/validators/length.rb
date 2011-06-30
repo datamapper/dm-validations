@@ -9,14 +9,14 @@ module DataMapper
 
         # Initialize a length validator
         #
-        # @param [Symbol] field_name
+        # @param [Symbol] attribute_name
         #   the name of the field to validate
         #
         # @param [Hash] options
         #   the validator options
         #
         # @api semipublic
-        def initialize(field_name, options)
+        def initialize(attribute_name, options)
           super
 
           @equal = options[:is]      || options[:equals]
@@ -46,12 +46,12 @@ module DataMapper
         #
         # @api semipublic
         def call(target)
-          value = target.validation_property_value(field_name)
+          value = target.validation_property_value(attribute_name)
           return true if optional?(value)
 
           return true unless error_message = error_message_for(value)
 
-          add_error(target, error_message, field_name)
+          add_error(target, error_message, attribute_name)
           false
         end
 

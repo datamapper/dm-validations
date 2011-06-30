@@ -7,13 +7,13 @@ module DataMapper
     module Validators
       class Confirmation < Validator
 
-        def initialize(field_name, options = {})
+        def initialize(attribute_name, options = {})
           super
 
           set_optional_by_default
 
-          @confirm_field_name = (
-            options[:confirm] || "#{field_name}_confirmation"
+          @confirm_attribute_name = (
+            options[:confirm] || "#{attribute_name}_confirmation"
           ).to_sym
         end
 
@@ -22,10 +22,10 @@ module DataMapper
 
           error_message = (
             @options[:message] || ValidationErrors.default_error_message(
-              :confirmation, field_name
+              :confirmation, attribute_name
             )
           )
-          add_error(target, error_message, field_name)
+          add_error(target, error_message, attribute_name)
 
           false
         end
@@ -33,14 +33,14 @@ module DataMapper
       private
 
         def valid?(target)
-          value = target.validation_property_value(field_name)
+          value = target.validation_property_value(attribute_name)
           return true if optional?(value)
 
-          if target.model.properties.named?(field_name)
-            return true unless target.attribute_dirty?(field_name)
+          if target.model.properties.named?(attribute_name)
+            return true unless target.attribute_dirty?(attribute_name)
           end
 
-          confirm_value = target.instance_variable_get("@#{@confirm_field_name}")
+          confirm_value = target.instance_variable_get("@#{@confirm_attribute_name}")
           value == confirm_value
         end
 

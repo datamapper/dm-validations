@@ -125,7 +125,7 @@ describe 'DataMapper::Validations::Fixtures::SmsMessage' do
 
   describe 'with an infinitely long note' do
     it "should raise when trying to set the upper bound of a property length range to Infinity" do
-      expected_msg = "Infinity is no valid upper bound for a length range"
+      expected_msg = 'Infinity is not a valid upper bound for a length range'
       lambda {
         @model.class.property :body, String, :length => (1..1.0/0)
       }.should raise_error(ArgumentError, expected_msg)

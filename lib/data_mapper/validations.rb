@@ -11,17 +11,16 @@ module DataMapper
     # Check if a resource is valid in a given context
     #
     # @api public
-    def validate(context = :default)
-      model = respond_to?(:model) ? self.model : self.class
-      validation_context = model.validators.context(context)
-      validation_context.validate(self)
+    def validate(*args)
+      valid?(*args)
     end
 
     # @api public
     # TODO: replace all internal uses of #valid? with #validate
     # TODO: deprecate #valid? in favor of #validate
-    def valid?(*args)
-      validate(*args)
+    def valid?(context = :default)
+      model = respond_to?(:model) ? self.model : self.class
+      model.validators.validate(context, self)
     end
 
     # Alias for validate(:default)

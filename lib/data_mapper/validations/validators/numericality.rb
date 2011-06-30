@@ -8,7 +8,7 @@ module DataMapper
       class Numericality < Validator
 
         def call(target)
-          value = target.validation_property_value(field_name)
+          value = target.validation_property_value(attribute_name)
           return true if optional?(value)
 
           errors = []
@@ -48,10 +48,10 @@ module DataMapper
           return if errors.empty?
 
           if options.key?(:message)
-            add_error(target, options[:message], field_name)
+            add_error(target, options[:message], attribute_name)
           else
             errors.each do |error_message|
-              add_error(target, error_message, field_name)
+              add_error(target, error_message, attribute_name)
             end
           end
         end
@@ -75,7 +75,7 @@ module DataMapper
 
           errors << ValidationErrors.default_error_message(
             error_message_name,
-            field_name,
+            attribute_name,
             expected
           )
         end
@@ -96,7 +96,7 @@ module DataMapper
             elsif precision == scale
               /\A[+-]?(?:0(?:\.\d{1,#{scale}})?)\z/
             else
-              raise ArgumentError, "Invalid precision #{precision.inspect} and scale #{scale.inspect} for #{field_name} (value: #{value.inspect} #{value.class})"
+              raise ArgumentError, "Invalid precision #{precision.inspect} and scale #{scale.inspect} for #{attribute_name} (value: #{value.inspect} #{value.class})"
             end
           else
             /\A[+-]?(?:\d+|\d*\.\d+)\z/

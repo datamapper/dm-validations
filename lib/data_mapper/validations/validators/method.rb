@@ -9,14 +9,14 @@ module DataMapper
 
         attr_reader :method
 
-        def initialize(field_name, options={})
+        def initialize(attribute_name, options={})
           super
-          @method = @options.fetch(:method, @field_name)
+          @method = @options.fetch(:method, @attribute_name)
         end
 
         def call(target)
           result, message = target.__send__(method)
-          add_error(target, message, field_name) unless result
+          add_error(target, message, attribute_name) unless result
           result
         end
 
