@@ -9,14 +9,19 @@ module DataMapper
       # @api private
       def property(*)
         property = super
-        Validations::Inferred.generate_for_property(property)
+
+        inferred_validator_args = Validations::Inferred.for_property(property)
+        inferred_validator_args.each { |args| validators.add(*args) }
+
         # FIXME: explicit return needed for YARD to parse this properly
         return property
       end
 
       # attr_accessor :infer_validations
 
-      # TODO: remove all the other @disabled_auto_validations reader methods
+      # TODO: replace the @disabled_auto_validations reader methods with
+      #   a positive statement instead of negative (instead of skip/disable, etc)
+      # 
       # Checks whether auto validations are currently
       # disabled (see +disable_auto_validations+ method
       # that takes a block)
@@ -107,11 +112,11 @@ module DataMapper
       #       It is just shortcut if only one validation option is set
       #
       # @api private
-      def self.generate_for_property(property)
+      def self.for_property(property)
+        inferred_validator_args = []
+
         # TODO: restate this as a positive assertion, instead of a negative one
-        return if property.model.disabled_auto_validations? ||
-                  skip_auto_validation_for?(property)
-                  # property.options.fetch(:auto_validation, true)
+        return inferred_validator_args if skip_validator_inferral_for?(property)
 
         # all inferred validations (aside from Presence/Absence) should be skipped
         # validation when the value is nil
@@ -125,31 +130,36 @@ module DataMapper
         #   [Validator::Abstract, attribute_name, validator_options]
         # Then iterate over *that* list and call:
         #   property.model.validators.add(*args)
-        infer_presence_validation_for(property, opts.dup)
-        infer_length_validation_for(property, opts.dup)
-        infer_format_validation_for(property, opts.dup)
-        infer_uniqueness_validation_for(property, opts.dup)
-        infer_within_validation_for(property, opts.dup)
-        infer_type_validation_for(property, opts.dup)
+        inferred_validator_args << infer_presence(  property, opts.dup)
+        inferred_validator_args << infer_length(    property, opts.dup)
+        inferred_validator_args << infer_format(    property, opts.dup)
+        inferred_validator_args << infer_uniqueness(property, opts.dup)
+        inferred_validator_args << infer_within(    property, opts.dup)
+        inferred_validator_args << infer_type(      property, opts.dup)
+
+        inferred_validator_args.compact
       end
 
-      def self.skip_auto_validation_for?(property)
-        (property.options.key?(:auto_validation) &&
-         !property.options[:auto_validation])
+      def self.skip_validator_inferral_for?(property)
+        property.model.disabled_auto_validations? || 
+          (property.options.key?(:auto_validation) &&
+           !property.options[:auto_validation])
       end
 
     private
 
       # @api private
-      def self.infer_presence_validation_for(property, options)
+      def self.infer_presence(property, options)
         return if property.allow_blank? || property.serial?
 
         validation_options = options_with_message(options, property, :presence)
-        property.model.validates_presence_of property.name, validation_options
+
+        [Validators::Presence, property.name, validation_options]
       end
 
       # @api private
-      def self.infer_length_validation_for(property, options)
+      def self.infer_length(property, options)
+        # TODO: return unless property.primitive <= String (?)
         return unless (property.kind_of?(Property::String) ||
                        property.kind_of?(Property::Text))
 
@@ -163,47 +173,53 @@ module DataMapper
         end
 
         validation_options = options_with_message(options, property, :length)
-        property.model.validates_length_of property.name, validation_options
+
+        [Validators::Length, property.name, validation_options]
       end
 
       # @api private
-      def self.infer_format_validation_for(property, options)
+      def self.infer_format(property, options)
         return unless property.options.key?(:format)
 
         options[:with] = property.options[:format]
 
         validation_options = options_with_message(options, property, :format)
-        property.model.validates_format_of property.name, validation_options
+        # property.model.validates_format_of property.name, validation_options
+        [Validators::Format, property.name, validation_options]
       end
 
       # @api private
-      def self.infer_uniqueness_validation_for(property, options)
+      def self.infer_uniqueness(property, options)
         return unless property.options.key?(:unique)
 
         case value = property.options[:unique]
           when Array, Symbol
+            # TODO: fix this to behave like :unique_index
             options[:scope] = Array(value)
 
             validation_options = options_with_message(options, property, :is_unique)
-            property.model.validates_uniqueness_of property.name, validation_options
+            # property.model.validates_uniqueness_of property.name, validation_options
+            [Validators::Uniqueness, property.name, validation_options]
           when TrueClass
             validation_options = options_with_message(options, property, :is_unique)
-            property.model.validates_uniqueness_of property.name, validation_options
+            # property.model.validates_uniqueness_of property.name, validation_options
+            [Validators::Uniqueness, property.name, validation_options]
         end
       end
 
       # @api private
-      def self.infer_within_validation_for(property, options)
+      def self.infer_within(property, options)
         return unless property.options.key?(:set)
 
         options[:set] = property.options[:set]
 
         validation_options = options_with_message(options, property, :within)
-        property.model.validates_within property.name, validation_options
+        # property.model.validates_within property.name, validation_options
+        [Validators::Within, property.name, validation_options]
       end
 
       # @api private
-      def self.infer_type_validation_for(property, options)
+      def self.infer_type(property, options)
         return if property.respond_to?(:custom?) && property.custom?
 
         if property.kind_of?(Property::Numeric)
@@ -215,24 +231,29 @@ module DataMapper
           options[:integer_only] = true
 
           validation_options = options_with_message(options, property, :is_number)
-          property.model.validates_numericality_of property.name, validation_options
+          # property.model.validates_numericality_of property.name, validation_options
+          [Validators::Numericality, property.name, validation_options]
         elsif (BigDecimal == property.primitive ||
                Float == property.primitive)
           options[:precision] = property.precision
           options[:scale]     = property.scale
 
           validation_options = options_with_message(options, property, :is_number)
-          property.model.validates_numericality_of property.name, validation_options
+          # property.model.validates_numericality_of property.name, validation_options
+          [Validators::Numericality, property.name, validation_options]
         else
           # We only need this in the case we don't already
           # have a numeric validator, because otherwise
           # it will cause duplicate validation errors
           validation_options = options_with_message(options, property, :is_primitive)
-          property.model.validates_primitive_type_of property.name, validation_options
+          # property.model.validates_primitive_type_of property.name, validation_options
+          [Validators::PrimitiveType, property.name, validation_options]
         end
       end
 
-      # adds message for validator
+      # TODO: eliminate this;
+      #   mutating one arg based on a non-obvious interaction of the other two...
+      #   well, it makes my skin crawl.
       # 
       # @api private
       def self.options_with_message(base_options, property, validator_name)
@@ -247,6 +268,7 @@ module DataMapper
 
         options
       end
+
     end # module Inferred
   end # module Validations
 
