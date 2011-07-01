@@ -46,7 +46,7 @@ module DataMapper
       #   !infer_validations?
       # end
 
-      # deprecate :auto_validations_disabled?,  :disabled_auto_validations?
+      # deprecate :auto_validations_disabled?,  :infer_validations?
       # deprecate :without_auto_validations,    :without_inferred_validations
 
     end # module Inferred

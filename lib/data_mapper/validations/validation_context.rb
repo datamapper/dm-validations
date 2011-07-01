@@ -7,9 +7,10 @@ module DataMapper
       # Resources to validate the Resources in a specific context
 
 
-      # Execute all validators in the named context against the resource.
-      # Load together any properties that are designated lazy but are not
-      # yet loaded. Optionally only validate dirty properties.
+      # Execute all validators in this context against the resource.
+      # 
+      # Only validate dirty properties on persisted Resources.
+      # Eager load lazy properties that not yet loaded.
       #
       # @param [Object] resource
       #   the resource that we are validating

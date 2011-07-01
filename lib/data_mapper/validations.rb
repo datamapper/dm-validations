@@ -32,7 +32,8 @@ module DataMapper
       validate(:default)
     end
 
-    # Return the ValidationErrors
+    # @return [ValidationErrors]
+    #   the collection of current validation errors for this resource
     #
     # @api public
     def errors
