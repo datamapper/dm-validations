@@ -13,7 +13,7 @@ module DataMapper
 
           return true if value.nil? || property.primitive?(value)
 
-          error_message = @options[:message] || default_error(property)
+          error_message = self.custom_message || default_error(property)
           add_error(target, error_message, attribute_name)
 
           false

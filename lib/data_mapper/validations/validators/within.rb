@@ -10,9 +10,9 @@ module DataMapper
         attr_reader :set
 
         def initialize(attribute_name, options={})
-          super
+          @set = options.fetch(:set, [])
 
-          @set = @options.fetch(:set, [])
+          super(attribute_name, DataMapper::Ext::Hash.except(options, :set))
         end
 
         def call(target)
@@ -20,7 +20,7 @@ module DataMapper
           return true if optional?(value)
           return true if set.include?(value)
 
-          error_message = @options[:message] || get_error_message
+          error_message = self.custom_message || get_error_message
 
           add_error(target, error_message, attribute_name)
 
@@ -28,7 +28,9 @@ module DataMapper
         end
 
       private
-
+        # TODO: break this up into two validators: WithinRange & WithinSet
+        # they will both inherit from within, and the Validators#validates_within
+        # macro will inspect the :set arg and add the appropriate validator
         def get_error_message
           if set.is_a?(Range)
             error_message_for_range_set
@@ -40,7 +42,7 @@ module DataMapper
         def error_message_for_range_set
           # TODO: just use Infinity directly here
           n = 1.0/0
-          
+
           error_message_args =
             if set.first != -n && set.last != n
               [ :value_between,             attribute_name, set.first, set.last ]

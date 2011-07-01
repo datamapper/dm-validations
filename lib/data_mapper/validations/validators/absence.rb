@@ -11,12 +11,8 @@ module DataMapper
           value = target.validation_property_value(attribute_name)
           return true if DataMapper::Ext.blank?(value)
 
-          error_message = (
-            self.options[:message] || ValidationErrors.default_error_message(
-              :absent, attribute_name
-            )
-          )
-
+          error_message = self.custom_message ||
+            ValidationErrors.default_error_message(:absent, attribute_name)
           add_error(target, error_message, attribute_name)
           false
         end

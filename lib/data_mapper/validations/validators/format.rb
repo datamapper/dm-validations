@@ -32,11 +32,8 @@ module DataMapper
 
           value = target.validation_property_value(attribute_name)
 
-          error_message = (
-            @options[:message] || ValidationErrors.default_error_message(
-              :invalid, attribute_name
-            )
-          )
+          error_message = self.custom_message ||
+            ValidationErrors.default_error_message(:invalid, attribute_name)
 
           add_error(
             target,

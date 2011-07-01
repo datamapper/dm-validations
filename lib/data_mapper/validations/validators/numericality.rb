@@ -5,6 +5,7 @@ require 'data_mapper/validations/validator'
 module DataMapper
   module Validations
     module Validators
+      # TOOD: rewrite this
       class Numericality < Validator
 
         def call(target)
@@ -47,8 +48,8 @@ module DataMapper
         def add_errors(target, errors)
           return if errors.empty?
 
-          if options.key?(:message)
-            add_error(target, options[:message], attribute_name)
+          if message = self.custom_message
+            add_error(target, message, attribute_name)
           else
             errors.each do |error_message|
               add_error(target, error_message, attribute_name)

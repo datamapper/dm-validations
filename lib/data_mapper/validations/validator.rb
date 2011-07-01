@@ -16,6 +16,9 @@ module DataMapper
       alias_method :field_name, :attribute_name
 
       # @api private
+      attr_reader :custom_message
+
+      # @api private
       attr_reader :options
 
       # Construct a validator. Capture the :if and :unless clauses when
@@ -39,6 +42,7 @@ module DataMapper
       def initialize(attribute_name, options = {})
         @attribute_name = attribute_name
         @options        = DataMapper::Ext::Hash.except(options, :if, :unless)
+        @custom_message = options[:message]
         @if_clause      = options[:if]
         @unless_clause  = options[:unless]
       end
@@ -154,16 +158,16 @@ module DataMapper
       # with inferred validations for strings/text and
       # explicitly given validations with different option
       # (usually as Range vs. max limit for inferred validation)
-      #
-      # TODO: replace this custom equivalency implementation with Equalizer
       # 
       # @api public
+      #
+      # TODO: replace this custom equivalency implementation with Equalizer
       def ==(other)
-        self.class == other.class &&
+        self.class          == other.class          &&
         self.attribute_name == other.attribute_name &&
-        self.if_clause == other.if_clause &&
-        self.unless_clause == other.unless_clause &&
-        self.options == other.options
+        self.if_clause      == other.if_clause      &&
+        self.unless_clause  == other.unless_clause  &&
+        self.options        == other.options
       end
 
       def inspect

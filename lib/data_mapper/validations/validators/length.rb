@@ -5,7 +5,15 @@ require 'data_mapper/validations/validator'
 module DataMapper
   module Validations
     module Validators
+      # TODO: rewrite this
+      # specifically: validation logic should be entangled with messages
       class Length < Validator
+
+        attr_reader :equal
+        attr_reader :range
+        attr_reader :min
+        attr_reader :max
+        attr_reader :range
 
         # Initialize a length validator
         #
@@ -68,7 +76,7 @@ module DataMapper
         # @api private
         def error_message_for(value)
           if error_message = send(validation_method, value_length(value.to_s))
-            @options.fetch(:message, error_message)
+            self.custom_message || error_message
           end
         end
 
@@ -79,12 +87,11 @@ module DataMapper
         #
         # @api private
         def validation_method
-          @validation_method ||=
-            if    @equal then :validate_equals
-            elsif @range then :validate_range
-            elsif @min   then :validate_min
-            elsif @max   then :validate_max
-            end
+          if    @equal then :validate_equals
+          elsif @range then :validate_range
+          elsif @min   then :validate_min
+          elsif @max   then :validate_max
+          end
         end
 
         # Return the length in characters

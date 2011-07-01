@@ -20,11 +20,8 @@ module DataMapper
         def call(target)
           return true if valid?(target)
 
-          error_message = (
-            @options[:message] || ValidationErrors.default_error_message(
-              :confirmation, attribute_name
-            )
-          )
+          error_message = self.custom_message ||
+            ValidationErrors.default_error_message(:confirmation, attribute_name)
           add_error(target, error_message, attribute_name)
 
           false

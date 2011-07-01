@@ -12,7 +12,7 @@ module DataMapper
           property = get_resource_property(target, attribute_name)
           return true if present?(value, property)
 
-          error_message = @options[:message] || default_error(property)
+          error_message = self.custom_message || default_error(property)
           add_error(target, error_message, attribute_name)
 
           false

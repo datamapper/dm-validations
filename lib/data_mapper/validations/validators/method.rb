@@ -15,8 +15,8 @@ module DataMapper
         end
 
         def call(target)
-          result, message = target.__send__(method)
-          add_error(target, message, attribute_name) unless result
+          result, error_message = target.__send__(method)
+          add_error(target, error_message, attribute_name) unless result
           result
         end
 
