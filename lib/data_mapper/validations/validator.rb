@@ -6,20 +6,25 @@ module DataMapper
     # be intertwined with message generation.
     # Also, supporting multiple validation types per validator is too complicated
     class Validator
+      extend Equalizer
+
+      EQUALIZE_ON = [:attribute_name, :custom_message, :if_clause, :unless_clause, :options]
+      equalize *EQUALIZE_ON
+
+      # @api private
+      attr_reader :attribute_name
+
+      # @api private
+      attr_reader :custom_message
+
       # @api private
       attr_reader :if_clause
 
       # @api private
       attr_reader :unless_clause
 
-      # @api private
-      attr_reader :attribute_name
-
       # TODO: remove :field_name alias
       alias_method :field_name, :attribute_name
-
-      # @api private
-      attr_reader :custom_message
 
       # @api private
       attr_reader :options
@@ -161,36 +166,17 @@ module DataMapper
         end
       end
 
-      # Returns true if validators are equal
-      #
-      # Note that this intentionally do
-      # validate options equality
-      #
-      # even though it is hard to imagine a situation
-      # when multiple validations will be used
-      # on the same field with the same conditions
-      # but different options,
-      # it happens to be the case every once in a while
-      # with inferred validations for strings/text and
-      # explicitly given validations with different option
-      # (usually as Range vs. max limit for inferred validation)
-      # 
-      # @api public
-      #
-      # TODO: replace this custom equivalency implementation with Equalizer
-      def ==(other)
-        self.class          == other.class          &&
-        self.attribute_name == other.attribute_name &&
-        self.if_clause      == other.if_clause      &&
-        self.unless_clause  == other.unless_clause  &&
-        self.options        == other.options
-      end
-
       def inspect
-        out = "#<#{self.class.name} @attribute_name=#{attribute_name.inspect} "
-        out << "@if_clause=#{if_clause.inspect} "         if if_clause
-        out << "@unless_clause=#{unless_clause.inspect} " if unless_clause
-        out << "@options=#{options.inspect}>"
+        out = "#<#{self.class.name}"
+        # out << "@attribute_name=#{attribute_name.inspect} "
+        # out << "@if_clause=#{if_clause.inspect} "         if if_clause
+        # out << "@unless_clause=#{unless_clause.inspect} " if unless_clause
+        # out << "@options=#{options.inspect}>"
+        self.class::EQUALIZE_ON.each do |ivar|
+          value = send(ivar)
+          out << " @#{ivar}=#{value.inspect}" if value
+        end
+        out << ">"
       end
 
       alias_method :to_s, :inspect
