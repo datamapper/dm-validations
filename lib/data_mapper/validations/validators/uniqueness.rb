@@ -46,12 +46,12 @@ module DataMapper
             opts[subject] = resource.__send__(subject)
           }
 
-          resource = DataMapper.repository(resource.repository.name) do
+          other_resource = DataMapper.repository(resource.repository.name) do
             resource.model.first(opts)
           end
 
-          return true if resource.nil?
-          resource.saved? && resource.key == resource.key
+          return true if other_resource.nil?
+          resource.saved? && other_resource.key == resource.key
         end
 
       end # class Uniqueness
