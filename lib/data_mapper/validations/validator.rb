@@ -68,11 +68,11 @@ module DataMapper
         DataMapper::Inflector.humanize(attribute_name)
       end
 
-      # Add an error message to a target resource. If the error corresponds to
+      # Add an error message to a resource. If the error corresponds to
       # a specific attribute name of the resource, add it to the errors for that
       # attribute name, otherwise add it under the :general attribute name
       #
-      # @param [Object] target
+      # @param [Object] resource
       #   The resource that has the error.
       # @param [String] message
       #   The message to add.
@@ -81,9 +81,9 @@ module DataMapper
       #
       # @return [Validator]
       #   The receiver (self)
-      def add_error(target, message, attribute_name = :general)
+      def add_error(resource, message, attribute_name = :general)
         # TODO: should the attribute_name for a general message be :default???
-        target.errors.add(attribute_name, message)
+        resource.errors.add(attribute_name, message)
         self
       end
 
@@ -91,43 +91,43 @@ module DataMapper
       # and Block compatible. This must be implemented in all concrete
       # classes.
       #
-      # @param [Object] target
+      # @param [Object] resource
       #   The resource that the validator must be called against.
       #
       # @return [Boolean]
       #   true if valid, otherwise false.
       #
-      def call(target)
+      def call(resource)
         raise NotImplementedError, "#{self.class}#call must be implemented"
       end
 
       # Determines if this validator should be run against the
-      # target by evaluating the :if and :unless clauses
+      # resource by evaluating the :if and :unless clauses
       # optionally passed while specifying any validator.
       #
-      # @param [Object] target
+      # @param [Object] resource
       #   The resource that we check against.
       #
       # @return [Boolean]
       #   true if should be run, otherwise false.
       #
       # @api private
-      def execute?(target)
+      def execute?(resource)
         if unless_clause = self.unless_clause
-          !evaluate_conditional_clause(target, unless_clause)
+          !evaluate_conditional_clause(resource, unless_clause)
         elsif if_clause = self.if_clause
-          evaluate_conditional_clause(target, if_clause)
+          evaluate_conditional_clause(resource, if_clause)
         else
           true
         end
       end
 
       # @api private
-      def evaluate_conditional_clause(target, clause)
+      def evaluate_conditional_clause(resource, clause)
         if clause.kind_of?(Symbol)
-          target.__send__(clause)
+          resource.__send__(clause)
         elsif clause.respond_to?(:call)
-          clause.call(target)
+          clause.call(resource)
         end
       end
 

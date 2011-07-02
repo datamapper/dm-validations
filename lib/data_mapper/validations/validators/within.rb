@@ -15,14 +15,14 @@ module DataMapper
           super(attribute_name, DataMapper::Ext::Hash.except(options, :set))
         end
 
-        def call(target)
-          value = target.validation_property_value(attribute_name)
+        def call(resource)
+          value = resource.validation_property_value(attribute_name)
           return true if optional?(value)
           return true if set.include?(value)
 
           error_message = self.custom_message || get_error_message
 
-          add_error(target, error_message, attribute_name)
+          add_error(resource, error_message, attribute_name)
 
           false
         end

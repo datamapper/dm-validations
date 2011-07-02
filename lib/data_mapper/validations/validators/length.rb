@@ -53,20 +53,20 @@ module DataMapper
         #   validator.call(invalid_resource)  # => false
         #
         #
-        # @param [Resource] target
+        # @param [Resource] resource
         #   the Resource to test
         #
         # @return [Boolean]
         #   true if the field is valid, false if not
         #
         # @api semipublic
-        def call(target)
-          value = target.validation_property_value(attribute_name)
+        def call(resource)
+          value = resource.validation_property_value(attribute_name)
           return true if optional?(value)
 
           return true unless error_message = error_message_for(value)
 
-          add_error(target, error_message, attribute_name)
+          add_error(resource, error_message, attribute_name)
           false
         end
 

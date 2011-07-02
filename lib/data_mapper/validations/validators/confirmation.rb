@@ -18,27 +18,27 @@ module DataMapper
           ).to_sym
         end
 
-        def call(target)
-          return true if valid?(target)
+        def call(resource)
+          return true if valid?(resource)
 
           error_message = self.custom_message ||
             ValidationErrors.default_error_message(:confirmation, attribute_name)
-          add_error(target, error_message, attribute_name)
+          add_error(resource, error_message, attribute_name)
 
           false
         end
 
       private
 
-        def valid?(target)
-          value = target.validation_property_value(attribute_name)
+        def valid?(resource)
+          value = resource.validation_property_value(attribute_name)
           return true if optional?(value)
 
-          if target.model.properties.named?(attribute_name)
-            return true unless target.attribute_dirty?(attribute_name)
+          if resource.model.properties.named?(attribute_name)
+            return true unless resource.attribute_dirty?(attribute_name)
           end
 
-          confirm_value = target.instance_variable_get("@#{@confirm_attribute_name}")
+          confirm_value = resource.instance_variable_get("@#{@confirm_attribute_name}")
           value == confirm_value
         end
 

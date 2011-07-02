@@ -17,20 +17,20 @@ module DataMapper
           @options[:accept] = Array(@options[:accept])
         end
 
-        def call(target)
-          return true if valid?(target)
+        def call(resource)
+          return true if valid?(resource)
 
           error_message = self.custom_message ||
             ValidationErrors.default_error_message(:accepted, attribute_name)
-          add_error(target, error_message, attribute_name)
+          add_error(resource, error_message, attribute_name)
 
           false
         end
 
       private
 
-        def valid?(target)
-          value = target.validation_property_value(attribute_name)
+        def valid?(resource)
+          value = resource.validation_property_value(attribute_name)
           return true if allow_nil?(value)
           @options[:accept].include?(value)
         end

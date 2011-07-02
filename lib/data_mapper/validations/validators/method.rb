@@ -15,9 +15,9 @@ module DataMapper
           @method = @options.fetch(:method, @attribute_name)
         end
 
-        def call(target)
-          result, error_message = target.__send__(method)
-          add_error(target, error_message, attribute_name) unless result
+        def call(resource)
+          result, error_message = resource.__send__(method)
+          add_error(resource, error_message, attribute_name) unless result
           result
         end
 

@@ -7,13 +7,13 @@ module DataMapper
     module Validators
       class Presence < Validator
 
-        def call(target)
-          value    = target.validation_property_value(attribute_name)
-          property = get_resource_property(target, attribute_name)
+        def call(resource)
+          value    = resource.validation_property_value(attribute_name)
+          property = get_resource_property(resource, attribute_name)
           return true if present?(value, property)
 
           error_message = self.custom_message || default_error(property)
-          add_error(target, error_message, attribute_name)
+          add_error(resource, error_message, attribute_name)
 
           false
         end

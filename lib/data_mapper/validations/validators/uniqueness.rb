@@ -19,39 +19,39 @@ module DataMapper
           set_optional_by_default
         end
 
-        def call(target)
-          return true if valid?(target)
+        def call(resource)
+          return true if valid?(resource)
 
           error_message = self.custom_message ||
             ValidationErrors.default_error_message(:taken, attribute_name)
-          add_error(target, error_message, attribute_name)
+          add_error(resource, error_message, attribute_name)
 
           false
         end
 
-        def valid?(target)
-          value = target.validation_property_value(attribute_name)
+        def valid?(resource)
+          value = resource.validation_property_value(attribute_name)
           return true if optional?(value)
 
           opts = {
-            :fields        => target.model.key(target.repository.name),
+            :fields        => resource.model.key(resource.repository.name),
             attribute_name => value,
           }
 
           Array(@options[:scope]).each { |subject|
-            unless target.respond_to?(subject)
+            unless resource.respond_to?(subject)
               raise(ArgumentError,"Could not find property to scope by: #{subject}. Note that :unique does not currently support arbitrarily named groups, for that you should use :unique_index with an explicit validates_uniqueness_of.")
             end
 
-            opts[subject] = target.__send__(subject)
+            opts[subject] = resource.__send__(subject)
           }
 
-          resource = DataMapper.repository(target.repository.name) do
-            target.model.first(opts)
+          resource = DataMapper.repository(resource.repository.name) do
+            resource.model.first(opts)
           end
 
           return true if resource.nil?
-          target.saved? && resource.key == target.key
+          resource.saved? && resource.key == resource.key
         end
 
       end # class Uniqueness

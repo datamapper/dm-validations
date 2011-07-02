@@ -26,16 +26,16 @@ module DataMapper
           set_optional_by_default
         end
 
-        def call(target)
-          return true if valid?(target)
+        def call(resource)
+          return true if valid?(resource)
 
-          value = target.validation_property_value(attribute_name)
+          value = resource.validation_property_value(attribute_name)
 
           error_message = self.custom_message ||
             ValidationErrors.default_error_message(:invalid, attribute_name)
 
           add_error(
-            target,
+            resource,
             error_message.try_call(humanized_field_name, value),
             attribute_name
           )
@@ -44,8 +44,8 @@ module DataMapper
 
       private
 
-        def valid?(target)
-          value = target.validation_property_value(attribute_name)
+        def valid?(resource)
+          value = resource.validation_property_value(attribute_name)
           return true if optional?(value)
 
           validation = @options[:as] || @options[:with]
@@ -64,7 +64,7 @@ module DataMapper
             when Proc   then validator.call(value)
             when Regexp then (value.kind_of?(Numeric) ? value.to_s : value) =~ validator
             else
-              raise(UnknownValidationFormat, "Can't determine how to validate #{target.class}##{attribute_name} with #{validator.inspect}")
+              raise(UnknownValidationFormat, "Can't determine how to validate #{resource.class}##{attribute_name} with #{validator.inspect}")
           end
         rescue Encoding::CompatibilityError
           # This is to work around a bug in jruby - see formats/email.rb

@@ -49,11 +49,11 @@ module DataMapper
           @expected = options[:expected]
         end
 
-        def call(target)
+        def call(resource)
           # TODO: return a dummy validator is expected is nil
           return true if expected.nil?
 
-          value = target.validation_property_value(attribute_name)
+          value = resource.validation_property_value(attribute_name)
           return true if optional?(value)
 
           return true unless failed = validate_numericalness(value)
@@ -63,7 +63,7 @@ module DataMapper
               error_message_name,
               attribute_name,
               expected)
-          add_error(target, error_message, attribute_name)
+          add_error(resource, error_message, attribute_name)
           false
         end
 
