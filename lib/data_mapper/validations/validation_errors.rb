@@ -1,8 +1,5 @@
 module DataMapper
   module Validations
-    #
-    # @author Guy van den Berg
-    # @since  0.9
     class ValidationErrors
 
       include Enumerable
@@ -32,11 +29,15 @@ module DataMapper
         :primitive                => '%s must be of type %s'
       }
 
-      # Holds a hash with all the default error messages that can be replaced by your own copy or localizations.
+      # Holds a hash with all the default error messages that can
+      # be replaced by your own copy or localizations.
+      # 
+      # @api public
       def self.default_error_messages=(default_error_messages)
         @@default_error_messages = default_error_messages
       end
 
+      # @api public
       def self.default_error_message(key, field, *values)
         field = DataMapper::Inflector.humanize(field)
         @@default_error_messages[key] % [field, *values].flatten
@@ -52,6 +53,8 @@ module DataMapper
       end
 
       # Clear existing validation errors.
+      # 
+      # @api public
       def clear!
         errors.clear
       end
@@ -61,9 +64,10 @@ module DataMapper
       #
       # @param [Symbol] attribute_name
       #   The name of the field that caused the error
-      #
       # @param [String] message
       #   The message to add
+      # 
+      # @api public
       def add(attribute_name, message)
         if message.respond_to?(:try_call)
           # DM resource
@@ -83,6 +87,8 @@ module DataMapper
       end
 
       # Collect all errors into a single list.
+      # 
+      # @api public
       def full_messages
         errors.inject([]) do |list, pair|
           list += pair.last
@@ -97,17 +103,21 @@ module DataMapper
       # @return [Array<DataMapper::Validations::Error>]
       #   Array of validation errors or empty array, if there are no errors
       #   on given field
+      # 
+      # @api public
       def on(attribute_name)
         errors_for_field = errors[attribute_name]
         DataMapper::Ext.blank?(errors_for_field) ? nil : errors_for_field.uniq
       end
 
+      # @api public
       def each
         errors.each_value do |v|
           yield(v) unless DataMapper::Ext.blank?(v)
         end
       end
 
+      # @api public
       def empty?
         @errors.all? { |property_name, errors| errors.empty? }
       end
@@ -120,6 +130,7 @@ module DataMapper
         super || errors.respond_to?(method)
       end
 
+      # @api public
       def [](property_name)
         if (property_errors = errors[property_name.to_sym])
           property_errors
