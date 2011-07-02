@@ -2,6 +2,8 @@
 
 module DataMapper
   module Validations
+    # TODO: rewrite this. specifically, validation logic should not
+    # be intertwined with message generation
     class Validator
       # @api private
       attr_reader :if_clause
@@ -138,10 +140,9 @@ module DataMapper
       # @api private
       def optional?(value)
         if value.nil?
-          @options[:allow_nil] ||
-            (@options[:allow_blank] && !@options.has_key?(:allow_nil))
+          options.fetch(:allow_nil) { options.fetch(:allow_blank, false) }
         elsif DataMapper::Ext.blank?(value)
-          @options[:allow_blank]
+          options.fetch(:allow_blank, false)
         end
       end
 
