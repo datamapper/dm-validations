@@ -132,52 +132,6 @@ module DataMapper
         end
 
       end # class Numericality
-
-
-      # Validate whether a field is numeric.
-      #
-      # @option [Boolean] :allow_nil
-      #   true if number can be nil, false if not.
-      #
-      # @option [Boolean] :allow_blank
-      #   true if number can be blank, false if not.
-      #
-      # @option [String] :message
-      #   Custom error message, also can be a callable object that takes
-      #   an object (for pure Ruby objects) or object and property
-      #   (for DM resources).
-      #
-      # @option [Numeric] :precision
-      #   Required precision of a value.
-      #
-      # @option [Numeric] :scale
-      #   Required scale of a value.
-      #
-      # @option [Numeric] :gte
-      #   'Greater than or equal to' requirement.
-      #
-      # @option [Numeric] :lte
-      #   'Less than or equal to' requirement.
-      #
-      # @option [Numeric] :lt
-      #   'Less than' requirement.
-      #
-      # @option [Numeric] :gt
-      #   'Greater than' requirement.
-      #
-      # @option [Numeric] :eq
-      #   'Equal' requirement.
-      #
-      # @option [Numeric] :ne
-      #   'Not equal' requirement.
-      #
-      # @option [Boolean] :integer_only
-      #   Use to restrict allowed values to integers.
-      #
-      def validates_numericality_of(*fields)
-        validators.add(Validators::Numericality, *fields)
-      end
-
     end # module Validators
   end # module Validations
 end # module DataMapper

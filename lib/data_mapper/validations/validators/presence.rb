@@ -43,40 +43,6 @@ module DataMapper
         end
 
       end # class Presence
-
-
-      # Validates that the specified attribute is present.
-      #
-      # For most property types "being present" is the same as being "not
-      # blank" as determined by the attribute's #blank? method. However, in
-      # the case of Boolean, "being present" means not nil; i.e. true or
-      # false.
-      #
-      # @note
-      #   dm-core's support lib adds the blank? method to many classes,
-      #
-      # @see lib/dm-core/support/blank.rb (dm-core) for more information.
-      #
-      # @example Usage
-      #   require 'dm-validations'
-      #
-      #   class Page
-      #     include DataMapper::Resource
-      #
-      #     property :required_attribute, String
-      #     property :another_required, String
-      #     property :yet_again, String
-      #
-      #     validates_presence_of :required_attribute
-      #     validates_presence_of :another_required, :yet_again
-      #
-      #     # a call to valid? will return false unless
-      #     # all three attributes are !blank?
-      #   end
-      def validates_presence_of(*attributes)
-        validators.add(Validators::Presence, *attributes)
-      end
-
     end # module Validators
   end # module Validations
 end # module DataMapper

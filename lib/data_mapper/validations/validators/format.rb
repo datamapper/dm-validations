@@ -75,48 +75,6 @@ module DataMapper
       end # class Format
 
 
-      # Validates that the attribute is in the specified format. You may
-      # use the :as (or :with, it's an alias) option to specify the
-      # pre-defined format that you want to validate against. You may also
-      # specify your own format via a Proc or Regexp passed to the the :as
-      # or :with options.
-      #
-      # @option [Boolean] :allow_nil (true)
-      #   true or false.
-      #
-      # @option [Boolean] :allow_blank (true)
-      #   true or false.
-      #
-      # @option [Format, Proc, Regexp] :as
-      #   The pre-defined format, Proc or Regexp to validate against.
-      #
-      # @option [Format, Proc, Regexp] :with
-      #   An alias for :as.
-      #
-      #   :email_address (format is specified in DataMapper::Validations::Format::Email - note that unicode emails will *not* be matched under MRI1.8.7)
-      #   :url (format is specified in DataMapper::Validations::Format::Url)
-      #
-      # @example Usage
-      #   require 'dm-validations'
-      #
-      #   class Page
-      #     include DataMapper::Resource
-      #
-      #     property :email, String
-      #     property :zip_code, String
-      #
-      #     validates_format_of :email, :as => :email_address
-      #     validates_format_of :zip_code, :with => /^\d{5}$/
-      #
-      #     # a call to valid? will return false unless:
-      #     # email is formatted like an email address
-      #     # and
-      #     # zip_code is a string of 5 digits
-      #
-      def validates_format_of(*attributes)
-        validators.add(Validators::Format, *attributes)
-      end
-
     end # module Validators
   end # module Validations
 end # module DataMapper

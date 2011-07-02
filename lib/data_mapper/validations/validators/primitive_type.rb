@@ -30,29 +30,6 @@ module DataMapper
         end
 
       end # class PrimitiveType
-
-
-      # Validates that the specified attribute is of the correct primitive
-      # type.
-      #
-      # @example Usage
-      #   require 'dm-validations'
-      #
-      #   class Person
-      #     include DataMapper::Resource
-      #
-      #     property :birth_date, Date
-      #
-      #     validates_primitive_type_of :birth_date
-      #
-      #     # a call to valid? will return false unless
-      #     # the birth_date is something that can be properly
-      #     # casted into a Date object.
-      #   end
-      def validates_primitive_type_of(*fields)
-        validators.add(Validators::PrimitiveType, *fields)
-      end
-
     end # module Validators
   end # module Validations
 end # module DataMapper

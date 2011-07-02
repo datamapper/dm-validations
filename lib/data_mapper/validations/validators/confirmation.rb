@@ -43,43 +43,6 @@ module DataMapper
 
       end # class Confirmation
 
-      # Validates that the given attribute is confirmed by another
-      # attribute. A common use case scenario is when you require a user to
-      # confirm their password, for which you use both password and
-      # password_confirmation attributes.
-      #
-      # @option [Boolean] :allow_nil (true)
-      #   true or false.
-      #
-      # @option [Boolean] :allow_blank (true)
-      #   true or false.
-      #
-      # @option [Symbol] :confirm (firstattr_confirmation)
-      #   The attribute that you want to validate against.
-      #
-      # @example Usage
-      #   require 'dm-validations'
-      #
-      #   class Page
-      #     include DataMapper::Resource
-      #
-      #     property :password, String
-      #     property :email, String
-      #     attr_accessor :password_confirmation
-      #     attr_accessor :email_repeated
-      #
-      #     validates_confirmation_of :password
-      #     validates_confirmation_of :email, :confirm => :email_repeated
-      #
-      #     # a call to valid? will return false unless:
-      #     # password == password_confirmation
-      #     # and
-      #     # email == email_repeated
-      #
-      def validates_confirmation_of(*attributes)
-        validators.add(Validators::Confirmation, *attributes)
-      end
-
     end # module Validators
   end # module Validations
 end # module DataMapper

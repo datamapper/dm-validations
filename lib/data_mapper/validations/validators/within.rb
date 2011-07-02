@@ -56,37 +56,6 @@ module DataMapper
         end
 
       end # class Within
-
-
-      # Validates that the value of a field is within a range/set.
-      #
-      # This validation is defined by passing a field along with a :set
-      # parameter. The :set can be a Range or any object which responds
-      # to the #include? method (an array, for example).
-      #
-      # @example Usage
-      #   require 'dm-validations'
-      #
-      #   class Review
-      #     include DataMapper::Resource
-      #
-      #     STATES = ['new', 'in_progress', 'published', 'archived']
-      #
-      #     property :title, String
-      #     property :body, String
-      #     property :review_state, String
-      #     property :rating, Integer
-      #
-      #     validates_within :review_state, :set => STATES
-      #     validates_within :rating,       :set => 1..5
-      #
-      #     # a call to valid? will return false unless
-      #     # the two properties conform to their sets
-      #   end
-      def validates_within(*fields)
-        validators.add(Validators::Within, *fields)
-      end
-
     end # module Validators
   end # module Validations
 end # module DataMapper

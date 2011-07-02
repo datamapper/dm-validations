@@ -189,69 +189,7 @@ module DataMapper
             @max
           )
         end
-
       end # class Length
-
-
-      # Validates that the length of the attribute is equal to, less than,
-      # greater than or within a certain range (depending upon the options
-      # you specify).
-      #
-      # @option [Boolean] :allow_nil (true)
-      #   true or false.
-      #
-      # @option [Boolean] :allow_blank (true)
-      #   true or false.
-      #
-      # @option [Boolean] :minimum
-      #   Ensures that the attribute's length is greater than or equal to
-      #   the supplied value.
-      #
-      # @option [Boolean] :min
-      #   Alias for :minimum.
-      #
-      # @option [Boolean] :maximum
-      #   Ensures the attribute's length is less than or equal to the
-      #   supplied value.
-      #
-      # @option [Boolean] :max
-      #   Alias for :maximum.
-      #
-      # @option [Boolean] :equals
-      #   Ensures the attribute's length is equal to the supplied value.
-      #
-      # @option [Boolean] :is
-      #   Alias for :equals.
-      #
-      # @option [Range] :in
-      #   Given a Range, ensures that the attributes length is include?'ed
-      #   in the Range.
-      #
-      # @option [Range] :within
-      #   Alias for :in.
-      #
-      # @example Usage
-      #   require 'dm-validations'
-      #
-      #   class Page
-      #     include DataMapper::Resource
-      #
-      #     property high, Integer
-      #     property low, Integer
-      #     property just_right, Integer
-      #
-      #     validates_length_of :high, :min => 100000000000
-      #     validates_length_of :low, :equals => 0
-      #     validates_length_of :just_right, :within => 1..10
-      #
-      #     # a call to valid? will return false unless:
-      #     # high is greater than or equal to 100000000000
-      #     # low is equal to 0
-      #     # just_right is between 1 and 10 (inclusive of both 1 and 10)
-      #
-      def validates_length_of(*attributes)
-        validators.add(Validators::Length, *attributes)
-      end
 
     end # module Validators
   end # module Validations

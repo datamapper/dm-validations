@@ -55,13 +55,6 @@ module DataMapper
         end
 
       end # class Uniqueness
-
-      # Validate the uniqueness of a field
-      #
-      def validates_uniqueness_of(*attributes)
-        validators.add(Validators::Uniqueness, *attributes)
-      end
-
     end # module Validators
   end # module Validations
 end # module DataMapper
