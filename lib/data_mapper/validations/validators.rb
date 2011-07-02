@@ -9,7 +9,7 @@ require 'data_mapper/validations/validators/confirmation'
 require 'data_mapper/validations/validators/format'
 require 'data_mapper/validations/validators/length'
 require 'data_mapper/validations/validators/method'
-require 'data_mapper/validations/validators/numericality'
+require 'data_mapper/validations/validators/numericalness'
 require 'data_mapper/validations/validators/presence'
 require 'data_mapper/validations/validators/primitive_type'
 require 'data_mapper/validations/validators/uniqueness'
@@ -347,7 +347,13 @@ module DataMapper
       #   Use to restrict allowed values to integers.
       #
       def validates_numericality_of(*attribute_names)
-        validators.add(Validators::Numericality, *attribute_names)
+        # TODO: flip the switch and turn this on:
+        # warn "'Numericality' is not a word in the English language, please use validates_numericalness_of"
+        validators.add(Validators::Numericalness, *attribute_names)
+      end
+
+      def validates_numericalness_of(*attribute_names)
+        validators.add(Validators::Numericalness, *attribute_names)
       end
 
       # Validates that the specified attribute is present.

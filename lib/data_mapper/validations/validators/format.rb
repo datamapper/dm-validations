@@ -12,8 +12,7 @@ module DataMapper
     class UnknownValidationFormat < ::ArgumentError; end
 
     module Validators
-      # @author Guy van den Berg
-      # @since  0.9
+
       class Format < Validator
 
         FORMATS = {}
@@ -73,7 +72,6 @@ module DataMapper
         end
 
       end # class Format
-
 
     end # module Validators
   end # module Validations

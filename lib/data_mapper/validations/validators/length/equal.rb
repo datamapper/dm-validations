@@ -6,6 +6,7 @@ module DataMapper
   module Validations
     module Validators
       module Length
+
         class Equal < Validator
 
           include Length
@@ -40,7 +41,8 @@ module DataMapper
           end
 
         end # class Equal
-      end # class Length
+
+      end # module Length
     end # module Validators
   end # module Validations
 end # module DataMapper

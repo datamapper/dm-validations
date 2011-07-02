@@ -5,6 +5,7 @@ require 'data_mapper/validations/validator'
 module DataMapper
   module Validations
     module Validators
+
       module Length
         # TODO: DRY this up (also implemented in Validator)
         def self.validators_for(attribute_name, options)
@@ -112,6 +113,7 @@ module DataMapper
         end
 
       end # module Length
+
     end # module Validators
   end # module Validations
 end # module DataMapper

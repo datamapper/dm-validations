@@ -5,6 +5,7 @@ require 'data_mapper/validations/validator'
 module DataMapper
   module Validations
     module Validators
+
       class Confirmation < Validator
 
         def initialize(attribute_name, options = {})

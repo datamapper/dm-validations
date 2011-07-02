@@ -88,12 +88,12 @@ module DataMapper
       #       validator to be created for the property
       #
       #   Integer type
-      #       Using a Integer type causes a validates_numericality_of
+      #       Using a Integer type causes a validates_numericalness_of
       #       validator to be created for the property.  integer_only
       #       is set to true
       #
       #   BigDecimal or Float type
-      #       Using a Integer type causes a validates_numericality_of
+      #       Using a Integer type causes a validates_numericalness_of
       #       validator to be created for the property.  integer_only
       #       is set to false, and precision/scale match the property
       #
@@ -231,16 +231,16 @@ module DataMapper
           options[:integer_only] = true
 
           validation_options = options_with_message(options, property, :is_number)
-          # property.model.validates_numericality_of property.name, validation_options
-          [Validators::Numericality, property.name, validation_options]
+          # property.model.validates_numericalness_of property.name, validation_options
+          [Validators::Numericalness, property.name, validation_options]
         elsif (BigDecimal == property.primitive ||
                Float == property.primitive)
           options[:precision] = property.precision
           options[:scale]     = property.scale
 
           validation_options = options_with_message(options, property, :is_number)
-          # property.model.validates_numericality_of property.name, validation_options
-          [Validators::Numericality, property.name, validation_options]
+          # property.model.validates_numericalness_of property.name, validation_options
+          [Validators::Numericalness, property.name, validation_options]
         else
           # We only need this in the case we don't already
           # have a numeric validator, because otherwise
