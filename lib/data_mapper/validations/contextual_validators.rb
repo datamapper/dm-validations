@@ -71,12 +71,12 @@ module DataMapper
       #   whether or not the new validator should allow nil values
       # @option [Boolean] :message
       #   the error message the new validator will provide on validation failure
-      def add(validator_class, *attribute_names)
+      def add(validator_class, *attribute_names, &block)
         options  = attribute_names.last.kind_of?(Hash) ? attribute_names.pop.dup : {}
         contexts = extract_contexts(options)
 
         attribute_names.each do |attribute_name|
-          validators = validator_class.validators_for(attribute_name, options)
+          validators = validator_class.validators_for(attribute_name, options, &block)
 
           contexts.each do |context|
             validators.each { |validator| self.context(context) << validator }

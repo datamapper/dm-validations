@@ -34,8 +34,8 @@ module DataMapper
       # @return [#each(Validator)]
       #   a collection of validators which collectively
       # 
-      def self.validators_for(attribute_name, options)
-        Array(new(attribute_name, options))
+      def self.validators_for(attribute_name, options, &block)
+        Array(new(attribute_name, options, &block))
       end
 
       # Construct a validator. Capture the :if and :unless clauses when

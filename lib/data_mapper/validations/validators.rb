@@ -111,22 +111,7 @@ module DataMapper
       #     # it will add returned error message to :zip_code field
       #
       def validates_with_block(*attribute_names, &block)
-        @__validates_with_block_count ||= 0
-        @__validates_with_block_count += 1
-
-        # create method and pass it to MethodValidator
-        unless block_given?
-          raise ArgumentError, 'You need to pass a block to validates_with_block method'
-        end
-
-        method_name = "__validates_with_block_#{@__validates_with_block_count}".to_sym
-        define_method(method_name, &block)
-
-        options = attribute_names.last.is_a?(Hash) ? attribute_names.last.pop.dup : {}
-        options[:method] = method_name
-        attribute_names = [method_name] if attribute_names.empty?
-
-        validators.add(Validators::Method, *attribute_names + [options])
+        validators.add(Validators::Block, *attribute_names, &block)
       end
 
       # Validates that the given attribute is confirmed by another
