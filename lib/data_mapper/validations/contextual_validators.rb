@@ -76,10 +76,10 @@ module DataMapper
         contexts = extract_contexts(options)
 
         attribute_names.each do |attribute_name|
-          validator = validator_class.new(attribute_name, options)
+          validators = validator_class.validators_for(attribute_name, options)
 
           contexts.each do |context|
-            self.context(context) << validator
+            validators.each { |validator| self.context(context) << validator }
 
             raise self.context(context).inspect if @model.respond_to?(:properties) && @model.properties.include?(:bool)
 

@@ -3,7 +3,8 @@
 module DataMapper
   module Validations
     # TODO: rewrite this. specifically, validation logic should not
-    # be intertwined with message generation
+    # be intertwined with message generation.
+    # Also, supporting multiple validation types per validator is too complicated
     class Validator
       # @api private
       attr_reader :if_clause
@@ -22,6 +23,20 @@ module DataMapper
 
       # @api private
       attr_reader :options
+
+      # Get the validators for the given attribute_name and options
+      # 
+      # @param [Symbol] attribute_name
+      #   the name of the attribute to which the returned validators will be bound
+      # @param [Hash] options
+      #   the options with which to configure the returned validators
+      # 
+      # @return [#each(Validator)]
+      #   a collection of validators which collectively
+      # 
+      def self.validators_for(attribute_name, options)
+        Array(new(attribute_name, options))
+      end
 
       # Construct a validator. Capture the :if and :unless clauses when
       # present.

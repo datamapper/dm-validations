@@ -6,6 +6,11 @@ module DataMapper
   module Validations
     module Validators
       module Length
+        # TODO: DRY this up (also implemented in Validator)
+        def self.validators_for(attribute_name, options)
+          Array(new(attribute_name, options))
+        end
+
         # TODO: move options normalization into the validator macros
         def self.new(attribute_name, options)
           options = options.dup
