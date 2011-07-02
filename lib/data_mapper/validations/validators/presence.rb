@@ -5,6 +5,7 @@ require 'data_mapper/validations/validator'
 module DataMapper
   module Validations
     module Validators
+
       class Presence < Validator
 
         def call(resource)
@@ -43,6 +44,7 @@ module DataMapper
         end
 
       end # class Presence
+
     end # module Validators
   end # module Validations
 end # module DataMapper

@@ -5,6 +5,7 @@ require 'data_mapper/validations/validator'
 module DataMapper
   module Validations
     module Validators
+
       class Within < Validator
 
         attr_reader :set
@@ -56,6 +57,7 @@ module DataMapper
         end
 
       end # class Within
+
     end # module Validators
   end # module Validations
 end # module DataMapper

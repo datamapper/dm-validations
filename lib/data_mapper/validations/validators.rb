@@ -111,6 +111,10 @@ module DataMapper
       #     # it will add returned error message to :zip_code field
       #
       def validates_with_block(*attribute_names, &block)
+        unless block_given?
+          raise ArgumentError, 'You need to pass a block to validates_with_block'
+        end
+
         validators.add(Validators::Block, *attribute_names, &block)
       end
 
