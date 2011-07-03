@@ -11,12 +11,14 @@ module DataMapper
 
           include Length
 
-          attr_reader :equal
-
           def initialize(attribute_name, options)
-            @equal = options[:equal]
+            @expected = options[:equal]
             # super(attribute_name, DataMapper::Ext::Hash.except(options, :equal))
             super
+          end
+
+          def error_message_args
+            [ :wrong_length, humanized_field_name, expected ]
           end
 
         private
@@ -31,13 +33,7 @@ module DataMapper
           #
           # @api private
           def validate_length(length)
-            return if equal == length
-
-            ValidationErrors.default_error_message(
-              :wrong_length,
-              humanized_field_name,
-              equal
-            )
+            expected == length
           end
 
         end # class Equal

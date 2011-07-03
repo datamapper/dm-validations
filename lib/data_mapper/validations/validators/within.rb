@@ -29,8 +29,6 @@ module DataMapper
           false
         end
 
-      private
-
         def error_message_args
           if set.is_a?(Range)
             if set.first != -Infinity && set.last != Infinity

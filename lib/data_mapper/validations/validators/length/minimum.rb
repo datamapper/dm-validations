@@ -11,14 +11,18 @@ module DataMapper
 
           include Length
 
-          attr_reader :minimum
+          attr_reader :expected
 
           def initialize(attribute_name, options)
-            @minimum = options[:minimum]
+            @expected = options[:minimum]
             # TODO: fix inheritance to delegate copying to Validator
             # instead of just passing options
             # super(attribute_name, DataMapper::Ext::Hash.except(options, :minimum))
             super
+          end
+
+          def error_message_args
+            [ :too_short, humanized_field_name, expected ]
           end
 
         private
@@ -33,13 +37,7 @@ module DataMapper
           #
           # @api private
           def validate_length(length)
-            return if minimum <= length
-
-            ValidationErrors.default_error_message(
-              :too_short,
-              humanized_field_name,
-              minimum
-            )
+            expected <= length
           end
 
         end # class Minimum

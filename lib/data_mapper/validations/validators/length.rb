@@ -7,6 +7,9 @@ module DataMapper
     module Validators
 
       module Length
+
+        attr_reader :expected
+
         # TODO: DRY this up (also implemented in Validator)
         def self.validators_for(attribute_name, options)
           Array(new(attribute_name, options))
@@ -61,33 +64,28 @@ module DataMapper
         #
         # @api semipublic
         def call(resource)
-          value = resource.validation_property_value(attribute_name)
-          return true if optional?(value)
+          return true if valid?(resource)
 
-          return true unless error_message = error_message_for(value)
+          error_message = self.custom_message ||
+            ValidationErrors.default_error_message(*error_message_args)
 
           add_error(resource, error_message, attribute_name)
+
           false
         end
 
-      private
+        def valid?(resource)
+          value = resource.validation_property_value(attribute_name)
 
-        # Return the error messages for the value if it is invalid
-        #
-        # @param [#to_s] value
-        #   the value to test
-        #
-        # @return [String, nil]
-        #   the error message if invalid, nil if not
-        #
-        # @api private
-        def error_message_for(value)
-          length = value_length(value.to_s)
-
-          if error_message = validate_length(length)
-            self.custom_message || error_message
+          if optional?(value)
+            true
+          else
+            length = value_length(value.to_s)
+            validate_length(length)
           end
         end
+
+      private
 
         def validate_length(length)
           raise NotImplementError, "#{self.class}#validate_length must be implemented"

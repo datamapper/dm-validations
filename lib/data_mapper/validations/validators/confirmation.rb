@@ -22,13 +22,12 @@ module DataMapper
           return true if valid?(resource)
 
           error_message = self.custom_message ||
-            ValidationErrors.default_error_message(:confirmation, attribute_name)
+            ValidationErrors.default_error_message(*error_message_args)
+
           add_error(resource, error_message, attribute_name)
 
           false
         end
-
-      private
 
         def valid?(resource)
           value = resource.validation_property_value(attribute_name)
@@ -40,6 +39,10 @@ module DataMapper
 
           confirm_value = resource.instance_variable_get("@#{@confirm_attribute_name}")
           value == confirm_value
+        end
+
+        def error_message_args
+          [ :confirmation, attribute_name ]
         end
 
       end # class Confirmation

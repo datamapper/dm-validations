@@ -14,7 +14,7 @@ module DataMapper
           super
 
           unless block_given?
-            raise ArgumentError, 'You need to pass a block to Block validator'
+            raise ArgumentError, 'cannot initialize a Block validator without a block'
           end
 
           @block = block

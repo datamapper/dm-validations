@@ -32,7 +32,7 @@ module DataMapper
           value = resource.validation_property_value(attribute_name)
 
           error_message = self.custom_message ||
-            ValidationErrors.default_error_message(:invalid, attribute_name)
+            ValidationErrors.default_error_message(*error_message_args)
 
           add_error(
             resource,
@@ -41,8 +41,6 @@ module DataMapper
           )
           false
         end
-
-      private
 
         def valid?(resource)
           value = resource.validation_property_value(attribute_name)
@@ -69,6 +67,10 @@ module DataMapper
         rescue Encoding::CompatibilityError
           # This is to work around a bug in jruby - see formats/email.rb
           false
+        end
+
+        def error_message_args
+          [ :invalid, attribute_name ]
         end
 
       end # class Format

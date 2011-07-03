@@ -53,18 +53,28 @@ module DataMapper
           # TODO: return a dummy validator is expected is nil
           return true if expected.nil?
 
-          value = resource.validation_property_value(attribute_name)
-          return true if optional?(value)
-
-          return true unless failed = validate_numericalness(value)
+          return true if valid?(resource)
 
           error_message = self.custom_message ||
-            ValidationErrors.default_error_message(
-              error_message_name,
-              attribute_name,
-              expected)
+            ValidationErrors.default_error_message(*error_message_args)
+
           add_error(resource, error_message, attribute_name)
+
           false
+        end
+
+        def valid?(resource)
+          value = resource.validation_property_value(attribute_name)
+
+          if optional?(value) || !validate_numericalness(value)
+            true
+          else
+            false
+          end
+        end
+
+        def error_message_args
+          [ error_message_name, attribute_name, expected ]
         end
 
       private

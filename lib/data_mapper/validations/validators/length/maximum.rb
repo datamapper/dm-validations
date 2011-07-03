@@ -11,12 +11,16 @@ module DataMapper
 
           include Length
 
-          attr_reader :maximum
+          attr_reader :expected
 
           def initialize(attribute_name, options)
-            @maximum = options[:maximum]
+            @expected = options[:maximum]
             # super(attribute_name, DataMapper::Ext::Hash.except(options, :maximum))
             super
+          end
+
+          def error_message_args
+            [ :too_long, humanized_field_name, expected ]
           end
 
         private
@@ -31,13 +35,7 @@ module DataMapper
           #
           # @api private
           def validate_length(length)
-            return if maximum >= length
-
-            ValidationErrors.default_error_message(
-              :too_long,
-              humanized_field_name,
-              maximum
-            )
+            expected >= length
           end
 
         end # class Maximum

@@ -20,13 +20,14 @@ module DataMapper
         end
 
         def call(resource)
-          return true if valid?(resource)
-
-          error_message = self.custom_message ||
-            ValidationErrors.default_error_message(:taken, attribute_name)
-          add_error(resource, error_message, attribute_name)
-
-          false
+          if valid?(resource)
+            true
+          else
+            error_message = self.custom_message ||
+              ValidationErrors.default_error_message(*error_message_args)
+            add_error(resource, error_message, attribute_name)
+            false
+          end
         end
 
         def valid?(resource)
@@ -52,6 +53,10 @@ module DataMapper
 
           return true if other_resource.nil?
           resource.saved? && other_resource.key == resource.key
+        end
+
+        def error_message_args
+          [ :taken, attribute_name ]
         end
 
       end # class Uniqueness

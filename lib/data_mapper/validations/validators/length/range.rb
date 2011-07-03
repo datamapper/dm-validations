@@ -11,12 +11,16 @@ module DataMapper
 
           include Length
 
-          attr_reader :range
+          attr_reader :expected
 
           def initialize(attribute_name, options)
-            @range = options[:range]
+            @expected = options[:range]
             # super(attribute_name, DataMapper::Ext::Hash.except(options, :range))
             super
+          end
+
+          def error_message_args
+            [ :length_between, humanized_field_name, expected.min, expected.max ]
           end
 
         private
@@ -31,14 +35,7 @@ module DataMapper
           #
           # @api private
           def validate_length(length)
-            return if range.include?(length)
-
-            ValidationErrors.default_error_message(
-              :length_between,
-              humanized_field_name,
-              range.min,
-              range.max
-            )
+            expected.include?(length)
           end
 
         end # class Range

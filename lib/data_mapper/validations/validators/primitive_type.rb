@@ -14,12 +14,10 @@ module DataMapper
 
           return true if value.nil? || property.primitive?(value)
 
+          error_message_args = [ :primitive, attribute_name, property.primitive ]
+
           error_message = self.custom_message ||
-            ValidationErrors.default_error_message(
-              :primitive,
-              attribute_name,
-              property.primitive
-            )
+            ValidationErrors.default_error_message(*error_message_args)
 
           add_error(resource, error_message, attribute_name)
 
