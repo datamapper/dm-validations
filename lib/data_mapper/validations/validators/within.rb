@@ -21,7 +21,8 @@ module DataMapper
           return true if optional?(value)
           return true if set.include?(value)
 
-          error_message = self.custom_message || get_error_message
+          error_message = self.custom_message ||
+            ValidationErrors.default_error_message(*error_message_args)
 
           add_error(resource, error_message, attribute_name)
 
@@ -29,31 +30,19 @@ module DataMapper
         end
 
       private
-        # TODO: break this up into two validators: WithinRange & WithinSet
-        # they will both inherit from within, and the Validators#validates_within
-        # macro will inspect the :set arg and add the appropriate validator
-        def get_error_message
+
+        def error_message_args
           if set.is_a?(Range)
-            error_message_for_range_set
-          else
-            ValidationErrors.default_error_message(:inclusion, attribute_name, set.to_a.join(', '))
-          end
-        end
-
-        def error_message_for_range_set
-          # TODO: just use Infinity directly here
-          n = 1.0/0
-
-          error_message_args =
-            if set.first != -n && set.last != n
+            if set.first != -Infinity && set.last != Infinity
               [ :value_between,             attribute_name, set.first, set.last ]
-            elsif set.first == -n
+            elsif set.first == -Infinity
               [ :less_than_or_equal_to,     attribute_name, set.last ]
-            elsif set.last == n
+            elsif set.last == Infinity
               [ :greater_than_or_equal_to,  attribute_name, set.first ]
             end
-
-          ValidationErrors.default_error_message(*error_message_args)
+          else
+            [ :inclusion, attribute_name, set.to_a.join(', ') ]
+          end
         end
 
       end # class Within
