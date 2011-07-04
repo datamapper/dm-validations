@@ -15,22 +15,43 @@ module DataMapper
 
       class Format < Validator
 
+        EQUALIZE_ON = superclass::EQUALIZE_ON.dup << :format
+
+        equalize *EQUALIZE_ON
+
         FORMATS = {}
 
         include DataMapper::Validations::Format::Email
         include DataMapper::Validations::Format::Url
 
+        attr_reader :format
+
+        # @raise [UnknownValidationFormat]
+        #   if the :as (or :with) option is a Symbol that is not a key in FORMATS
+        #   or if the provided format is not a Regexp, Symbol or Proc
         def initialize(attribute_name, options = {})
-          super
+          format = options[:as] || options[:with]
+          @format = 
+            case format
+            when Symbol
+              FORMATS.fetch(format) do
+                raise UnknownValidationFormat, "No such predefined format '#{format}'"
+              end[0]
+            when Proc, Regexp
+              format
+            else
+              raise UnknownValidationFormat, "Expected a Regexp, Symbol, or Proc format. Got: #{format.inspect}"
+            end
+
+          super(attribute_name, DataMapper::Ext::Hash.except(options, :as, :with))
 
           allow_nil!   unless defined?(@allow_nil)
           allow_blank! unless defined?(@allow_blank)
         end
 
         def call(resource)
-          return true if valid?(resource)
-
           value = resource.validation_property_value(attribute_name)
+          return true if valid?(value)
 
           error_message = self.custom_message ||
             ValidationErrors.default_error_message(*error_message_args)
@@ -43,27 +64,13 @@ module DataMapper
           false
         end
 
-        def valid?(resource)
-          value = resource.validation_property_value(attribute_name)
+        def valid?(value)
           return true if optional?(value)
 
-          validation = @options[:as] || @options[:with]
-
-          if validation.is_a?(Symbol) && !FORMATS.has_key?(validation)
-            raise("No such predefined format '#{validation}'")
-          end
-
-          validator = if validation.is_a?(Symbol)
-                        FORMATS[validation][0]
-                      else
-                        validation
-                      end
-
-          case validator
-            when Proc   then validator.call(value)
-            when Regexp then (value.kind_of?(Numeric) ? value.to_s : value) =~ validator
-            else
-              raise(UnknownValidationFormat, "Can't determine how to validate #{resource.class}##{attribute_name} with #{validator.inspect}")
+          format = self.format
+          case format
+          when Proc   then format.call(value)
+          when Regexp then (value.kind_of?(Numeric) ? value.to_s : value) =~ format
           end
         rescue Encoding::CompatibilityError
           # This is to work around a bug in jruby - see formats/email.rb
