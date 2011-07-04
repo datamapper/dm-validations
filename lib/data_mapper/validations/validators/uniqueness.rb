@@ -16,7 +16,8 @@ module DataMapper
 
           super
 
-          set_optional_by_default
+          allow_nil!   unless defined?(@allow_nil)
+          allow_blank! unless defined?(@allow_blank)
         end
 
         def call(resource)

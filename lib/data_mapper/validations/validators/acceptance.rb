@@ -8,14 +8,20 @@ module DataMapper
 
       class Acceptance < Validator
 
-        DEFAULT_ACCEPT_VALUES = [ '1', 1, 'true', true, 't' ]
+        EQUALIZE_ON = superclass::EQUALIZE_ON.dup << :accept
+
+        equalize *EQUALIZE_ON
+
+        DEFAULT_ACCEPTED_VALUES = [ '1', 1, 'true', true, 't' ]
+
+        attr_reader :accept
 
         def initialize(attribute_name, options = {})
-          super
+          @accept = Array(options.fetch(:accept, DEFAULT_ACCEPTED_VALUES))
 
-          @options[:allow_nil] = true unless @options.key?(:allow_nil)
+          super(attribute_name, DataMapper::Ext::Hash.except(options, :accept))
 
-          @options[:accept] = Array(@options[:accept] || DEFAULT_ACCEPT_VALUES)
+          allow_nil! unless defined?(@allow_nil)
         end
 
         def call(resource)
@@ -31,8 +37,8 @@ module DataMapper
 
         def valid?(resource)
           value = resource.validation_property_value(attribute_name)
-          return true if allow_nil?(value)
-          @options[:accept].include?(value)
+          return true if exempt_value?(value)
+          accept.include?(value)
         end
 
         def error_message_args
@@ -41,8 +47,8 @@ module DataMapper
 
       private
 
-        def allow_nil?(value)
-          @options[:allow_nil] && value.nil?
+        def exempt_value?(value)
+          allow_nil? && value.nil?
         end
 
       end # class Acceptance

@@ -11,7 +11,8 @@ module DataMapper
         def initialize(attribute_name, options = {})
           super
 
-          set_optional_by_default
+          allow_nil!   unless defined?(@allow_nil)
+          allow_blank! unless defined?(@allow_blank)
 
           @confirm_attribute_name = (
             options[:confirm] || "#{attribute_name}_confirmation"

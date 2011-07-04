@@ -8,11 +8,19 @@ module DataMapper
     class Validator
       extend Equalizer
 
-      EQUALIZE_ON = [:attribute_name, :custom_message, :if_clause, :unless_clause, :options]
+      EQUALIZE_ON = [
+          :attribute_name, :allow_nil, :allow_blank,
+          :custom_message, :if_clause, :unless_clause, :options]
       equalize *EQUALIZE_ON
 
       # @api private
       attr_reader :attribute_name
+
+      # @api private
+      attr_reader :allow_nil
+
+      # @api private
+      attr_reader :allow_blank
 
       # @api private
       attr_reader :custom_message
@@ -58,15 +66,25 @@ module DataMapper
       #   validation should not occur.
       #
       # @note
-      #   All additional key/value pairs are passed through to the validator
-      #   that is sub-classing this GenericValidator
+      #   All additional key/value pairs are passed through to the
+      #   Validator subclass
       #
       def initialize(attribute_name, options = {})
         @attribute_name = attribute_name
-        @options        = DataMapper::Ext::Hash.except(options, :if, :unless)
+        @options        = DataMapper::Ext::Hash.except(options, :message, :if, :unless)
+        # TODO: implement a #copy method, for use in ContextualValidators#inherit
+        #   then remove :allow_nil, :allow_blank, and :message from @options
+        #   ultimately, remove @options entirely
         @custom_message = options[:message]
         @if_clause      = options[:if]
         @unless_clause  = options[:unless]
+
+        if options.include?(:allow_nil)
+          @allow_nil = options[:allow_nil]
+        end
+        if options.include?(:allow_blank)
+          @allow_blank = options[:allow_blank]
+        end
       end
 
       def humanized_field_name
@@ -86,6 +104,9 @@ module DataMapper
       #
       # @return [Validator]
       #   The receiver (self)
+      # 
+      # TODO: remove this method
+      #   Validators should return Violations, not mutate resource
       def add_error(resource, message, attribute_name = :general)
         # TODO: should the attribute_name for a general message be :default???
         resource.errors.add(attribute_name, message)
@@ -127,24 +148,12 @@ module DataMapper
         end
       end
 
-      # @api private
-      def evaluate_conditional_clause(resource, clause)
-        if clause.kind_of?(Symbol)
-          resource.__send__(clause)
-        elsif clause.respond_to?(:call)
-          clause.call(resource)
-        end
+      def allow_nil?
+        defined?(@allow_nil) ? @allow_nil : false
       end
 
-      # Set the default value for allow_nil and allow_blank
-      #
-      # @param [Boolean] default value
-      #
-      # @api private
-      def set_optional_by_default(default = true)
-        [ :allow_nil, :allow_blank ].each do |key|
-          @options[key] = true unless options.key?(key)
-        end
+      def allow_blank?
+        defined?(@allow_blank) ? @allow_blank : false
       end
 
       # Test the value to see if it is blank or nil, and if it is allowed.
@@ -160,9 +169,9 @@ module DataMapper
       # @api private
       def optional?(value)
         if value.nil?
-          options.fetch(:allow_nil) { options.fetch(:allow_blank, false) }
+          defined?(@allow_nil) ? allow_nil? : allow_blank?
         elsif DataMapper::Ext.blank?(value)
-          options.fetch(:allow_blank, false)
+          allow_blank?
         end
       end
 
@@ -182,6 +191,23 @@ module DataMapper
       alias_method :to_s, :inspect
 
     private
+
+      def allow_nil!
+        @allow_nil = true
+      end
+
+      def allow_blank!
+        @allow_blank = true
+      end
+
+      # @api private
+      def evaluate_conditional_clause(resource, clause)
+        if clause.kind_of?(Symbol)
+          resource.__send__(clause)
+        elsif clause.respond_to?(:call)
+          clause.call(resource)
+        end
+      end
 
       # Get the corresponding Resource property, if it exists.
       #
