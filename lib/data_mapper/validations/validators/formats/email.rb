@@ -1,22 +1,9 @@
 # encoding: UTF-8
 
-require 'data_mapper/validations/validators/format'
-
 module DataMapper
   module Validations
-    module Format
-      module Email
-
-        def self.included(base)
-          Validators::Format::FORMATS.merge!(
-            :email_address => [
-              EmailAddress,
-              lambda { |field, value|
-                '%s is not a valid email address'.t(value)
-              }
-            ]
-          )
-        end
+    module Validators
+      module Formats
 
         # Almost RFC2822 (No attribution reference available).
         #
@@ -57,7 +44,7 @@ module DataMapper
           pattern        = /\A#{addr_spec}\z/u
         end
 
-      end # module Email
-    end # module Format
+      end # module Formats
+    end # module Validators
   end # module Validations
 end # module DataMapper

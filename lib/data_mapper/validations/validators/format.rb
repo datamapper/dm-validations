@@ -4,8 +4,8 @@ require 'pathname'
 
 require 'data_mapper/validations/validator'
 
-require 'data_mapper/validations/formats/email'
-require 'data_mapper/validations/formats/url'
+require 'data_mapper/validations/validators/formats/email'
+require 'data_mapper/validations/validators/formats/url'
 
 module DataMapper
   module Validations
@@ -19,10 +19,23 @@ module DataMapper
 
         equalize *EQUALIZE_ON
 
-        FORMATS = {}
+        FORMATS = {
+          :email_address => [
+            Validators::Formats::EmailAddress,
+            lambda { |field, value|
+              '%s is not a valid email address'.t(value)
+            }
+          ],
+          :url => [
+            Validators::Formats::Url,
+            lambda { |field, value|
+              '%s is not a valid URL'.t(value)
+            }
+          ]
+        }
 
-        include DataMapper::Validations::Format::Email
-        include DataMapper::Validations::Format::Url
+        include DataMapper::Validations::Validators::Formats::Email
+        include DataMapper::Validations::Validators::Formats::Url
 
         attr_reader :format
 
@@ -79,6 +92,15 @@ module DataMapper
 
         def error_message_args
           [ :invalid, attribute_name ]
+        end
+
+        # TODO: integrate format into error message key?
+        def error_message_args
+          if format.is_a?(Symbol)
+            [ :"invalid_#{format}", attribute_name ]
+          else
+            [ :invalid, attribute_name ]
+          end
         end
 
       end # class Format
