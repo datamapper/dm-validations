@@ -95,10 +95,8 @@ module DataMapper
 
       def inherited(descendant_validators)
         contexts.each do |context, validators|
-          validators.each do |v|
-            # TODO: move :context arg out of the options hash
-            options = v.options.merge(:context => context)
-            descendant_validators.add(v.class, v.attribute_name, options)
+          validators.each do |validator|
+            descendant_validators.context(context) << validator.dup
           end
         end
       end
