@@ -53,17 +53,6 @@ module DataMapper
           @expected = options[:expected]
         end
 
-        def call(resource)
-          return true if valid?(resource)
-
-          error_message = self.custom_message ||
-            ValidationErrors.default_error_message(*error_message_args)
-
-          add_error(resource, error_message, attribute_name)
-
-          false
-        end
-
         def valid?(resource)
           # TODO: is it even possible for expected to be nil?
           #   if so, return a dummy validator when expected is nil

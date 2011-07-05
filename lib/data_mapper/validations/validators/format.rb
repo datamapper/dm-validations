@@ -63,18 +63,6 @@ module DataMapper
           allow_blank! unless defined?(@allow_blank)
         end
 
-        def call(resource)
-          value = resource.validation_property_value(attribute_name)
-          return true if valid?(value)
-
-          error_message = self.custom_message ||
-            ValidationErrors.default_error_message(*error_message_args)
-
-          add_error(resource, error_message, attribute_name)
-
-          false
-        end
-
         def error_message_args
           [ :invalid, attribute_name ]
         end

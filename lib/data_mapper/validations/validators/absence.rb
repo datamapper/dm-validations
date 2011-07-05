@@ -8,16 +8,6 @@ module DataMapper
 
       class Absence < Validator
 
-        def call(resource)
-          return true if valid?(resource)
-
-          error_message = self.custom_message ||
-            ValidationErrors.default_error_message(*error_message_args)
-
-          add_error(resource, error_message, attribute_name)
-          false
-        end
-
         def valid?(resource)
           value = resource.validation_property_value(attribute_name)
           DataMapper::Ext.blank?(value)

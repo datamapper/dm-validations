@@ -121,7 +121,14 @@ module DataMapper
       #   true if valid, otherwise false.
       #
       def call(resource)
-        raise NotImplementedError, "#{self.class}#call must be implemented"
+        return true if valid?(resource)
+
+        error_message = self.custom_message ||
+          ValidationErrors.default_error_message(*error_message_args)
+
+        add_error(resource, error_message, attribute_name)
+
+        false
       end
 
       # Determines if this validator should be run against the

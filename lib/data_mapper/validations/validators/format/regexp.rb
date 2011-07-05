@@ -24,8 +24,8 @@ module DataMapper
             super(attribute_name, DataMapper::Ext::Hash.except(options, :format_name))
           end
 
-          def valid?(value)
-            # raise [self.class::EQUALIZE_ON, self].inspect
+          def valid?(resource)
+            value = resource.validation_property_value(attribute_name)
             return true if optional?(value)
 
             match_value = value.kind_of?(Numeric) ? value.to_s : value

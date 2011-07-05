@@ -24,17 +24,6 @@ module DataMapper
           allow_nil! unless defined?(@allow_nil)
         end
 
-        def call(resource)
-          return true if valid?(resource)
-
-          error_message = self.custom_message ||
-            ValidationErrors.default_error_message(*error_message_args)
-
-          add_error(resource, error_message, attribute_name)
-
-          false
-        end
-
         def valid?(resource)
           value = resource.validation_property_value(attribute_name)
           return true if exempt_value?(value)

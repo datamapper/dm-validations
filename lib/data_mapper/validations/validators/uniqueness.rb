@@ -20,17 +20,6 @@ module DataMapper
           allow_blank! unless defined?(@allow_blank)
         end
 
-        def call(resource)
-          if valid?(resource)
-            true
-          else
-            error_message = self.custom_message ||
-              ValidationErrors.default_error_message(*error_message_args)
-            add_error(resource, error_message, attribute_name)
-            false
-          end
-        end
-
         def valid?(resource)
           value = resource.validation_property_value(attribute_name)
           return true if optional?(value)

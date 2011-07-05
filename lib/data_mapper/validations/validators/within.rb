@@ -16,17 +16,10 @@ module DataMapper
           super(attribute_name, DataMapper::Ext::Hash.except(options, :set))
         end
 
-        def call(resource)
+        def valid?(resource)
           value = resource.validation_property_value(attribute_name)
-          return true if optional?(value)
-          return true if set.include?(value)
 
-          error_message = self.custom_message ||
-            ValidationErrors.default_error_message(*error_message_args)
-
-          add_error(resource, error_message, attribute_name)
-
-          false
+          optional?(value) || set.include?(value)
         end
 
         def error_message_args

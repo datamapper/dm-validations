@@ -47,33 +47,6 @@ module DataMapper
           include Length
         end
 
-        # Test the resource field for validity
-        #
-        # @example when the resource field is valid
-        #   validator.call(valid_resource)  # => true
-        #
-        # @example when the resource field is not valid
-        #   validator.call(invalid_resource)  # => false
-        #
-        #
-        # @param [Resource] resource
-        #   the Resource to test
-        #
-        # @return [Boolean]
-        #   true if the field is valid, false if not
-        #
-        # @api semipublic
-        def call(resource)
-          return true if valid?(resource)
-
-          error_message = self.custom_message ||
-            ValidationErrors.default_error_message(*error_message_args)
-
-          add_error(resource, error_message, attribute_name)
-
-          false
-        end
-
         def valid?(resource)
           value = resource.validation_property_value(attribute_name)
 

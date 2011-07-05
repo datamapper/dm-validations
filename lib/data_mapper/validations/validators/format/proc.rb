@@ -16,7 +16,8 @@ module DataMapper
           equalize *EQUALIZE_ON
 
 
-          def valid?(value)
+          def valid?(resource)
+            value = resource.validation_property_value(attribute_name)
             return true if optional?(value)
 
             self.format.call(value)
