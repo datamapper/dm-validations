@@ -8,11 +8,12 @@ module DataMapper
 
       module Numericalness
 
-        attr_reader :expected
+        def self.included(validator)
+          validator.class_eval do
+            const_set(:EQUALIZE_ON, superclass::EQUALIZE_ON.dup << :expected)
 
-        # TODO: DRY this up (also implemented in Validator)
-        def self.validators_for(attribute_name, options)
-          Array(new(attribute_name, options))
+            equalize *self::EQUALIZE_ON
+          end
         end
 
         # TODO: move options normalization into the validator macros?
@@ -44,15 +45,15 @@ module DataMapper
           keys.map { |key| options.delete(key) }.compact.first
         end
 
+        attr_reader :expected
+
         def initialize(attribute_name, options)
           super
+
           @expected = options[:expected]
         end
 
         def call(resource)
-          # TODO: return a dummy validator is expected is nil
-          return true if expected.nil?
-
           return true if valid?(resource)
 
           error_message = self.custom_message ||
@@ -64,44 +65,24 @@ module DataMapper
         end
 
         def valid?(resource)
+          # TODO: is it even possible for expected to be nil?
+          #   if so, return a dummy validator when expected is nil
+          return true if expected.nil?
+
           value = resource.validation_property_value(attribute_name)
 
-          if optional?(value) || !validate_numericalness(value)
-            true
-          else
-            false
-          end
-        end
-
-        def error_message_args
-          [ error_message_name, attribute_name, expected ]
+          optional?(value) || validate_numericalness(value)
         end
 
       private
 
         def value_as_string(value)
           case value
-            # Avoid Scientific Notation in Float to_s
-            when Float      then value.to_d.to_s('F')
-            when BigDecimal then value.to_s('F')
-            else value.to_s
+          # Avoid Scientific Notation in Float to_s
+          when Float      then value.to_d.to_s('F')
+          when BigDecimal then value.to_s('F')
+          else value.to_s
           end
-        end
-
-        def validate_with_comparison(value, negated = false)
-          # XXX: workaround for jruby. This is needed because the jruby
-          # compiler optimizes a bit too far with magic variables like $~.
-          # the value.send line sends $~. Inserting this line makes sure the
-          # jruby compiler does not optimise here.
-          # see http://jira.codehaus.org/browse/JRUBY-3765
-          $~ = nil if RUBY_PLATFORM[/java/]
-
-          comparison_boolean = value.send(comparison, expected)
-          return if negated ? !comparison_boolean : comparison_boolean
-          true
-        rescue ArgumentError
-          # TODO: figure out better solution for: can't compare String with Integer
-          false
         end
 
       end # class Numericalness

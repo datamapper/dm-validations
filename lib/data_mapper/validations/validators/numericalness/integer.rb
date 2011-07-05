@@ -15,18 +15,22 @@ module DataMapper
             /\A[+-]?\d+\z/
           end
 
-        private
-
           def validate_numericalness(value)
-            validate_with_comparison(value_as_string(value))
+            # XXX: workaround for jruby. This is needed because the jruby
+            # compiler optimizes a bit too far with magic variables like $~.
+            # the value.send line sends $~. Inserting this line makes sure the
+            # jruby compiler does not optimise here.
+            # see http://jira.codehaus.org/browse/JRUBY-3765
+            $~ = nil if RUBY_PLATFORM[/java/]
+
+            value_as_string(value) =~ expected
+          rescue ArgumentError
+            # TODO: figure out better solution for: can't compare String with Integer
+            true
           end
 
-          def comparison
-            :=~
-          end
-
-          def error_message_name
-            :not_an_integer
+          def error_message_args
+            [ :not_an_integer, attribute_name, expected ]
           end
 
         end # class Equal

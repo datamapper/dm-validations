@@ -11,18 +11,15 @@ module DataMapper
 
           include Numericalness
 
-        private
-
           def validate_numericalness(value)
-            validate_with_comparison(value)
+            value >= expected
+          rescue ArgumentError
+            # TODO: figure out better solution for: can't compare String with Integer
+            true
           end
 
-          def comparison
-            :>=
-          end
-
-          def error_message_name
-            :greater_than_or_equal_to
+          def error_message_args
+            [ :greater_than_or_equal_to, attribute_name, expected ]
           end
 
         end # class GreaterThanOrEqual
