@@ -11,6 +11,13 @@ module DataMapper
       deprecate :execute, :validate
     end
 
+    class Validator
+      extend Deprecate
+
+      # TODO: remove :field_name alias
+      deprecate :field_name, :attribute_name
+    end
+
     module Validators
       extend Deprecate
 

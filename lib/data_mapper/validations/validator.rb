@@ -31,9 +31,6 @@ module DataMapper
       # @api private
       attr_reader :unless_clause
 
-      # TODO: remove :field_name alias
-      alias_method :field_name, :attribute_name
-
       # @api private
       attr_reader :options
 
