@@ -8,15 +8,20 @@ module DataMapper
 
       class Confirmation < Validator
 
+        EQUALIZE_ON = superclass::EQUALIZE_ON.dup << :confirmation_attribute
+
+        attr_reader :confirmation_attribute
+
+
         def initialize(attribute_name, options = {})
           super
 
           allow_nil!   unless defined?(@allow_nil)
           allow_blank! unless defined?(@allow_blank)
 
-          @confirm_attribute_name = (
-            options[:confirm] || "#{attribute_name}_confirmation"
-          ).to_sym
+          @confirm_attribute_name = options.fetch(:confirm) do
+            :"#{attribute_name}_confirmation"
+          end
         end
 
         def call(resource)
