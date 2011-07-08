@@ -84,8 +84,8 @@ describe 'DataMapper::Resource' do
         @resource.save
       end
 
-      it 'should not call valid?' do
-        @resource.valid_hook_call_count.should be_nil
+      it 'should call valid?' do
+        @resource.valid_hook_call_count.should == 1
       end
     end
 
