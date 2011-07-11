@@ -13,16 +13,27 @@ module DataMapper
 
       def_delegators :validator, :attribute_name, :violation_type, :message_data
 
+      attr_reader :resource
       attr_reader :validator
       attr_reader :custom_message
-      attr_reader :block
+      attr_reader :message_data
+
       attr_accessor :transformer
 
-      def initialize(validator, message = nil, transformer = nil, &block)
-        @validator      = validator
-        @custom_message = message
-        @block          = block
-        @transformer    = transformer
+      def initialize(validator, message_or_data = nil, transformer = nil, &block)
+        @validator   = validator
+        @transformer = transformer
+
+        case message_or_data
+        when String
+          @custom_message = message_or_data
+        when Symbol
+          @violation_type = message_or_data
+        when Array
+          @message_data = message_or_data
+        else
+          @resource = message_or_data
+        end
 
         unless validator || message || block
           raise ArgumentError, "expected one of +validator+, +message+ or +block+"
