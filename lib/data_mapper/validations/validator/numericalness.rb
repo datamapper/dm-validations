@@ -63,6 +63,10 @@ module DataMapper
           optional?(value) || validate_numericalness(value)
         end
 
+        def violation_data
+          [ expected ]
+        end
+
       private
 
         def value_as_string(value)

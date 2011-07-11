@@ -26,8 +26,8 @@ module DataMapper
           #   false
           end
 
-          def error_message_args
-            [ :invalid, attribute_name ]
+          def violation_type
+            :invalid
           end
 
         end # class Regexp

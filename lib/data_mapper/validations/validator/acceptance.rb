@@ -30,8 +30,8 @@ module DataMapper
           accept.include?(value)
         end
 
-        def error_message_args
-          [ :accepted, attribute_name ]
+        def violation_type
+          :accepted
         end
 
       private

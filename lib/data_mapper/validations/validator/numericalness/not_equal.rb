@@ -18,8 +18,8 @@ module DataMapper
             true
           end
 
-          def error_message_args
-            [ :not_equal_to, attribute_name, expected ]
+          def violation_type
+            :not_equal_to
           end
 
         end # class NotEqual

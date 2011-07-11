@@ -11,6 +11,9 @@ module DataMapper
         # Boolean property types are considered present if non-nil.
         # Other property types are considered present if non-blank.
         # Non-properties are considered present if non-blank.
+        # 
+        # TODO: break this into concreate trypes and move the property check
+        # into #initialize. Will require adding model to signature of #initialize
         def call(resource)
           value    = resource.validation_property_value(attribute_name)
           property = get_resource_property(resource, attribute_name)
@@ -31,7 +34,11 @@ module DataMapper
         end
 
         def error_message_args(boolean)
-          boolean ? [ :nil, attribute_name ] : [ :blank, attribute_name ]
+          [ violation_type(boolean), attribute_name ]
+        end
+
+        def violation_type(boolean)
+          boolean ? :nil : :blank
         end
 
         # Is the property a boolean property?

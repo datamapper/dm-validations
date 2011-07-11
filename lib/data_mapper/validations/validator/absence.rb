@@ -13,8 +13,8 @@ module DataMapper
           DataMapper::Ext.blank?(value)
         end
 
-        def error_message_args
-          [ :absent, attribute_name ]
+        def violation_type
+          :absent
         end
 
       end # class Absence

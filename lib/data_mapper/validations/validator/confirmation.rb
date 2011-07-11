@@ -36,8 +36,8 @@ module DataMapper
           value == confirm_value
         end
 
-        def error_message_args
-          [ :confirmation, attribute_name ]
+        def violation_type
+          :confirmation
         end
 
       end # class Confirmation

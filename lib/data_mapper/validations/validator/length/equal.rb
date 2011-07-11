@@ -17,8 +17,12 @@ module DataMapper
             super
           end
 
-          def error_message_args
-            [ :wrong_length, humanized_field_name, expected ]
+          def violation_type
+            :wrong_length
+          end
+
+          def violation_data
+            [ expected ]
           end
 
         private

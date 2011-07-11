@@ -53,8 +53,8 @@ module DataMapper
             true
           end
 
-          def error_message_args
-            [ :not_a_number, attribute_name, expected ]
+          def violation_type
+            :not_a_number
           end
 
         end # class Numeric

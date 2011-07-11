@@ -29,8 +29,12 @@ module DataMapper
             optional?(value) || set.include?(value)
           end
 
-          def error_message_args
-            [ :inclusion, attribute_name, set.to_a.join(', ') ]
+          def violation_type
+            :inclusion
+          end
+
+          def violation_data
+            [ set.to_a.join(', ') ]
           end
 
         end # class Set

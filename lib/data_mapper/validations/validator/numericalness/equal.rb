@@ -18,8 +18,8 @@ module DataMapper
             true
           end
 
-          def error_message_args
-            [ :equal_to, attribute_name, expected ]
+          def violation_type
+            :equal_to
           end
 
         end # class Equal

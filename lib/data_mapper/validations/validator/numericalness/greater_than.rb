@@ -18,8 +18,8 @@ module DataMapper
             true
           end
 
-          def error_message_args
-            [ :greater_than, attribute_name, expected ]
+          def violation_type
+            :greater_than
           end
 
         end # class GreaterThan

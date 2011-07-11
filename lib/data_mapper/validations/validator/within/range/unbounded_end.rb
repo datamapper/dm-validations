@@ -12,8 +12,12 @@ module DataMapper
 
             include Range
 
-            def error_message_args
-              [ :greater_than_or_equal_to, attribute_name, range.first ]
+            def violation_type
+              :greater_than_or_equal_to
+            end
+
+            def violation_data
+              [ range.begin ]
             end
 
           end # class UnboundedBegin

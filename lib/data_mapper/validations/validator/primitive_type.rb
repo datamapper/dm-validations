@@ -28,7 +28,11 @@ module DataMapper
         end
 
         def error_message_args(primitive)
-          [ :primitive, attribute_name, primitive ]
+          [ violation_type, attribute_name, primitive ]
+        end
+
+        def violation_type
+          :primitive
         end
 
       end # class PrimitiveType

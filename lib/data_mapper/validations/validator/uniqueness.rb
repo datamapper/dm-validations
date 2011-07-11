@@ -45,8 +45,8 @@ module DataMapper
           resource.saved? && other_resource.key == resource.key
         end
 
-        def error_message_args
-          [ :taken, attribute_name ]
+        def violation_type
+          :taken
         end
 
       end # class Uniqueness

@@ -29,8 +29,8 @@ module DataMapper
             true
           end
 
-          def error_message_args
-            [ :not_an_integer, attribute_name, expected ]
+          def violation_type
+            :not_an_integer
           end
 
         end # class Equal

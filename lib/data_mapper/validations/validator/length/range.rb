@@ -19,8 +19,12 @@ module DataMapper
             super
           end
 
-          def error_message_args
-            [ :length_between, humanized_field_name, expected.min, expected.max ]
+          def violation_type
+            :length_between
+          end
+
+          def violation_data
+            [ expected.min, expected.max ]
           end
 
         private

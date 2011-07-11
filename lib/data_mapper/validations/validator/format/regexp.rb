@@ -35,8 +35,8 @@ module DataMapper
             false
           end
 
-          def error_message_args
-            [ :invalid, attribute_name ]
+          def violation_type
+            :invalid
           end
 
           # TODO: integrate format into error message key?

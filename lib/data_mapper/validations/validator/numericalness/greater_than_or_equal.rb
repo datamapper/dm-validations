@@ -18,8 +18,8 @@ module DataMapper
             true
           end
 
-          def error_message_args
-            [ :greater_than_or_equal_to, attribute_name, expected ]
+          def violation_type
+            :greater_than_or_equal_to
           end
 
         end # class GreaterThanOrEqual

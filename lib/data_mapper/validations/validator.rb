@@ -174,6 +174,14 @@ module DataMapper
         end
       end
 
+      def error_message_args
+        [ violation_type, attribute_name ] + violation_data
+      end
+
+      def violation_data
+        [ ]
+      end
+
       def inspect
         out = "#<#{self.class.name}"
         # out << "@attribute_name=#{attribute_name.inspect} "

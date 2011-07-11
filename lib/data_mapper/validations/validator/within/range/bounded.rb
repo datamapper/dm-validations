@@ -12,8 +12,12 @@ module DataMapper
 
             include Range
 
-            def error_message_args
-              [ :value_between, attribute_name, range.first, range.last ]
+            def violation_type
+              :value_between
+            end
+
+            def violation_data
+              [ range.first, range.last ]
             end
 
           end # class Bounded
