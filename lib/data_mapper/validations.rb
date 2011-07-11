@@ -1,11 +1,12 @@
-require 'data_mapper/validations/validators'
+require 'data_mapper/validations/validation_errors'
+require 'data_mapper/validations/contextual_validators'
+require 'data_mapper/validations/macros'
 
 module DataMapper
   module Validations
 
     def self.included(base)
       base.extend ClassMethods
-      base.extend Validators
     end
 
     # Check if a resource is valid in a given context
@@ -68,6 +69,8 @@ module DataMapper
     end
 
     module ClassMethods
+
+      include Validations::Macros
 
       # Return the set of contextual validators or create a new one
       #

@@ -18,7 +18,7 @@ module DataMapper
       deprecate :field_name, :attribute_name
     end
 
-    module Validators
+    module Macros
       extend Deprecate
 
       deprecate :validates_absent,        :validates_absence_of

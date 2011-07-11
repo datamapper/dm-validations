@@ -1,8 +1,8 @@
 require 'spec_helper'
 
-describe 'DataMapper::Validations::Validators::Generic', '#optional?' do
+describe 'DataMapper::Validations::Validator::Generic', '#optional?' do
   def validator(opts = {})
-    DataMapper::Validations::Validators::Length.new(:name, opts)
+    DataMapper::Validations::Validator::Length.new(:name, opts)
   end
 
   describe 'allowing blank' do

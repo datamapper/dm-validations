@@ -72,9 +72,9 @@ module DataMapper
         # reference any real properties (field-less block vaildators).
         validators |= all_validators.select do |v|
           # TODO: make this a #always_validate? interface instead of a #kind_of? test
-          v.kind_of?(Validators::Method) ||
-          v.kind_of?(Validators::Presence) ||
-          v.kind_of?(Validators::Absence)
+          v.kind_of?(Validator::Method) ||
+          v.kind_of?(Validator::Presence) ||
+          v.kind_of?(Validator::Absence)
         end
 
         validators

@@ -36,7 +36,7 @@ module DataMapper
       #
       # @param  [String]
       #   Context name for which to return validators
-      # @return [Array<Validations::Validators::Abstract>]
+      # @return [Array(Validator)]
       #   An array of validators bound to the given context
       # 
       # @api public
