@@ -1,5 +1,6 @@
 # -*- encoding: utf-8 -*-
 
+require 'data_mapper/validations/context'
 require 'data_mapper/validations/validation_context'
 
 module DataMapper
@@ -71,6 +72,9 @@ module DataMapper
       #   whether or not the new validator should allow nil values
       # @option [Boolean] :message
       #   the error message the new validator will provide on validation failure
+      # 
+      # @return [ContextualValidators]
+      #   This method is a command, thus returns the receiver
       def add(validator_class, *attribute_names, &block)
         options  = attribute_names.last.kind_of?(Hash) ? attribute_names.pop.dup : {}
         contexts = extract_contexts(options)
@@ -81,21 +85,25 @@ module DataMapper
           contexts.each do |context|
             validators.each { |validator| self.context(context) << validator }
 
-            raise self.context(context).inspect if @model.respond_to?(:properties) && @model.properties.include?(:bool)
-
             # TODO: eliminate ModelExtensions#create_context_instance_methods,
             #   then eliminate the @model ivar entirely
             # In the meantime, update this method to return the context names
             #   to which validators were added, then override the Model methods
-            #   in Validators to add these context shortcuts (as a deprecated shim)
+            #   in Macros to add these context shortcuts (as a deprecated shim)
             ContextualValidators.create_context_instance_methods(@model, context) if @model
           end
         end
+
+        self
       end
 
       def inherited(descendant_validators)
         contexts.each do |context, validators|
           validators.each do |validator|
+            # TODO: add a new API for adding an initialized Validator
+            # (as opposed to a Validator descendant class). Adding members
+            # directly to the context's OrderedSet makes it difficult to support
+            # indexing validators by validated attribute name.
             descendant_validators.context(context) << validator.dup
           end
         end
