@@ -76,12 +76,8 @@ module DataMapper
         @if_clause      = options[:if]
         @unless_clause  = options[:unless]
 
-        if options.include?(:allow_nil)
-          @allow_nil = options[:allow_nil]
-        end
-        if options.include?(:allow_blank)
-          @allow_blank = options[:allow_blank]
-        end
+        @allow_nil   = options[:allow_nil]   if options.include?(:allow_nil)
+        @allow_blank = options[:allow_blank] if options.include?(:allow_blank)
       end
 
       def humanized_field_name
@@ -105,7 +101,6 @@ module DataMapper
       # TODO: remove this method
       #   Validators should return Violations, not mutate resource
       def add_error(resource, message, attribute_name = :general)
-        # TODO: should the attribute_name for a general message be :default???
         resource.errors.add(attribute_name, message)
         self
       end
