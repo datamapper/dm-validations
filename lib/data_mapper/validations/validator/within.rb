@@ -6,38 +6,29 @@ module DataMapper
   module Validations
     class Validator
 
-      class Within < Validator
+      module Within
 
-        attr_reader :set
-
-        def initialize(attribute_name, options={})
-          @set = options.fetch(:set, [])
-
-          super(attribute_name, DataMapper::Ext::Hash.except(options, :set))
+        # TODO: DRY this up (also implemented in Validator)
+        def self.validators_for(attribute_name, options)
+          Array(new(attribute_name, options))
         end
 
-        def valid?(resource)
-          value = resource.validation_property_value(attribute_name)
+        # TODO: move options normalization into the validator macros
+        def self.new(attribute_name, options)
+          set = options.fetch(:set)
 
-          optional?(value) || set.include?(value)
-        end
-
-        def error_message_args
-          if set.is_a?(Range)
-            if set.first != -Infinity && set.last != Infinity
-              [ :value_between,             attribute_name, set.first, set.last ]
-            elsif set.first == -Infinity
-              [ :less_than_or_equal_to,     attribute_name, set.last ]
-            elsif set.last == Infinity
-              [ :greater_than_or_equal_to,  attribute_name, set.first ]
-            end
+          if set.is_a?(::Range)
+            Within::Range.new(attribute_name, options)
           else
-            [ :inclusion, attribute_name, set.to_a.join(', ') ]
+            Within::Set.new(attribute_name, options)
           end
         end
 
-      end # class Within
+      end # module Within
 
     end # class Validator
   end # module Validations
 end # module DataMapper
+
+require 'data_mapper/validations/validator/within/range'
+require 'data_mapper/validations/validator/within/set'
