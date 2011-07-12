@@ -45,7 +45,7 @@ module DataMapper
           resource.saved? && other_resource.key == resource.key
         end
 
-        def violation_type
+        def violation_type(resource)
           :taken
         end
 

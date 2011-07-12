@@ -18,7 +18,7 @@ module DataMapper
             true
           end
 
-          def violation_type
+          def violation_type(resource)
             :greater_than
           end
 

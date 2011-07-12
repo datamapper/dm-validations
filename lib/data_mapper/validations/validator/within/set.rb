@@ -29,11 +29,11 @@ module DataMapper
             optional?(value) || set.include?(value)
           end
 
-          def violation_type
+          def violation_type(resource)
             :inclusion
           end
 
-          def violation_data
+          def violation_data(resource)
             [ set.to_a.join(', ') ]
           end
 

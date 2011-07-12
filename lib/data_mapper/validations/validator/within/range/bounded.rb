@@ -12,11 +12,11 @@ module DataMapper
 
             include Range
 
-            def violation_type
+            def violation_type(resource)
               :value_between
             end
 
-            def violation_data
+            def violation_data(resource)
               [ range.first, range.last ]
             end
 

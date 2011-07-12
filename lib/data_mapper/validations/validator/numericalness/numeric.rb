@@ -53,7 +53,7 @@ module DataMapper
             true
           end
 
-          def violation_type
+          def violation_type(resource)
             :not_a_number
           end
 

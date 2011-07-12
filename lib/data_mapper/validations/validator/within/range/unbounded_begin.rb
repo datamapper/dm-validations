@@ -12,11 +12,11 @@ module DataMapper
 
             include Range
 
-            def violation_type
+            def violation_type(resource)
               :less_than_or_equal_to
             end
 
-            def violation_data
+            def violation_data(resource)
               [ range.end ]
             end
 

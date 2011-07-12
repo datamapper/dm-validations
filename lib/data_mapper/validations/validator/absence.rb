@@ -13,7 +13,7 @@ module DataMapper
           DataMapper::Ext.blank?(value)
         end
 
-        def violation_type
+        def violation_type(resource)
           :absent
         end
 

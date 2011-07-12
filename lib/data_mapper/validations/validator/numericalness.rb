@@ -63,7 +63,7 @@ module DataMapper
           optional?(value) || validate_numericalness(value)
         end
 
-        def violation_data
+        def violation_data(resource)
           [ expected ]
         end
 

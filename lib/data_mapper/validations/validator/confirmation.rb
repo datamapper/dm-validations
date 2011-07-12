@@ -36,7 +36,7 @@ module DataMapper
           value == confirm_value
         end
 
-        def violation_type
+        def violation_type(resource)
           :confirmation
         end
 

@@ -17,12 +17,8 @@ module DataMapper
             super
           end
 
-          def violation_type
+          def violation_type(resource)
             :wrong_length
-          end
-
-          def violation_data
-            [ expected ]
           end
 
         private

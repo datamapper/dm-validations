@@ -63,8 +63,8 @@ module DataMapper
           allow_blank! unless defined?(@allow_blank)
         end
 
-        def error_message_args
-          [ :invalid, attribute_name ]
+        def violation_type(resource)
+          :invalid
         end
 
         # TODO: integrate format into error message key?

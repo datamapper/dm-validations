@@ -30,7 +30,7 @@ module DataMapper
           accept.include?(value)
         end
 
-        def violation_type
+        def violation_type(resource)
           :accepted
         end
 

@@ -19,11 +19,11 @@ module DataMapper
             super
           end
 
-          def violation_type
+          def violation_type(resource)
             :length_between
           end
 
-          def violation_data
+          def violation_data(resource)
             [ expected.min, expected.max ]
           end
 

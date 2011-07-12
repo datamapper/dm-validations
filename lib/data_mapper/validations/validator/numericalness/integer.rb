@@ -29,7 +29,7 @@ module DataMapper
             true
           end
 
-          def violation_type
+          def violation_type(resource)
             :not_an_integer
           end
 

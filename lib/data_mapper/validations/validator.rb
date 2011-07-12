@@ -119,11 +119,18 @@ module DataMapper
         return true if valid?(resource)
 
         error_message = self.custom_message ||
-          ValidationErrors.default_error_message(*error_message_args)
+          ValidationErrors.default_error_message(
+            violation_type(resource),
+            attribute_name,
+            *violation_data(resource))
 
         add_error(resource, error_message, attribute_name)
 
         false
+      end
+
+      def violation_data(resource)
+        [ ]
       end
 
       # Determines if this validator should be run against the
@@ -172,14 +179,6 @@ module DataMapper
         elsif DataMapper::Ext.blank?(value)
           allow_blank?
         end
-      end
-
-      def error_message_args
-        [ violation_type, attribute_name ] + violation_data
-      end
-
-      def violation_data
-        [ ]
       end
 
       def inspect

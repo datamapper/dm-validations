@@ -35,7 +35,7 @@ module DataMapper
             false
           end
 
-          def violation_type
+          def violation_type(resource)
             :invalid
           end
 

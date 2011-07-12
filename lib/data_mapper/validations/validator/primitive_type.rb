@@ -8,31 +8,21 @@ module DataMapper
 
       class PrimitiveType < Validator
 
-        def call(resource)
-          value     = resource.validation_property_value(attribute_name)
-          property  = get_resource_property(resource, attribute_name)
-          primitive = property.primitive
+        def valid?(resource)
+          property = get_resource_property(resource, attribute_name)
+          value    = resource.validation_property_value(attribute_name)
 
-          return true if valid?(property, value)
-
-          error_message = self.custom_message ||
-            ValidationErrors.default_error_message(*error_message_args(primitive))
-
-          add_error(resource, error_message, attribute_name)
-
-          false
-        end
-
-        def valid?(property, value)
           value.nil? || property.primitive?(value)
         end
 
-        def error_message_args(primitive)
-          [ violation_type, attribute_name, primitive ]
+        def violation_type(resource)
+          :primitive
         end
 
-        def violation_type
-          :primitive
+        def violation_data(resource)
+          property = get_resource_property(resource, attribute_name)
+
+          [ property.primitive ]
         end
 
       end # class PrimitiveType
