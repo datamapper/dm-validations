@@ -99,6 +99,11 @@ module DataMapper
         end
       end
 
+
+      def current_default_context
+        current_context || :default
+      end
+
       # Returns the current validation context on the stack if valid for this model,
       # nil if no contexts are defined for the model (and no contexts are on
       # the validation stack), or :default if the current context is invalid for

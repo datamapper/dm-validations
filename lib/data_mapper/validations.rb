@@ -65,7 +65,7 @@ module DataMapper
     # 
     # @api public
     def default_validation_context
-      model.validators.current_context || :default
+      model.validators.current_default_context
     end
 
     module ClassMethods
