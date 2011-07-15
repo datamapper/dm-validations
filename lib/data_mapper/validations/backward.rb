@@ -12,7 +12,7 @@ module DataMapper
       deprecate :clear!,  :clear
     end
 
-    class Validator
+    class Rule
       extend Deprecate
 
       # TODO: remove :field_name alias

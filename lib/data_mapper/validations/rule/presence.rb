@@ -4,9 +4,9 @@ require 'data_mapper/validations/rule'
 
 module DataMapper
   module Validations
-    class Validator
+    class Rule
 
-      class Presence < Validator
+      class Presence < Rule
 
         # Boolean property types are considered present if non-nil.
         # Other property types are considered present if non-blank.
@@ -40,6 +40,6 @@ module DataMapper
 
       end # class Presence
 
-    end # class Validator
+    end # class Rule
   end # module Validations
 end # module DataMapper

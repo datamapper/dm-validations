@@ -4,10 +4,10 @@ require 'data_mapper/validations/rule/length'
 
 module DataMapper
   module Validations
-    class Validator
+    class Rule
       module Length
 
-        class Minimum < Validator
+        class Minimum < Rule
 
           include Length
 
@@ -15,7 +15,7 @@ module DataMapper
 
           def initialize(attribute_name, options)
             @expected = options[:minimum]
-            # TODO: fix inheritance to delegate copying to Validator
+            # TODO: fix inheritance to delegate copying to Rule
             # instead of just passing options
             # super(attribute_name, DataMapper::Ext::Hash.except(options, :minimum))
             super
@@ -43,6 +43,6 @@ module DataMapper
         end # class Minimum
 
       end # module Length
-    end # class Validator
+    end # class Rule
   end # module Validations
 end # module DataMapper

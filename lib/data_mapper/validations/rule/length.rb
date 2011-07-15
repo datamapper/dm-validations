@@ -4,13 +4,13 @@ require 'data_mapper/validations/rule'
 
 module DataMapper
   module Validations
-    class Validator
+    class Rule
 
       module Length
 
         attr_reader :expected
 
-        # TODO: DRY this up (also implemented in Validator)
+        # TODO: DRY this up (also implemented in Rule)
         def self.validators_for(attribute_name, options)
           Array(new(attribute_name, options))
         end
@@ -43,7 +43,7 @@ module DataMapper
           end
         end
 
-        class Dummy < Validator
+        class Dummy < Rule
           include Length
         end
 
@@ -89,7 +89,7 @@ module DataMapper
 
       end # module Length
 
-    end # class Validator
+    end # class Rule
   end # module Validations
 end # module DataMapper
 

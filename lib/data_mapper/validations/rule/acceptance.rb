@@ -4,9 +4,9 @@ require 'data_mapper/validations/rule'
 
 module DataMapper
   module Validations
-    class Validator
+    class Rule
 
-      class Acceptance < Validator
+      class Acceptance < Rule
 
         EQUALIZE_ON = superclass::EQUALIZE_ON.dup << :accept
 
@@ -42,6 +42,6 @@ module DataMapper
 
       end # class Acceptance
 
-    end # class Validator
+    end # class Rule
   end # module Validations
 end # module DataMapper

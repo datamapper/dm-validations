@@ -4,9 +4,9 @@ require 'data_mapper/validations/rule'
 
 module DataMapper
   module Validations
-    class Validator
+    class Rule
 
-      class Absence < Validator
+      class Absence < Rule
 
         def valid?(resource)
           value = resource.validation_property_value(attribute_name)
@@ -19,6 +19,6 @@ module DataMapper
 
       end # class Absence
 
-    end # class Validator
+    end # class Rule
   end # module Validations
 end # module DataMapper

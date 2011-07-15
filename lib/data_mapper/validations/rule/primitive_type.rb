@@ -4,9 +4,9 @@ require 'data_mapper/validations/rule'
 
 module DataMapper
   module Validations
-    class Validator
+    class Rule
 
-      class PrimitiveType < Validator
+      class PrimitiveType < Rule
 
         def valid?(resource)
           property = get_resource_property(resource, attribute_name)
@@ -27,6 +27,6 @@ module DataMapper
 
       end # class PrimitiveType
 
-    end # class Validator
+    end # class Rule
   end # module Validations
 end # module DataMapper

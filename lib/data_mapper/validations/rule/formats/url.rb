@@ -2,7 +2,7 @@
 
 module DataMapper
   module Validations
-    class Validator
+    class Rule
       module Formats
 
         # Regex from http://www.igvita.com/2006/09/07/validating-url-in-ruby-on-rails/
@@ -11,6 +11,6 @@ module DataMapper
         end
 
       end # module Formats
-    end # class Validator
+    end # class Rule
   end # module Validations
 end # module DataMapper

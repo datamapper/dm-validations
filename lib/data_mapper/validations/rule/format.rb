@@ -9,7 +9,7 @@ module DataMapper
   module Validations
     class UnknownValidationFormat < ::ArgumentError; end
 
-    class Validator
+    class Rule
 
       module Format
 
@@ -78,7 +78,7 @@ module DataMapper
 
       end # class Format
 
-    end # class Validator
+    end # class Rule
   end # module Validations
 end # module DataMapper
 

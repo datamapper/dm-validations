@@ -4,10 +4,10 @@ require 'data_mapper/validations/rule/format'
 
 module DataMapper
   module Validations
-    class Validator
+    class Rule
       module Format
 
-        class Regexp < Validator
+        class Regexp < Rule
 
           include Format
 
@@ -51,6 +51,6 @@ module DataMapper
         end # class Regexp
 
       end # module Format
-    end # class Validator
+    end # class Rule
   end # module Validations
 end # module DataMapper

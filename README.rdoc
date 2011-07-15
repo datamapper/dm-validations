@@ -25,7 +25,7 @@ There are two primary ways to implement validations for your models
     property :name, String, :required => true
   end
 
-See all of the DataMapper::Validate module's XYZValidator(s) to learn about the complete collections of validators available to you.
+See data_mapper/validations/macros.rb for to learn about the complete collection of validation rules available.
 
 == Validating
 

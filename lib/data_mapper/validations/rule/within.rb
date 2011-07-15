@@ -4,11 +4,11 @@ require 'data_mapper/validations/rule'
 
 module DataMapper
   module Validations
-    class Validator
+    class Rule
 
       module Within
 
-        # TODO: DRY this up (also implemented in Validator)
+        # TODO: DRY this up (also implemented in Rule)
         def self.validators_for(attribute_name, options)
           Array(new(attribute_name, options))
         end
@@ -26,7 +26,7 @@ module DataMapper
 
       end # module Within
 
-    end # class Validator
+    end # class Rule
   end # module Validations
 end # module DataMapper
 

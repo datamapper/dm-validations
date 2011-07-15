@@ -4,9 +4,9 @@ require 'data_mapper/validations/rule'
 
 module DataMapper
   module Validations
-    class Validator
+    class Rule
 
-      class Method < Validator
+      class Method < Rule
 
         attr_reader :method
 
@@ -27,6 +27,6 @@ module DataMapper
 
       end # class Method
 
-    end # class Validator
+    end # class Rule
   end # module Validations
 end # module DataMapper

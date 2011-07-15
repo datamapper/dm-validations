@@ -4,8 +4,8 @@ require 'data_mapper/validations/rule'
 
 module DataMapper
   module Validations
-    class Validator
-      class Uniqueness < Validator
+    class Rule
+      class Uniqueness < Rule
 
         include DataMapper::Assertions
 
@@ -50,6 +50,6 @@ module DataMapper
         end
 
       end # class Uniqueness
-    end # class Validator
+    end # class Rule
   end # module Validations
 end # module DataMapper

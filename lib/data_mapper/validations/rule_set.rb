@@ -37,7 +37,7 @@ module DataMapper
         self
       end
 
-      # Holds a collection of Validator instances that should be run against
+      # Holds a collection of Rule instances that should be run against
       # Resources to validate the Resources in a specific context
 
 
@@ -107,9 +107,9 @@ module DataMapper
         # reference any real properties (field-less block vaildators).
         rules |= all_rules.select do |v|
           # TODO: make this a #always_validate? interface instead of a #kind_of? test
-          v.kind_of?(Validator::Method) ||
-          v.kind_of?(Validator::Presence) ||
-          v.kind_of?(Validator::Absence)
+          v.kind_of?(Rule::Method) ||
+          v.kind_of?(Rule::Presence) ||
+          v.kind_of?(Rule::Absence)
         end
 
         rules

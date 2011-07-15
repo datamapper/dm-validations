@@ -5,7 +5,7 @@ module DataMapper
     # TODO: rewrite this. specifically, validation logic should not
     # be intertwined with message generation.
     # Also, supporting multiple validation types per validator is too complicated
-    class Validator
+    class Rule
       extend Equalizer
 
       EQUALIZE_ON = [
@@ -41,7 +41,7 @@ module DataMapper
       # @param [Hash] options
       #   the options with which to configure the returned validators
       # 
-      # @return [#each(Validator)]
+      # @return [#each(Rule)]
       #   a collection of validators which collectively
       # 
       def self.validators_for(attribute_name, options, &block)
@@ -64,12 +64,12 @@ module DataMapper
       #
       # @note
       #   All additional key/value pairs are passed through to the
-      #   Validator subclass
+      #   Rule subclass
       #
       def initialize(attribute_name, options = {})
         @attribute_name = attribute_name
         @options        = DataMapper::Ext::Hash.except(options, :message, :if, :unless)
-        # TODO: implement a #copy method, for use in ContextualValidators#inherit
+        # TODO: implement a #copy method, for use in ContextualRules#inherit
         #   then remove :allow_nil, :allow_blank, and :message from @options
         #   ultimately, remove @options entirely
         @custom_message = options[:message]
@@ -95,11 +95,11 @@ module DataMapper
       # @param [Symbol] attribute_name
       #   The name of the field that caused the error.
       #
-      # @return [Validator]
+      # @return [Rule]
       #   The receiver (self)
       # 
       # TODO: remove this method
-      #   Validators should return Violations, not mutate resource
+      #   Rules should return Violations, not mutate resource
       def add_error(resource, message, attribute_name = :general)
         resource.errors.add(attribute_name, message)
         self
@@ -228,6 +228,6 @@ module DataMapper
         properties[property_name]                      if properties
       end
 
-    end # class Validator
+    end # class Rule
   end # module Validations
 end # module DataMapper

@@ -4,10 +4,10 @@ require 'data_mapper/validations/rule/within'
 
 module DataMapper
   module Validations
-    class Validator
+    class Rule
       module Within
 
-        class Set < Validator
+        class Set < Rule
 
           EQUALIZE_ON = superclass::EQUALIZE_ON.dup << :set
 
@@ -40,6 +40,6 @@ module DataMapper
         end # class Set
 
       end # module Within
-    end # class Validator
+    end # class Rule
   end # module Validations
 end # module DataMapper

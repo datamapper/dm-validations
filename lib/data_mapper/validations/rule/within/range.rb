@@ -4,7 +4,7 @@ require 'data_mapper/validations/rule/within'
 
 module DataMapper
   module Validations
-    class Validator
+    class Rule
       module Within
 
         module Range
@@ -46,7 +46,7 @@ module DataMapper
         end # module Range
 
       end # module Within
-    end # class Validator
+    end # class Rule
   end # module Validations
 end # module DataMapper
 

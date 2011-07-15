@@ -127,7 +127,7 @@ module DataMapper
         end
 
         # TODO: update these methods to return an array of:
-        #   [Validator::Abstract, attribute_name, validator_options]
+        #   [Rule::Abstract, attribute_name, validator_options]
         # Then iterate over *that* list and call:
         #   property.model.validators.add(*args)
         inferred_validator_args << infer_presence(  property, opts.dup)
@@ -154,7 +154,7 @@ module DataMapper
 
         validation_options = options_with_message(options, property, :presence)
 
-        [Validator::Presence, property.name, validation_options]
+        [Rule::Presence, property.name, validation_options]
       end
 
       # @api private
@@ -174,7 +174,7 @@ module DataMapper
 
         validation_options = options_with_message(options, property, :length)
 
-        [Validator::Length, property.name, validation_options]
+        [Rule::Length, property.name, validation_options]
       end
 
       # @api private
@@ -185,7 +185,7 @@ module DataMapper
 
         validation_options = options_with_message(options, property, :format)
         # property.model.validates_format_of property.name, validation_options
-        [Validator::Format, property.name, validation_options]
+        [Rule::Format, property.name, validation_options]
       end
 
       # @api private
@@ -199,11 +199,11 @@ module DataMapper
 
             validation_options = options_with_message(options, property, :is_unique)
             # property.model.validates_uniqueness_of property.name, validation_options
-            [Validator::Uniqueness, property.name, validation_options]
+            [Rule::Uniqueness, property.name, validation_options]
           when TrueClass
             validation_options = options_with_message(options, property, :is_unique)
             # property.model.validates_uniqueness_of property.name, validation_options
-            [Validator::Uniqueness, property.name, validation_options]
+            [Rule::Uniqueness, property.name, validation_options]
         end
       end
 
@@ -215,7 +215,7 @@ module DataMapper
 
         validation_options = options_with_message(options, property, :within)
         # property.model.validates_within property.name, validation_options
-        [Validator::Within, property.name, validation_options]
+        [Rule::Within, property.name, validation_options]
       end
 
       # @api private
@@ -232,7 +232,7 @@ module DataMapper
 
           validation_options = options_with_message(options, property, :is_number)
           # property.model.validates_numericalness_of property.name, validation_options
-          [Validator::Numericalness, property.name, validation_options]
+          [Rule::Numericalness, property.name, validation_options]
         elsif (BigDecimal == property.primitive ||
                Float == property.primitive)
           options[:precision] = property.precision
@@ -240,14 +240,14 @@ module DataMapper
 
           validation_options = options_with_message(options, property, :is_number)
           # property.model.validates_numericalness_of property.name, validation_options
-          [Validator::Numericalness, property.name, validation_options]
+          [Rule::Numericalness, property.name, validation_options]
         else
           # We only need this in the case we don't already
           # have a numeric validator, because otherwise
           # it will cause duplicate validation errors
           validation_options = options_with_message(options, property, :is_primitive)
           # property.model.validates_primitive_type_of property.name, validation_options
-          [Validator::PrimitiveType, property.name, validation_options]
+          [Rule::PrimitiveType, property.name, validation_options]
         end
       end
 

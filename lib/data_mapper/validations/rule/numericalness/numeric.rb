@@ -4,10 +4,10 @@ require 'data_mapper/validations/rule/numericalness'
 
 module DataMapper
   module Validations
-    class Validator
+    class Rule
       module Numericalness
 
-        class Numeric < Validator
+        class Numeric < Rule
 
           include Numericalness
 
@@ -60,6 +60,6 @@ module DataMapper
         end # class Numeric
 
       end # module Numericalness
-    end # class Validator
+    end # class Rule
   end # module Validations
 end # module DataMapper

@@ -38,7 +38,7 @@ module DataMapper
       #
       # @param  [String]
       #   Context name for which to return validators
-      # @return [Array(Validator)]
+      # @return [Array(Rule)]
       #   An array of validators bound to the given context
       # 
       # @api public
@@ -49,8 +49,8 @@ module DataMapper
       # Create a new validator of the given klazz and push it onto the
       # requested context for each of the attribute_names in +attribute_names+
       # 
-      # @param [DataMapper::Validations::GenericValidator] validator_class
-      #    Validator class, example: DataMapper::Validations::LengthValidator
+      # @param [DataMapper::Validations::Rule] validator_class
+      #    Rule class, example: DataMapper::Validations::Rule::Presence
       #
       # @param [Array<Symbol>] attribute_names
       #    Attribute names given to validation macro, example:
@@ -94,8 +94,8 @@ module DataMapper
       def inherited(descendant_validators)
         contexts.each do |context, validators|
           validators.each do |validator|
-            # TODO: add a new API for adding an initialized Validator
-            # (as opposed to a Validator descendant class). Adding members
+            # TODO: add a new API for adding an initialized Rule
+            # (as opposed to a Rule descendant class). Adding members
             # directly to the context's OrderedSet makes it difficult to support
             # indexing validators by validated attribute name.
             descendant_validators.context(context) << validator.dup

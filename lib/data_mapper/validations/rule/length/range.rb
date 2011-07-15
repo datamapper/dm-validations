@@ -4,10 +4,10 @@ require 'data_mapper/validations/rule/length'
 
 module DataMapper
   module Validations
-    class Validator
+    class Rule
       module Length
 
-        class Range < Validator
+        class Range < Rule
 
           include Length
 
@@ -45,6 +45,6 @@ module DataMapper
         end # class Range
 
       end # module Length
-    end # class Validator
+    end # class Rule
   end # module Validations
 end # module DataMapper
