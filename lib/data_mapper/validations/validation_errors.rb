@@ -1,55 +1,32 @@
+
+require 'data_mapper/validations/message_transformer'
+
 module DataMapper
   module Validations
     class ValidationErrors
 
       include Enumerable
 
-      @@default_error_messages = {
-        :absent                   => '%s must be absent',
-        :inclusion                => '%s must be one of %s',
-        :invalid                  => '%s has an invalid format',
-        :confirmation             => '%s does not match the confirmation',
-        :accepted                 => '%s is not accepted',
-        :nil                      => '%s must not be nil',
-        :blank                    => '%s must not be blank',
-        :length_between           => '%s must be between %s and %s characters long',
-        :too_long                 => '%s must be at most %s characters long',
-        :too_short                => '%s must be at least %s characters long',
-        :wrong_length             => '%s must be %s characters long',
-        :taken                    => '%s is already taken',
-        :not_a_number             => '%s must be a number',
-        :not_an_integer           => '%s must be an integer',
-        :greater_than             => '%s must be greater than %s',
-        :greater_than_or_equal_to => '%s must be greater than or equal to %s',
-        :equal_to                 => '%s must be equal to %s',
-        :not_equal_to             => '%s must not be equal to %s',
-        :less_than                => '%s must be less than %s',
-        :less_than_or_equal_to    => '%s must be less than or equal to %s',
-        :value_between            => '%s must be between %s and %s',
-        :primitive                => '%s must be of type %s'
-      }
-
-      # Holds a hash with all the default error messages that can
-      # be replaced by your own copy or localizations.
-      # 
-      # @api public
-      def self.default_error_messages=(default_error_messages)
-        @@default_error_messages = default_error_messages
+      def self.default_transformer
+        @default_transformer ||= MessageTransformer::Default.new
       end
 
-      # @api public
-      def self.default_error_message(key, field, *values)
-        field = DataMapper::Inflector.humanize(field)
-        @@default_error_messages[key] % [field, *values].flatten
+      def self.default_transformer=(transformer)
+        @default_transformer = transformer
       end
 
       attr_reader :resource
+
+      # @api private
+      attr_reader :errors
+      # TODO: why was this private?
+      private :errors
 
       # TODO: merge in gix's Violation/MessageTransformer work
       # then replace OrderedHash with OrderedSet and remove OrderedHash entirely
       def initialize(resource)
         @resource = resource
-        @errors   = DataMapper::Validations::OrderedHash.new { |h,k| h[k] = [] }
+        @errors   = OrderedHash.new { |h,k| h[k] = [] }
       end
 
       # Clear existing validation errors.
@@ -64,34 +41,30 @@ module DataMapper
       #
       # @param [Symbol] attribute_name
       #   The name of the field that caused the error
-      # @param [String] message
-      #   The message to add
+      # @param [String, #try_call] message
+      #   The message to add. If +message+ responds to #try_call, that message
+      #   will be sent, with args varying by circumstance
       # 
       # @api public
-      def add(attribute_name, message)
-        if message.respond_to?(:try_call)
-          # DM resource
-          message = if (resource.respond_to?(:model) &&
-                        resource.model.respond_to?(:properties))
-                      message.try_call(
-                        resource,
-                        resource.model.properties[attribute_name]
-                      )
-                    else
-                      # pure Ruby object
-                      message.try_call(resource)
-                    end
-        end
+      def add(attribute_name_or_violation, message = nil)
+        violation = 
+          if attribute_name_or_violation.kind_of?(Violation)
+            attribute_name_or_violation
+          else
+            Violation.new(resource, message, nil, attribute_name_or_violation)
+          end
 
-        (errors[attribute_name] ||= []) << message
+        errors[violation.attribute_name] << violation
       end
 
       # Collect all errors into a single list.
       # 
       # @api public
       def full_messages
-        errors.inject([]) do |list, pair|
-          list += pair.last
+        errors.inject([]) do |list, (attribute_name, errors)|
+          messages = errors
+          messages = errors.full_messages if errors.respond_to?(:full_messages)
+          list += messages
         end
       end
 
@@ -100,14 +73,16 @@ module DataMapper
       # @param [Symbol] attribute_name
       #   The name of the field you want an error for.
       #
-      # @return [Array<DataMapper::Validations::Error>]
-      #   Array of validation errors or empty array, if there are no errors
-      #   on given field
+      # @return [Array(Violation, String), NilClass]
+      #   Array of Violations or Strings, if there are errors on +attribute_name+
+      #   nil if there are no errors on +attribute_name+
       # 
       # @api public
+      # 
+      # TODO: use a data structure that ensures uniqueness
       def on(attribute_name)
-        errors_for_field = errors[attribute_name]
-        DataMapper::Ext.blank?(errors_for_field) ? nil : errors_for_field.uniq
+        attribute_violations = errors[attribute_name]
+        attribute_violations.empty? ? nil : attribute_violations.uniq
       end
 
       # @api public
@@ -119,7 +94,15 @@ module DataMapper
 
       # @api public
       def empty?
-        @errors.all? { |property_name, errors| errors.empty? }
+        errors.all? { |attribute_name, errors| errors.empty? }
+      end
+
+      # @api public
+      # 
+      # FIXME: calling #to_sym on uncontrolled input is an
+      # invitation for a memory leak
+      def [](attribute_name)
+        errors[attribute_name.to_sym]
       end
 
       def method_missing(meth, *args, &block)
@@ -128,19 +111,6 @@ module DataMapper
 
       def respond_to?(method)
         super || errors.respond_to?(method)
-      end
-
-      # @api public
-      def [](property_name)
-        if (property_errors = errors[property_name.to_sym])
-          property_errors
-        end
-      end
-
-    private
-
-      def errors
-        @errors
       end
 
     end # class ValidationErrors

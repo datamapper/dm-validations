@@ -10,6 +10,12 @@ module DataMapper
       extend Forwardable
       include Enumerable
 
+      # MessageTransformer to use for transforming Violations on Resources
+      # instantiated from the model to which this ContextualRuleSet is bound
+      # 
+      # @api public
+      attr_accessor :transformer
+
       # @api private
       attr_reader :rule_sets
 

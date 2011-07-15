@@ -49,14 +49,11 @@ module DataMapper
       # @param [Object] resource
       #   the resource that we are validating
       # 
-      # @return [Boolean]
-      #   true if all are valid, otherwise false
+      # @return [Array(Violation)]
+      #   an Array of Violations
       def validate(resource)
-        resource.errors.clear!
-
         rules = rules_for_resource(resource)
-
-        rules.map { |rule| rule.call(resource) }.all?
+        rules.map { |rule| rule.validate(resource) }.compact
       end
 
       def inspect

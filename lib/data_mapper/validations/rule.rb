@@ -1,5 +1,7 @@
 # -*- encoding: utf-8 -*-
 
+require 'data_mapper/validations/violation'
+
 module DataMapper
   module Validations
     # TODO: rewrite this. specifically, validation logic should not
@@ -84,55 +86,6 @@ module DataMapper
         DataMapper::Inflector.humanize(attribute_name)
       end
 
-      # Add an error message to a resource. If the error corresponds to
-      # a specific attribute name of the resource, add it to the errors for that
-      # attribute name, otherwise add it under the :general attribute name
-      #
-      # @param [Object] resource
-      #   The resource that has the error.
-      # @param [String] message
-      #   The message to add.
-      # @param [Symbol] attribute_name
-      #   The name of the field that caused the error.
-      #
-      # @return [Rule]
-      #   The receiver (self)
-      # 
-      # TODO: remove this method
-      #   Rules should return Violations, not mutate resource
-      def add_error(resource, message, attribute_name = :general)
-        resource.errors.add(attribute_name, message)
-        self
-      end
-
-      # Call the validator. "call" is used so the operation is BoundMethod
-      # and Block compatible. This must be implemented in all concrete
-      # classes.
-      #
-      # @param [Object] resource
-      #   The resource that the validator must be called against.
-      #
-      # @return [Boolean]
-      #   true if valid, otherwise false.
-      #
-      def call(resource)
-        return true if valid?(resource)
-
-        error_message = self.custom_message ||
-          ValidationErrors.default_error_message(
-            violation_type(resource),
-            attribute_name,
-            *violation_data(resource))
-
-        add_error(resource, error_message, attribute_name)
-
-        false
-      end
-
-      def violation_data(resource)
-        [ ]
-      end
-
       # Determines if this validator should be run against the
       # resource by evaluating the :if and :unless clauses
       # optionally passed while specifying any validator.
@@ -152,6 +105,63 @@ module DataMapper
         else
           true
         end
+      end
+
+      def validate(resource)
+        if valid?(resource)
+          nil
+        else
+          Violation.new(resource, custom_message, self)
+        end
+      end
+
+      # Call the validator. "call" is used so the operation is BoundMethod
+      # and Block compatible. This must be implemented in all concrete
+      # classes.
+      #
+      # @param [Object] resource
+      #   The resource that the validator must be called against.
+      #
+      # @return [Boolean]
+      #   true if valid, otherwise false.
+      #
+      def call(resource)
+        return true if valid?(resource)
+
+        error_message = self.custom_message ||
+          MessageTransformer::Default.error_message(
+            violation_type(resource),
+            attribute_name,
+            *violation_data(resource))
+
+        add_error(resource, error_message, attribute_name)
+
+        false
+      end
+
+      def violation_data(resource)
+        [ ]
+      end
+
+      # Add an error message to a resource. If the error corresponds to
+      # a specific attribute name of the resource, add it to the errors for that
+      # attribute name, otherwise add it under the :general attribute name
+      #
+      # @param [Object] resource
+      #   The resource that has the error.
+      # @param [String] message
+      #   The message to add.
+      # @param [Symbol] attribute_name
+      #   The name of the field that caused the error.
+      #
+      # @return [Rule]
+      #   The receiver (self)
+      # 
+      # TODO: remove this method
+      #   Rules should return Violations, not mutate resource
+      def add_error(resource, message, attribute_name = :general)
+        resource.errors.add(attribute_name, message)
+        self
       end
 
       def allow_nil?

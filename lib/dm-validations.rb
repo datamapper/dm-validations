@@ -6,10 +6,12 @@ require 'data_mapper/validations/support/object'
 require 'data_mapper/validations'
 
 require 'data_mapper/validations/context'
+require 'data_mapper/validations/violation'
+require 'data_mapper/validations/validation_errors'
+
 require 'data_mapper/validations/rule'
 require 'data_mapper/validations/rule_set'
 require 'data_mapper/validations/contextual_rule_sets'
-require 'data_mapper/validations/validation_errors'
 
 require 'data_mapper/validations/resource'
 require 'data_mapper/validations/model_extensions'

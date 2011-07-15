@@ -5,14 +5,23 @@ module DataMapper
     #   any reason not to remove it?
     class ValidationError < StandardError; end
 
+    # ValidationErrors = ErrorSet
+    class ValidationErrors
+      extend Deprecate
+
+      def self.default_error_message(violation_type, attribute_name, *violation_data)
+        MessageTransformer::Default.error_message(violation_type, attribute_name, *violation_data)
+      end
+    end
+
     class ContextualRuleSets
       extend Deprecate
 
       deprecate :clear!,  :clear
 
       def execute(context_name, resource)
-        warn "#{self.class}#execute is deprecated. Use #{self.class}#validate instead."
-        validate(resource, context_name)
+        # warn "#{self.class}#execute is deprecated. Use #{self.class}#validate instead."
+        context(context_name).execute(resource)
       end
     end
 
@@ -21,6 +30,27 @@ module DataMapper
 
       # TODO: remove :field_name alias
       deprecate :field_name, :attribute_name
+    end
+
+    class RuleSet
+      extend Deprecate
+
+      # This is present to provide a backwards-compatible codepath to
+      # ContextualRuleSets#execute
+      def execute(resource)
+        resource.errors.clear!
+        rules = rules_for_resource(resource)
+        rules.map { |rule| rule.call(resource) }.all?
+      end
+    end
+
+    class Violation
+      # TODO: Extract the correct custom message for a Rule's context
+      # in ContextualRuleSets#add
+      def [](context_name)
+        warn "Accessing custom messages by context name will be removed in a future version"
+        @custom_message[context_name]
+      end
     end
 
     module Macros

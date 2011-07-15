@@ -4,66 +4,102 @@ module DataMapper
   module Validations
 
     class Violation
-      extend Forwardable
-      extend Equalizer
-
-      EQUALIZE_ON = [:validator, :custom_message, :block]
-
-      equalize *EQUALIZE_ON
-
-      def_delegators :validator, :attribute_name, :violation_type, :message_data
 
       attr_reader :resource
-      attr_reader :validator
       attr_reader :custom_message
-      attr_reader :message_data
+      attr_reader :rule
+      attr_writer :attribute_name
 
-      attr_accessor :transformer
-
-      def initialize(validator, message_or_data = nil, transformer = nil, &block)
-        @validator   = validator
-        @transformer = transformer
-
-        case message_or_data
-        when String
-          @custom_message = message_or_data
-        when Symbol
-          @violation_type = message_or_data
-        when Array
-          @message_data = message_or_data
-        else
-          @resource = message_or_data
+      def initialize(resource, message = nil, rule = nil, attribute_name = nil)
+        unless message || rule
+          raise ArgumentError, "expected +message+ or +rule+"
         end
 
-        unless validator || message || block
-          raise ArgumentError, "expected one of +validator+, +message+ or +block+"
-        end
+        @resource       = resource
+        @rule           = rule
+        @attribute_name = attribute_name
+        @custom_message = evaluate_message(message)
       end
 
+      # @api public
       def message(transformer = Undefined)
-        if Undefined != transformer
-          transformer.transform(self)
-        elsif custom_message
-          custom_message
-        elsif block
-          block.arity.zero? ? block.call : block.call(self)
+        return @custom_message if @custom_message
+
+        transformer = Undefined == transformer ? self.transformer : transformer
+
+        transformer.transform(self)
+      end
+
+      # @api public
+      alias_method :to_s, :message
+
+      # @api public
+      def attribute_name
+        if @attribute_name
+          @attribute_name
+        elsif rule
+          rule.attribute_name
+        end
+      end
+
+      # @api public
+      def violation_type
+        rule ? rule.violation_type(resource) : nil
+      end
+
+      # @api public
+      def violation_data
+        rule ? rule.violation_data(resource) : nil
+      end
+
+      def transformer
+        if resource.respond_to?(:model) && transformer = resource.model.validators.transformer
+          transformer
         else
-          self.transformer.transform(self)
+          ValidationErrors.default_transformer
         end
       end
 
-      def to_s
-        message
+      def evaluate_message(message)
+        if message.respond_to?(:call)
+          if resource.respond_to?(:model) && resource.model.respond_to?(:properties)
+            property = resource.model.properties[attribute_name]
+            message.call(resource, property)
+          else
+            message.call(resource)
+          end
+        else
+          message
+        end
       end
 
-      def inspect
-        out = "#<#{self.class.name}"
-        self.class::EQUALIZE_ON.each do |ivar|
-          value = send(ivar)
-          out << " @#{ivar}=#{value.inspect}"
+      # In general we want Equalizer-type equality/equivalence,
+      # but this allows direct equivalency test against Strings, which is handy
+      def ==(other)
+        if other.respond_to?(:to_str)
+          self.to_s == other.to_str
+        else
+          super
         end
-        out << ">"
       end
+
+      module Equalization
+        extend Equalizer
+
+        EQUALIZE_ON = [:resource, :rule, :custom_message, :attribute_name]
+
+        equalize *EQUALIZE_ON
+
+        def inspect
+          out = "#<#{self.class.name}"
+          self.class::Equalization::EQUALIZE_ON.each do |ivar|
+            value = send(ivar)
+            out << " @#{ivar}=#{value.inspect}"
+          end
+          out << ">"
+        end
+      end
+      include Equalization
 
     end # class Violation
 

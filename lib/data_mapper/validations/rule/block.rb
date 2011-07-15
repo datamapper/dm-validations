@@ -20,6 +20,16 @@ module DataMapper
           @block = block
         end
 
+        def validate(resource)
+          result, error_message = resource.instance_eval(&self.block)
+
+          if result
+            nil
+          else
+            Violation.new(resource, error_message, self)
+          end
+        end
+
         def call(resource)
           result, error_message = resource.instance_eval(&self.block)
           add_error(resource, error_message, attribute_name) unless result

@@ -40,14 +40,23 @@ describe 'required_field_validator/boolean_type_value_spec' do
 
       it "is not valid for pushing" do
         @operation.should_not be_valid_for_pushing
+        # Note: the previous API supported error messages as Hashes (context)
+        #   I will remove that capability, such that a Rule only stores the
+        #   message for the context to which the Rule is bound
+        #   This will provide the same information, but with a simpler API
+        # @operation.errors.on(:network_connection).
+        #   first.should == 'though git is advanced, it cannot push without network connectivity'
         @operation.errors.on(:network_connection).
           first[:pushing].should == 'though git is advanced, it cannot push without network connectivity'
       end
 
       it "is not valid for pulling" do
         @operation.should_not be_valid_for_pulling
+        # NOTE: See previous spec, above
         @operation.errors.on(:network_connection).
           first[:pulling].should == 'you must have network connectivity to pull from others'
+        # @operation.errors.on(:network_connection).
+        #   first.should == 'you must have network connectivity to pull from others'
       end
 
       it "is not valid in default context" do
