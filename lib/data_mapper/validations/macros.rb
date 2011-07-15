@@ -1,19 +1,19 @@
 # -*- encoding: utf-8 -*-
 
-require 'data_mapper/validations/validator'
+require 'data_mapper/validations/rule'
 
-require 'data_mapper/validations/validator/absence'
-require 'data_mapper/validations/validator/acceptance'
-require 'data_mapper/validations/validator/block'
-require 'data_mapper/validations/validator/confirmation'
-require 'data_mapper/validations/validator/format'
-require 'data_mapper/validations/validator/length'
-require 'data_mapper/validations/validator/method'
-require 'data_mapper/validations/validator/numericalness'
-require 'data_mapper/validations/validator/presence'
-require 'data_mapper/validations/validator/primitive_type'
-require 'data_mapper/validations/validator/uniqueness'
-require 'data_mapper/validations/validator/within'
+require 'data_mapper/validations/rule/absence'
+require 'data_mapper/validations/rule/acceptance'
+require 'data_mapper/validations/rule/block'
+require 'data_mapper/validations/rule/confirmation'
+require 'data_mapper/validations/rule/format'
+require 'data_mapper/validations/rule/length'
+require 'data_mapper/validations/rule/method'
+require 'data_mapper/validations/rule/numericalness'
+require 'data_mapper/validations/rule/presence'
+require 'data_mapper/validations/rule/primitive_type'
+require 'data_mapper/validations/rule/uniqueness'
+require 'data_mapper/validations/rule/within'
 
 module DataMapper
   module Validations
