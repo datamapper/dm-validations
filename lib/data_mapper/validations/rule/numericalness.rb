@@ -17,7 +17,7 @@ module DataMapper
         end
 
         # TODO: move options normalization into the validator macros?
-        def self.validators_for(attribute_name, options)
+        def self.rules_for(attribute_name, options)
           options = options.dup
 
           int = scour_options_of_keys(options, [:only_integer, :integer_only])

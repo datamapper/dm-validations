@@ -44,7 +44,7 @@ module DataMapper
       # @return [#each(Rule)]
       #   a collection of validators which collectively
       # 
-      def self.validators_for(attribute_name, options, &block)
+      def self.rules_for(attribute_name, options, &block)
         Array(new(attribute_name, options, &block))
       end
 

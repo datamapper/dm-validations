@@ -11,18 +11,18 @@ module DataMapper
       include Enumerable
 
       # @api private
-      attr_reader :contexts
+      attr_reader :rule_sets
 
-      def_delegators :contexts, :each, :empty?
+      def_delegators :rule_sets, :each, :empty?
 
-      # Clear all named context validators off of the resource
+      # Clear all named context rule sets
       #
       # @api public
-      def_delegators :contexts, :clear
+      def_delegators :rule_sets, :clear
 
       def initialize(model = nil)
         @model    = model
-        @contexts = Hash.new do |h, context_name|
+        @rule_sets = Hash.new do |h, context_name|
           h[context_name] = RuleSet.new(context_name)
         end
       end
@@ -34,22 +34,22 @@ module DataMapper
         context(context_name).validate(resource)
       end
 
-      # Return an array of validators for a named context
+      # Return the RuleSet for a given context name
       #
-      # @param  [String]
-      #   Context name for which to return validators
-      # @return [Array(Rule)]
-      #   An array of validators bound to the given context
+      # @param [String] name
+      #   Context name for which to return a RuleSet
+      # @return [RuleSet]
+      #   RuleSet for the given context
       # 
       # @api public
       def context(name)
-        contexts[name]
+        rule_sets[name]
       end
 
-      # Create a new validator of the given klazz and push it onto the
-      # requested context for each of the attribute_names in +attribute_names+
+      # Create a new rule of the given class for each name in +attribute_names+
+      # and add the rules to the RuleSet(s) indicated
       # 
-      # @param [DataMapper::Validations::Rule] validator_class
+      # @param [DataMapper::Validations::Rule] rule_class
       #    Rule class, example: DataMapper::Validations::Rule::Presence
       #
       # @param [Array<Symbol>] attribute_names
@@ -61,28 +61,28 @@ module DataMapper
       #    {:context=>:default, :maximum=>50, :allow_nil=>true, :message=>nil}
       # 
       # @option [Symbol] :context
-      #   the context in which the new validator should be run
+      #   the context in which the new rule should be run
       # @option [Boolean] :allow_nil
-      #   whether or not the new validator should allow nil values
+      #   whether or not the new rule should allow nil values
       # @option [Boolean] :message
-      #   the error message the new validator will provide on validation failure
+      #   the error message the new rule will provide on validation failure
       # 
       # @return [ContextualRuleSets]
       #   This method is a command, thus returns the receiver
-      def add(validator_class, *attribute_names, &block)
+      def add(rule_class, *attribute_names, &block)
         options  = attribute_names.last.kind_of?(Hash) ? attribute_names.pop.dup : {}
         contexts = extract_contexts(options)
 
         attribute_names.each do |attribute_name|
-          validators = validator_class.validators_for(attribute_name, options, &block)
+          rules = rule_class.rules_for(attribute_name, options, &block)
 
           contexts.each do |context|
-            validators.each { |validator| self.context(context) << validator }
+            rules.each { |rule| self.context(context) << rule }
 
             # TODO: eliminate ModelExtensions#create_context_instance_methods,
             #   then eliminate the @model ivar entirely
             # In the meantime, update this method to return the context names
-            #   to which validators were added, then override the Model methods
+            #   to which rules were added, then override the Model methods
             #   in Macros to add these context shortcuts (as a deprecated shim)
             ContextualRuleSets.create_context_instance_methods(@model, context) if @model
           end
@@ -91,14 +91,10 @@ module DataMapper
         self
       end
 
-      def inherited(descendant_validators)
-        contexts.each do |context, validators|
-          validators.each do |validator|
-            # TODO: add a new API for adding an initialized Rule
-            # (as opposed to a Rule descendant class). Adding members
-            # directly to the context's OrderedSet makes it difficult to support
-            # indexing validators by validated attribute name.
-            descendant_validators.context(context) << validator.dup
+      def inherited(descendant)
+        rule_sets.each do |context_name, rule_set|
+          rule_set.each do |rule|
+            descendant.context(context_name) << rule.dup
           end
         end
       end
@@ -135,7 +131,7 @@ module DataMapper
       # 
       # TODO: investigate removing the `contexts.empty?` test here.
       def valid_context?(context)
-        contexts.empty? || contexts.include?(context)
+        rule_sets.empty? || rule_sets.include?(context)
       end
 
       # Assert that the given context is valid for this model
@@ -151,7 +147,7 @@ module DataMapper
       # TODO: is this method actually needed?
       def assert_valid(context)
         unless valid_context?(context)
-          raise InvalidContextError, "#{context} is an invalid context, known contexts are #{contexts.keys.inspect}"
+          raise InvalidContextError, "#{context} is an invalid context, known contexts are #{rule_sets.keys.inspect}"
         end
       end
 

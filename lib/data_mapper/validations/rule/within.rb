@@ -9,7 +9,7 @@ module DataMapper
       module Within
 
         # TODO: DRY this up (also implemented in Rule)
-        def self.validators_for(attribute_name, options)
+        def self.rules_for(attribute_name, options)
           Array(new(attribute_name, options))
         end
 
