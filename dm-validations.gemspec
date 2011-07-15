@@ -26,7 +26,7 @@ Gem::Specification.new do |s|
     "lib/dm-validations.rb",
     "lib/dm-validations/auto_validate.rb",
     "lib/dm-validations/context.rb",
-    "lib/dm-validations/contextual_validators.rb",
+    "lib/dm-validations/contextual_rule_sets.rb",
     "lib/dm-validations/exceptions.rb",
     "lib/dm-validations/formats/email.rb",
     "lib/dm-validations/formats/url.rb",

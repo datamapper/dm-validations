@@ -1,5 +1,5 @@
 require 'data_mapper/validations/validation_errors'
-require 'data_mapper/validations/contextual_validators'
+require 'data_mapper/validations/contextual_rule_sets'
 require 'data_mapper/validations/macros'
 
 module DataMapper
@@ -76,7 +76,7 @@ module DataMapper
       #
       # @api public
       def validators
-        @validators ||= ContextualValidators.new(self)
+        @validators ||= ContextualRuleSets.new(self)
       end
 
       # @api private

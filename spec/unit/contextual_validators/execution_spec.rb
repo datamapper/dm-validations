@@ -2,9 +2,9 @@
 require 'spec_helper'
 require 'unit/contextual_validators/spec_helper'
 
-describe 'DataMapper::Validations::ContextualValidators' do
+describe 'DataMapper::Validations::ContextualRuleSets' do
   before :all do
-    @validators = DataMapper::Validations::ContextualValidators.new
+    @validators = DataMapper::Validations::ContextualRuleSets.new
   end
 
   describe "#execute(name, target)" do
