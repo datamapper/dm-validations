@@ -40,7 +40,7 @@ describe 'DataMapper::Validations::ContextualValidators' do
         @result = @validators.execute(:default, @target)
       end
 
-      it "returns true" do
+      it "returns false" do
         @result.should be(false)
       end
     end

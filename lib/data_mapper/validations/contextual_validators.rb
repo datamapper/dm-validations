@@ -1,7 +1,7 @@
 # -*- encoding: utf-8 -*-
 
 require 'data_mapper/validations/context'
-require 'data_mapper/validations/validation_context'
+require 'data_mapper/validations/rule_set'
 
 module DataMapper
   module Validations
@@ -13,10 +13,10 @@ module DataMapper
 
       def initialize(model = nil)
         @model    = model
-        @contexts = Hash.new { |h,k| h[k] = ValidationContext.new }
+        @contexts = Hash.new { |h,k| h[k] = RuleSet.new }
       end
 
-      # Delegate #validate to ValidationContext
+      # Delegate #validate to RuleSet
       # 
       # @api public
       def validate(context_name, resource)

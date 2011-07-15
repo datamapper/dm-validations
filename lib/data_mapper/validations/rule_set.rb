@@ -2,7 +2,7 @@ require "data_mapper/support/ordered_set"
 
 module DataMapper
   module Validations
-    class ValidationContext < OrderedSet
+    class RuleSet < OrderedSet
       # Holds a collection of Validator instances that should be run against
       # Resources to validate the Resources in a specific context
 
