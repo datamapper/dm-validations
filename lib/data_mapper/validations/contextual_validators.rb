@@ -13,7 +13,9 @@ module DataMapper
 
       def initialize(model = nil)
         @model    = model
-        @contexts = Hash.new { |h,k| h[k] = RuleSet.new }
+        @contexts = Hash.new do |h, context_name|
+          h[context_name] = RuleSet.new(context_name)
+        end
       end
 
       # Delegate #validate to RuleSet

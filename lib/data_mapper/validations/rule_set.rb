@@ -1,13 +1,47 @@
-require "data_mapper/support/ordered_set"
+require 'forwardable'
+require 'data_mapper/support/ordered_set'
+# TODO: can I use Equalizer without introducing a dependency on dm-core?
+# require 'data_mapper/support/equalizer'
 
 module DataMapper
   module Validations
     class RuleSet < OrderedSet
+      extend Equalizer
+      extend Forwardable
+      include Enumerable
+
+      attr_reader :name
+      attr_reader :optimize
+      attr_reader :rules
+      attr_reader :attributes
+
+      equalize :name, :rules
+
+      def_delegators :attributes, :[]
+      def_delegators :rules, :each, :empty?
+
+      def initialize(name, optimize = false)
+        @name     = name
+        @optimize = optimize
+
+        @rules      = OrderedSet.new
+        @attributes = Hash.new { |h,k| h[k] = OrderedSet.new }
+      end
+
+      def <<(rule)
+        unless rules.include?(rule)
+          rules << rule
+          attributes[rule.attribute_name] << rule
+        end
+
+        self
+      end
+
       # Holds a collection of Validator instances that should be run against
       # Resources to validate the Resources in a specific context
 
 
-      # Execute all validators in this context against the resource.
+      # Execute all rules in this context against the resource.
       # 
       # Only validate dirty properties on persisted Resources.
       # Eager load lazy properties that not yet loaded.
@@ -20,32 +54,32 @@ module DataMapper
       def validate(resource)
         resource.errors.clear!
 
-        validators = validators_for_resource(resource)
+        rules = rules_for_resource(resource)
 
-        validators.map { |validator| validator.call(resource) }.all?
+        rules.map { |rule| rule.call(resource) }.all?
       end
 
       def inspect
-        "#<#{ self.class } {#{ entries.map { |e| e.inspect }.join( ', ' ) }}>"
+        "#<#{ self.class } {#{ rules.map { |e| e.inspect }.join( ', ' ) }}>"
       end
 
     private
 
-      def validators_for_resource(resource)
-        executable_validators = entries.select { |v| v.execute?(resource) }
+      def rules_for_resource(resource)
+        executable_rules = rules.entries.select { |v| v.execute?(resource) }
 
         # By default we start the list with the full set of executable
-        # validators.
+        # rules.
         #
         # In the case of a new Resource or regular ruby class instance,
         # everything needs to be validated completely, and no eager-loading
         # logic should apply.
         #
-        # @see #validators_for_persisted_resource
-        if resource.kind_of?(DataMapper::Resource) && !resource.new?
-          validators_for_persisted_resource(resource, executable_validators)
+        # @see #rules_for_persisted_resource
+        if optimize && resource.kind_of?(DataMapper::Resource) && !resource.new?
+          rules_for_persisted_resource(resource, executable_rules)
         else
-          executable_validators
+          executable_rules
         end
       end
 
@@ -54,45 +88,46 @@ module DataMapper
       #   1. Eager-load all lazy, not-yet-loaded properties that need
       #      validation, all at once.
       #
-      #   2. Limit run validators to
+      #   2. Limit run rules to
       #      - those applied to dirty attributes only,
       #      - those that should always run (presence/absence)
       #      - those that don't reference any real properties (attribute-less
-      #        block validators, validations in virtual attributes)
-      def validators_for_persisted_resource(resource, all_validators)
-        attrs       = resource.attributes
+      #        block rules, validations in virtual attributes)
+      def rules_for_persisted_resource(resource, executable_rules)
+        attrs       = resource.attributes(:name)
+        # TODO: update Resource#dirty_attributes to accept :name arg
         dirty_attrs = Hash[resource.dirty_attributes.map { |p, value| [p.name, value] }]
-        validators  = all_validators.select { |v|
+        rules       = executable_rules.select { |v|
           !attrs.include?(v.attribute_name) || dirty_attrs.include?(v.attribute_name)
         }
 
-        load_validated_properties(resource, validators)
+        load_validated_properties(resource, rules)
 
-        # Finally include any validators that should always run or don't
+        # Finally include any rules that should always run or don't
         # reference any real properties (field-less block vaildators).
-        validators |= all_validators.select do |v|
+        rules |= all_rules.select do |v|
           # TODO: make this a #always_validate? interface instead of a #kind_of? test
           v.kind_of?(Validator::Method) ||
           v.kind_of?(Validator::Presence) ||
           v.kind_of?(Validator::Absence)
         end
 
-        validators
+        rules
       end
 
       # Load all lazy, not-yet-loaded properties that need validation,
       # all at once.
-      def load_validated_properties(resource, validators)
+      def load_validated_properties(resource, rules)
         properties = resource.model.properties
 
-        properties_to_load = validators.map { |validator|
-          properties[validator.attribute_name]
+        properties_to_load = rules.map { |rule|
+          properties[rule.attribute_name]
         }.compact.select { |property|
           property.lazy? && !property.loaded?(resource)
         }
 
         resource.__send__(:eager_load, properties_to_load)
       end
-    end # class ValidationContext
+    end # class RuleSet
   end # module Validations
 end # module DataMapper
