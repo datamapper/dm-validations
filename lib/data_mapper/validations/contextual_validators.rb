@@ -1,15 +1,24 @@
 # -*- encoding: utf-8 -*-
 
+require 'forwardable'
 require 'data_mapper/validations/context'
 require 'data_mapper/validations/rule_set'
 
 module DataMapper
   module Validations
     class ContextualValidators
+      extend Forwardable
       include Enumerable
 
       # @api private
       attr_reader :contexts
+
+      def_delegators :contexts, :each, :empty?
+
+      # Clear all named context validators off of the resource
+      #
+      # @api public
+      def_delegators :contexts, :clear
 
       def initialize(model = nil)
         @model    = model
@@ -25,16 +34,6 @@ module DataMapper
         context(context_name).validate(resource)
       end
 
-      # @api public
-      def each
-        contexts.each { |context| yield context }
-      end
-
-      # @api public
-      def empty?
-        contexts.empty?
-      end
-
       # Return an array of validators for a named context
       #
       # @param  [String]
@@ -45,13 +44,6 @@ module DataMapper
       # @api public
       def context(name)
         contexts[name]
-      end
-
-      # Clear all named context validators off of the resource
-      #
-      # @api public
-      def clear!
-        contexts.clear
       end
 
       # Create a new validator of the given klazz and push it onto the

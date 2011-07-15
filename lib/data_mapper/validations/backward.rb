@@ -9,6 +9,7 @@ module DataMapper
       extend Deprecate
 
       deprecate :execute, :validate
+      deprecate :clear!,  :clear
     end
 
     class Validator
