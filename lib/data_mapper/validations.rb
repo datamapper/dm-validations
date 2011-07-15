@@ -21,7 +21,7 @@ module DataMapper
     # TODO: deprecate #valid? in favor of #validate
     def valid?(context = :default)
       model = respond_to?(:model) ? self.model : self.class
-      model.validators.validate(context, self)
+      model.validators.validate(self, context)
     end
 
     # Alias for validate(:default)

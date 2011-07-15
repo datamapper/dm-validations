@@ -30,7 +30,7 @@ module DataMapper
       # Delegate #validate to RuleSet
       # 
       # @api public
-      def validate(context_name, resource)
+      def validate(resource, context_name)
         context(context_name).validate(resource)
       end
 
