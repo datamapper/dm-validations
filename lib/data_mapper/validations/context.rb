@@ -4,7 +4,7 @@ module DataMapper
       # Module with validation context functionality.
       #
       # Contexts are implemented using a thread-local array-based stack.
-      #
+
 
       # Execute a block of code within a specific validation context
       # 
@@ -14,9 +14,10 @@ module DataMapper
       # @api semipublic
       def self.in_context(context)
         stack << context
-        yield
+        return_value = yield
       ensure
         stack.pop
+        return_value
       end
 
       # Get the current validation context or nil (if no context is on the stack).
