@@ -7,11 +7,11 @@ begin
 
   Jeweler::Tasks.new do |gem|
     gem.name        = 'dm-validations'
-    gem.summary     = 'Library for performing validations on DM models and pure Ruby object'
+    gem.summary     = 'Library for performing validations on DataMapper resources and plain Ruby objects'
     gem.description = gem.summary
-    gem.email       = 'vandenberg.guy [a] gmail [d] com'
+    gem.email       = 'emmanuel.gomez@gmail.com'
     gem.homepage    = 'http://github.com/datamapper/%s' % gem.name
-    gem.authors     = [ 'Guy van den Berg' ]
+    gem.authors     = [ 'Guy van den Berg', 'Emmanuel Gomez' ]
     gem.has_rdoc    = 'yard'
 
     gem.rubyforge_project = 'datamapper'

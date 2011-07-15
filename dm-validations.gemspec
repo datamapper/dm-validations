@@ -8,10 +8,10 @@ Gem::Specification.new do |s|
   s.version = "1.1.1"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
-  s.authors = [%q{Guy van den Berg}]
-  s.date = %q{2011-06-15}
-  s.description = %q{Library for performing validations on DM models and pure Ruby object}
-  s.email = %q{vandenberg.guy [a] gmail [d] com}
+  s.authors = ["Guy van den Berg", "Emmanuel Gomez"]
+  s.date = %q{2011-07-15}
+  s.description = %q{Library for performing validations on DataMapper resources and plain Ruby objects}
+  s.email = %q{emmanuel.gomez@gmail.com}
   s.extra_rdoc_files = [
     "LICENSE",
     "README.rdoc"
@@ -23,29 +23,56 @@ Gem::Specification.new do |s|
     "Rakefile",
     "VERSION",
     "dm-validations.gemspec",
+    "lib/data_mapper/support/ordered_set.rb",
+    "lib/data_mapper/validations.rb",
+    "lib/data_mapper/validations/backward.rb",
+    "lib/data_mapper/validations/context.rb",
+    "lib/data_mapper/validations/contextual_rule_sets.rb",
+    "lib/data_mapper/validations/inferred.rb",
+    "lib/data_mapper/validations/macros.rb",
+    "lib/data_mapper/validations/message_transformer.rb",
+    "lib/data_mapper/validations/model_extensions.rb",
+    "lib/data_mapper/validations/resource.rb",
+    "lib/data_mapper/validations/rule.rb",
+    "lib/data_mapper/validations/rule/absence.rb",
+    "lib/data_mapper/validations/rule/acceptance.rb",
+    "lib/data_mapper/validations/rule/block.rb",
+    "lib/data_mapper/validations/rule/confirmation.rb",
+    "lib/data_mapper/validations/rule/format.rb",
+    "lib/data_mapper/validations/rule/format/proc.rb",
+    "lib/data_mapper/validations/rule/format/regexp.rb",
+    "lib/data_mapper/validations/rule/formats/email.rb",
+    "lib/data_mapper/validations/rule/formats/url.rb",
+    "lib/data_mapper/validations/rule/length.rb",
+    "lib/data_mapper/validations/rule/length/equal.rb",
+    "lib/data_mapper/validations/rule/length/maximum.rb",
+    "lib/data_mapper/validations/rule/length/minimum.rb",
+    "lib/data_mapper/validations/rule/length/range.rb",
+    "lib/data_mapper/validations/rule/method.rb",
+    "lib/data_mapper/validations/rule/numericalness.rb",
+    "lib/data_mapper/validations/rule/numericalness/equal.rb",
+    "lib/data_mapper/validations/rule/numericalness/greater_than.rb",
+    "lib/data_mapper/validations/rule/numericalness/greater_than_or_equal.rb",
+    "lib/data_mapper/validations/rule/numericalness/integer.rb",
+    "lib/data_mapper/validations/rule/numericalness/less_than.rb",
+    "lib/data_mapper/validations/rule/numericalness/less_than_or_equal.rb",
+    "lib/data_mapper/validations/rule/numericalness/not_equal.rb",
+    "lib/data_mapper/validations/rule/numericalness/numeric.rb",
+    "lib/data_mapper/validations/rule/presence.rb",
+    "lib/data_mapper/validations/rule/primitive_type.rb",
+    "lib/data_mapper/validations/rule/uniqueness.rb",
+    "lib/data_mapper/validations/rule/within.rb",
+    "lib/data_mapper/validations/rule/within/range.rb",
+    "lib/data_mapper/validations/rule/within/range/bounded.rb",
+    "lib/data_mapper/validations/rule/within/range/unbounded_begin.rb",
+    "lib/data_mapper/validations/rule/within/range/unbounded_end.rb",
+    "lib/data_mapper/validations/rule/within/set.rb",
+    "lib/data_mapper/validations/rule_set.rb",
+    "lib/data_mapper/validations/support/object.rb",
+    "lib/data_mapper/validations/support/ordered_hash.rb",
+    "lib/data_mapper/validations/validation_errors.rb",
+    "lib/data_mapper/validations/violation.rb",
     "lib/dm-validations.rb",
-    "lib/dm-validations/auto_validate.rb",
-    "lib/dm-validations/context.rb",
-    "lib/dm-validations/contextual_rule_sets.rb",
-    "lib/dm-validations/exceptions.rb",
-    "lib/dm-validations/formats/email.rb",
-    "lib/dm-validations/formats/url.rb",
-    "lib/dm-validations/support/object.rb",
-    "lib/dm-validations/support/ordered_hash.rb",
-    "lib/dm-validations/validation_errors.rb",
-    "lib/dm-validations/rules/absent_field_validator.rb",
-    "lib/dm-validations/rules/acceptance_validator.rb",
-    "lib/dm-validations/rules/block_validator.rb",
-    "lib/dm-validations/rules/confirmation_validator.rb",
-    "lib/dm-validations/rules/format_validator.rb",
-    "lib/dm-validations/rules/generic_validator.rb",
-    "lib/dm-validations/rules/length_validator.rb",
-    "lib/dm-validations/rules/method_validator.rb",
-    "lib/dm-validations/rules/numeric_validator.rb",
-    "lib/dm-validations/rules/primitive_validator.rb",
-    "lib/dm-validations/rules/required_field_validator.rb",
-    "lib/dm-validations/rules/uniqueness_validator.rb",
-    "lib/dm-validations/rules/within_validator.rb",
     "spec/fixtures/barcode.rb",
     "spec/fixtures/basketball_court.rb",
     "spec/fixtures/basketball_player.rb",
@@ -165,10 +192,10 @@ Gem::Specification.new do |s|
     "tasks/yardstick.rake"
   ]
   s.homepage = %q{http://github.com/datamapper/dm-validations}
-  s.require_paths = [%q{lib}]
+  s.require_paths = ["lib"]
   s.rubyforge_project = %q{datamapper}
-  s.rubygems_version = %q{1.8.5}
-  s.summary = %q{Library for performing validations on DM models and pure Ruby object}
+  s.rubygems_version = %q{1.6.2}
+  s.summary = %q{Library for performing validations on DataMapper resources and plain Ruby objects}
   s.test_files = [
     "spec/fixtures/barcode.rb",
     "spec/fixtures/basketball_court.rb",
