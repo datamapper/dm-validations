@@ -13,25 +13,25 @@ module DataMapper
       attr_reader :name
       attr_reader :optimize
       attr_reader :rules
-      attr_reader :attributes
+      attr_reader :attribute_index
 
       equalize :name, :rules
 
-      def_delegators :attributes, :[]
+      def_delegators :attribute_index, :[]
       def_delegators :rules, :each, :empty?
 
       def initialize(name, optimize = false)
         @name     = name
         @optimize = optimize
 
-        @rules      = OrderedSet.new
-        @attributes = Hash.new { |h,k| h[k] = OrderedSet.new }
+        @rules           = OrderedSet.new
+        @attribute_index = Hash.new { |h,k| h[k] = [] }
       end
 
       def <<(rule)
         unless rules.include?(rule)
           rules << rule
-          attributes[rule.attribute_name] << rule
+          attribute_index[rule.attribute_name] << rule
         end
 
         self
@@ -72,9 +72,16 @@ module DataMapper
         # everything needs to be validated completely, and no eager-loading
         # logic should apply.
         #
-        # @see #rules_for_persisted_resource
-        if optimize && resource.kind_of?(DataMapper::Resource) && !resource.new?
-          rules_for_persisted_resource(resource, executable_rules)
+        # @see #optimized_rules_for_persisted_resource
+        if resource.kind_of?(DataMapper::Resource)
+          if optimize && !resource.new?
+            optimized_rules = optimized_rules_for_persisted_resource(resource, executable_rules)
+            load_validated_properties(resource, optimized_rules)
+            optimized_rules
+          else
+            load_validated_properties(resource, executable_rules)
+            executable_rules
+          end
         else
           executable_rules
         end
@@ -90,15 +97,13 @@ module DataMapper
       #      - those that should always run (presence/absence)
       #      - those that don't reference any real properties (attribute-less
       #        block rules, validations in virtual attributes)
-      def rules_for_persisted_resource(resource, executable_rules)
+      def optimized_rules_for_persisted_resource(resource, executable_rules)
         attrs       = resource.attributes(:name)
         # TODO: update Resource#dirty_attributes to accept :name arg
         dirty_attrs = Hash[resource.dirty_attributes.map { |p, value| [p.name, value] }]
         rules       = executable_rules.select { |v|
           !attrs.include?(v.attribute_name) || dirty_attrs.include?(v.attribute_name)
         }
-
-        load_validated_properties(resource, rules)
 
         # Finally include any rules that should always run or don't
         # reference any real properties (field-less block vaildators).

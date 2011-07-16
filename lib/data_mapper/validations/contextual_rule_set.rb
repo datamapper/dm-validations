@@ -19,6 +19,11 @@ module DataMapper
       # @api private
       attr_reader :rule_sets
 
+      # Whether to optimize the execution of validators for this model's resources
+      # 
+      # @api public
+      attr_reader :optimize
+
       def_delegators :rule_sets, :each, :empty?
 
       # Clear all named context rule sets
@@ -26,10 +31,11 @@ module DataMapper
       # @api public
       def_delegators :rule_sets, :clear
 
-      def initialize(model = nil)
+      def initialize(model = nil, optimize = false)
         @model    = model
+        @optimize = optimize
         @rule_sets = Hash.new do |h, context_name|
-          h[context_name] = RuleSet.new(context_name)
+          h[context_name] = RuleSet.new(context_name, self.optimize)
         end
       end
 
@@ -50,6 +56,10 @@ module DataMapper
       # @api public
       def context(name)
         rule_sets[name]
+      end
+
+      def [](attribute_name)
+        context(:default)[attribute_name]
       end
 
       # Create a new rule of the given class for each name in +attribute_names+
@@ -105,9 +115,9 @@ module DataMapper
         end
       end
 
-
-      def current_default_context
-        current_context || :default
+      def optimize=(new_value)
+        @optimize = new_value
+        rule_sets.each { |rule_set| rule_set.optimize = self.optimize }
       end
 
       # Returns the current validation context on the stack if valid for this model,
@@ -128,6 +138,10 @@ module DataMapper
       def current_context
         context = Validations::Context.current
         valid_context?(context) ? context : :default
+      end
+
+      def current_default_context
+        current_context || :default
       end
 
       # Test if the context is valid for the model
