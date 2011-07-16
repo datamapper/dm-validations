@@ -14,7 +14,7 @@ module DataMapper
       end
     end
 
-    class ContextualRuleSets
+    class ContextualRuleSet
       extend Deprecate
 
       deprecate :clear!,  :clear
@@ -36,7 +36,7 @@ module DataMapper
       extend Deprecate
 
       # This is present to provide a backwards-compatible codepath to
-      # ContextualRuleSets#execute
+      # ContextualRuleSet#execute
       def execute(resource)
         resource.errors.clear!
         rules = rules_for_resource(resource)
@@ -46,7 +46,7 @@ module DataMapper
 
     class Violation
       # TODO: Extract the correct custom message for a Rule's context
-      # in ContextualRuleSets#add
+      # in ContextualRuleSet#add
       def [](context_name)
         warn "Accessing custom messages by context name will be removed in a future version"
         @custom_message[context_name]

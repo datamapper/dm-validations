@@ -6,7 +6,7 @@ require 'data_mapper/validations/rule_set'
 
 module DataMapper
   module Validations
-    class ContextualRuleSets
+    class ContextualRuleSet
       extend Forwardable
       include Enumerable
 
@@ -73,7 +73,7 @@ module DataMapper
       # @option [Boolean] :message
       #   the error message the new rule will provide on validation failure
       # 
-      # @return [ContextualRuleSets]
+      # @return [ContextualRuleSet]
       #   This method is a command, thus returns the receiver
       def add(rule_class, *attribute_names, &block)
         options  = attribute_names.last.kind_of?(Hash) ? attribute_names.pop.dup : {}
@@ -90,7 +90,7 @@ module DataMapper
             # In the meantime, update this method to return the context names
             #   to which rules were added, then override the Model methods
             #   in Macros to add these context shortcuts (as a deprecated shim)
-            ContextualRuleSets.create_context_instance_methods(@model, context) if @model
+            ContextualRuleSet.create_context_instance_methods(@model, context) if @model
           end
         end
 
@@ -210,6 +210,6 @@ module DataMapper
         end
       end
 
-    end # class ContextualRuleSets
+    end # class ContextualRuleSet
   end # module Validations
 end # module DataMapper

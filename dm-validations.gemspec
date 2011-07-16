@@ -27,7 +27,7 @@ Gem::Specification.new do |s|
     "lib/data_mapper/validations.rb",
     "lib/data_mapper/validations/backward.rb",
     "lib/data_mapper/validations/context.rb",
-    "lib/data_mapper/validations/contextual_rule_sets.rb",
+    "lib/data_mapper/validations/contextual_rule_set.rb",
     "lib/data_mapper/validations/inferred.rb",
     "lib/data_mapper/validations/macros.rb",
     "lib/data_mapper/validations/message_transformer.rb",

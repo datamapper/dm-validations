@@ -11,7 +11,7 @@ require 'data_mapper/validations/validation_errors'
 
 require 'data_mapper/validations/rule'
 require 'data_mapper/validations/rule_set'
-require 'data_mapper/validations/contextual_rule_sets'
+require 'data_mapper/validations/contextual_rule_set'
 
 require 'data_mapper/validations/resource'
 require 'data_mapper/validations/model_extensions'
