@@ -40,7 +40,7 @@ describe 'DataMapper::Validations::ContextualRuleSet' do
     before :all do
       @validators.context(:default) << DataMapper::Validations::Rule::Presence.new(:toc, :when => [:publishing])
       @validators.should_not be_empty
-      @validators.clear!
+      @validators.clear
     end
 
     it "becomes empty again" do

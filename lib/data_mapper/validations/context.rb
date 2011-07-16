@@ -1,5 +1,8 @@
+# -*- encoding: utf-8 -*-
+
 module DataMapper
   module Validations
+
     module Context
       # Module with validation context functionality.
       #
@@ -49,5 +52,6 @@ module DataMapper
       end
 
     end # module Context
+
   end # module Validations
 end # module DataMapper
