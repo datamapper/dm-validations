@@ -33,11 +33,13 @@ module DataMapper
       # Add a validation error. Use the attribute_name :general if the errors
       # does not apply to a specific field of the Resource.
       #
-      # @param [Symbol] attribute_name
-      #   The name of the field that caused the error
-      # @param [String, #try_call] message
-      #   The message to add. If +message+ responds to #try_call, that message
-      #   will be sent, with args varying by circumstance
+      # @param [Symbol, Violation] attribute_name_or_violation
+      #   The name of the field that caused the error, or
+      #   the Violation which describes the validation error
+      # @param [String, #call, Hash] message
+      #   The message to add.
+      # 
+      # @see Violation#initialize
       # 
       # @api public
       def add(attribute_name_or_violation, message = nil)
