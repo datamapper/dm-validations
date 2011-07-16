@@ -35,7 +35,7 @@ You may manually validate a resource using the valid? method, which will return 
 
 == Working with Validation Errors
 
-If your validators find errors in your model, they will populate the DataMapper::Validations::ValidationErrors object that is available through each of your models via calls to your model's errors method.
+If your validators find errors in your model, they will populate the DataMapper::Validations::ErrorSet object that is available through each of your models via calls to your model's errors method.
 
 For example:
 
@@ -48,7 +48,7 @@ For example:
     end
   end
 
-See DataMapper::Validations::ValidationErrors for all you can do with your model's
+See DataMapper::Validations::ErrorSet for all you can do with your model's
 errors method.
 
 == Contextual Validations

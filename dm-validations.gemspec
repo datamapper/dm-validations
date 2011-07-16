@@ -70,7 +70,7 @@ Gem::Specification.new do |s|
     "lib/data_mapper/validations/rule_set.rb",
     "lib/data_mapper/validations/support/object.rb",
     "lib/data_mapper/validations/support/ordered_hash.rb",
-    "lib/data_mapper/validations/validation_errors.rb",
+    "lib/data_mapper/validations/error_set.rb",
     "lib/data_mapper/validations/violation.rb",
     "lib/dm-validations.rb",
     "spec/fixtures/barcode.rb",

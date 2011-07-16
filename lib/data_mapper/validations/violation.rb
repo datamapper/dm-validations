@@ -1,9 +1,18 @@
 require 'forwardable'
+require 'data_mapper/validations/message_transformer'
 
 module DataMapper
   module Validations
 
     class Violation
+
+      def self.default_transformer
+        @default_transformer ||= MessageTransformer::Default.new
+      end
+
+      def self.default_transformer=(transformer)
+        @default_transformer = transformer
+      end
 
       attr_reader :resource
       attr_reader :custom_message
@@ -56,7 +65,7 @@ module DataMapper
         if resource.respond_to?(:model) && transformer = resource.model.validators.transformer
           transformer
         else
-          ValidationErrors.default_transformer
+          Violation.default_transformer
         end
       end
 

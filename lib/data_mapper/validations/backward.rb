@@ -5,9 +5,10 @@ module DataMapper
     #   any reason not to remove it?
     class ValidationError < StandardError; end
 
-    # ValidationErrors = ErrorSet
-    class ValidationErrors
+    class ErrorSet
       extend Deprecate
+
+      deprecate :clear!, :clear
 
       def self.default_error_message(violation_type, attribute_name, *violation_data)
         MessageTransformer::Default.error_message(violation_type, attribute_name, *violation_data)
@@ -38,7 +39,6 @@ module DataMapper
       # This is present to provide a backwards-compatible codepath to
       # ContextualRuleSet#execute
       def execute(resource)
-        resource.errors.clear!
         rules = rules_for_resource(resource)
         rules.map { |rule| rule.call(resource) }.all?
       end
@@ -94,6 +94,8 @@ module DataMapper
     end # module Inferred
 
     AutoValidations = Inferred
+    ContextualValidators = ContextualRuleSet
+    ValidationErrors = ErrorSet
 
   end # module Validations
 

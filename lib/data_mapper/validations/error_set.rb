@@ -1,20 +1,15 @@
 
-require 'data_mapper/validations/message_transformer'
+require 'data_mapper/validations/support/ordered_hash'
+require 'data_mapper/validations/violation'
 
 module DataMapper
   module Validations
-    class ValidationErrors
+
+    class ErrorSet
 
       include Enumerable
 
-      def self.default_transformer
-        @default_transformer ||= MessageTransformer::Default.new
-      end
-
-      def self.default_transformer=(transformer)
-        @default_transformer = transformer
-      end
-
+      # @api private
       attr_reader :resource
 
       # @api private
@@ -22,8 +17,7 @@ module DataMapper
       # TODO: why was this private?
       private :errors
 
-      # TODO: merge in gix's Violation/MessageTransformer work
-      # then replace OrderedHash with OrderedSet and remove OrderedHash entirely
+      # TODO: replace OrderedHash with OrderedSet and remove vendor'd OrderedHash
       def initialize(resource)
         @resource = resource
         @errors   = OrderedHash.new { |h,k| h[k] = [] }
@@ -32,7 +26,7 @@ module DataMapper
       # Clear existing validation errors.
       # 
       # @api public
-      def clear!
+      def clear
         errors.clear
       end
 
@@ -113,6 +107,7 @@ module DataMapper
         super || errors.respond_to?(method)
       end
 
-    end # class ValidationErrors
+    end # class ErrorSet
+
   end # module Validations
 end # module DataMapper

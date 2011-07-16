@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 require 'spec_helper'
 
-describe 'DataMapper::Validations::ValidationErrors' do
+describe 'DataMapper::Validations::ErrorSet' do
   before :all do
-    @model = DataMapper::Validations::ValidationErrors.new(Object.new)
+    @model = DataMapper::Validations::ErrorSet.new(Object.new)
     @model.add(:ip_address, "must have valid format")
     @model.add(:full_name, "can't be blank")
   end

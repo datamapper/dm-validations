@@ -1,4 +1,4 @@
-require 'data_mapper/validations/validation_errors'
+require 'data_mapper/validations/error_set'
 require 'data_mapper/validations/contextual_rule_set'
 require 'data_mapper/validations/macros'
 
@@ -20,6 +20,7 @@ module DataMapper
     # TODO: replace all internal uses of #valid? with #validate
     # TODO: deprecate #valid? in favor of #validate
     def valid?(context = :default)
+      errors.clear
       model = respond_to?(:model) ? self.model : self.class
       model.validators.execute(context, self)
     end
@@ -33,12 +34,12 @@ module DataMapper
       validate(:default)
     end
 
-    # @return [ValidationErrors]
+    # @return [ErrorSet]
     #   the collection of current validation errors for this resource
     #
     # @api public
     def errors
-      @errors ||= ValidationErrors.new(self)
+      @errors ||= ErrorSet.new(self)
     end
 
     # @api public

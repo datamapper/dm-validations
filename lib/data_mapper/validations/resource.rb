@@ -1,6 +1,6 @@
 require 'data_mapper/validations'
 require 'data_mapper/validations/context'
-require 'data_mapper/validations/validation_errors'
+require 'data_mapper/validations/error_set'
 
 module DataMapper
   module Validations

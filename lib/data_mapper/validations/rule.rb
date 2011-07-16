@@ -1,5 +1,6 @@
 # -*- encoding: utf-8 -*-
 
+require 'data_mapper/validations/message_transformer'
 require 'data_mapper/validations/violation'
 
 module DataMapper
