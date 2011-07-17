@@ -1,6 +1,16 @@
 module DataMapper
   module Validations
 
+    # Alias for validate(:default)
+    #
+    # TODO: deprecate
+    # 
+    # @api public
+    def valid_for_default?
+      # warn "#{self.class}#valid_for_default? is deprecated and will be removed in a future version (#{caller[0]})"
+      valid?(:default)
+    end
+
     # TODO: this Exception class is not referenced within dm-validations
     #   any reason not to remove it?
     class ValidationError < StandardError; end
@@ -24,6 +34,25 @@ module DataMapper
         # warn "#{self.class}#execute is deprecated. Use #{self.class}#validate instead."
         context(context_name).execute(resource)
       end
+
+      # Given a new context create an instance method of
+      # valid_for_<context>? which simply calls validate(context)
+      # if it does not already exist
+      #
+      # @api private
+      def self.create_context_instance_methods(model, context)
+        name = "valid_for_#{context}?"
+        present = model.respond_to?(:resource_method_defined) ? model.resource_method_defined?(name) : model.instance_methods.include?(name)
+        unless present
+          model.class_eval <<-RUBY, __FILE__, __LINE__ + 1
+            def #{name}                   # def valid_for_signup?
+              # warn "\#{self.class}##{name} is deprecated. Use #validate instead (\#{caller[0]})"
+              valid?(:#{context})         #   valid?(:signup)
+            end                           # end
+          RUBY
+        end
+      end
+
     end
 
     class Rule

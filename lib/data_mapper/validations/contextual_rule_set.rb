@@ -92,14 +92,12 @@ module DataMapper
 
           contexts.each do |context|
             rules.each { |rule| self.context(context) << rule }
-
-            # TODO: eliminate ModelExtensions#create_context_instance_methods,
-            #   then eliminate the @model ivar entirely
-            # In the meantime, update this method to return the context names
-            #   to which rules were added, then override the Model methods
-            #   in Macros to add these context shortcuts (as a deprecated shim)
-            ContextualRuleSet.create_context_instance_methods(@model, context) if @model
           end
+        end
+
+        # TODO: remove, then eliminate the @model ivar entirely
+        contexts.each do |context|
+          ContextualRuleSet.create_context_instance_methods(@model, context) if @model
         end
 
         self
@@ -194,32 +192,6 @@ module DataMapper
         ].compact.first
 
         Array(context || :default)
-      end
-
-      # Given a new context create an instance method of
-      # valid_for_<context>? which simply calls validate(context)
-      # if it does not already exist
-      #
-      # @api private
-      def self.create_context_instance_methods(model, context)
-        # TODO: deprecate `valid_for_#{context}?`
-        # what's wrong with requiring the caller to pass the context as an arg?
-        #   eg, `validate(:context)`
-        # these methods *are* handy for symbol-based callbacks,
-        #   eg. `:if => :valid_for_context?`
-        # but they're so trivial to add where needed that it's
-        # overkill to do this for all contexts on all validated objects.
-        context = context.to_sym
-
-        name = "valid_for_#{context}?"
-        present = model.respond_to?(:resource_method_defined) ? model.resource_method_defined?(name) : model.instance_methods.include?(name)
-        unless present
-          model.class_eval <<-RUBY, __FILE__, __LINE__ + 1
-            def #{name}                         # def valid_for_signup?
-              validate(#{context.inspect})      #   validate(:signup)
-            end                                 # end
-          RUBY
-        end
       end
 
     end # class ContextualRuleSet

@@ -22,19 +22,8 @@ module DataMapper
     end
 
     # @api public
-    # TODO: replace all internal uses of #valid? with #validate
-    # TODO: deprecate #valid? in favor of #validate
     def valid?(context_name = :default)
       validate(context_name).errors.empty?
-    end
-    # Alias for validate(:default)
-    #
-    # TODO: deprecate
-    # 
-    # @api public
-
-    def valid_for_default?
-      valid?(:default)
     end
 
     # @return [ErrorSet]
