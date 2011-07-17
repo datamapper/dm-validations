@@ -68,10 +68,10 @@ module DataMapper
           self.error_messages.merge!(error_messages)
         end
 
-        def self.error_message(violation_type, attribute_name, *values)
+        def self.error_message(violation_type, attribute_name, *violation_data)
           if message = self.error_messages[violation_type]
             attribute_name = DataMapper::Inflector.humanize(attribute_name)
-            message % [attribute_name, *values].flatten
+            message % [attribute_name, *violation_data].flatten
           else
             violation_type.to_s
           end
