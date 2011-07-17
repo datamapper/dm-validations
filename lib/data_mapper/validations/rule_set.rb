@@ -5,7 +5,8 @@ require 'data_mapper/support/ordered_set'
 
 module DataMapper
   module Validations
-    class RuleSet < OrderedSet
+
+    class RuleSet
       extend Equalizer
       extend Forwardable
       include Enumerable
