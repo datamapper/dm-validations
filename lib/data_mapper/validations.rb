@@ -22,7 +22,9 @@ module DataMapper
     def valid?(context = :default)
       errors.clear
       model = respond_to?(:model) ? self.model : self.class
-      model.validators.execute(context, self)
+      violations = model.validators.validate(self, context)
+      violations.each { |v| errors.add(v) }
+      errors.empty?
     end
 
     # Alias for validate(:default)
