@@ -69,6 +69,7 @@ module DataMapper
       #   All additional key/value pairs are passed through to the
       #   Rule subclass
       #
+      # TODO: remove @options, it is superfluous at this point
       def initialize(attribute_name, options = {})
         @attribute_name = attribute_name
         @options        = DataMapper::Ext::Hash.except(options, :message, :if, :unless)
@@ -200,7 +201,7 @@ module DataMapper
         # out << "@options=#{options.inspect}>"
         self.class::EQUALIZE_ON.each do |ivar|
           value = send(ivar)
-          out << " @#{ivar}=#{value.inspect}" if value
+          out << " @#{ivar}=#{value.inspect}"
         end
         out << ">"
       end
