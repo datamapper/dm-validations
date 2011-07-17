@@ -31,6 +31,48 @@ module DataMapper
 
       # TODO: remove :field_name alias
       deprecate :field_name, :attribute_name
+
+      # Call the validator. "call" is used so the operation is BoundMethod
+      # and Block compatible. This must be implemented in all concrete
+      # classes.
+      #
+      # @param [Object] resource
+      #   The resource that the validator must be called against.
+      #
+      # @return [Boolean]
+      #   true if valid, otherwise false.
+      #
+      def call(resource)
+        # warn "#{self.class}#call is deprecated and will be removed in a future version (#{caller[0]})"
+        return true if valid?(resource)
+
+        error_message = self.custom_message ||
+          MessageTransformer::Default.error_message(
+            violation_type(resource),
+            attribute_name,
+            *violation_data(resource))
+
+        add_error(resource, error_message, attribute_name)
+
+        false
+      end
+
+      class Block
+        def call(resource)
+          result, error_message = resource.instance_eval(&self.block)
+          add_error(resource, error_message, attribute_name) unless result
+          result
+        end
+      end
+
+      class Method
+        def call(resource)
+          result, error_message = resource.__send__(method)
+          add_error(resource, error_message, attribute_name) unless result
+          result
+        end
+      end
+
     end
 
     class RuleSet

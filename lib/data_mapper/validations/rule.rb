@@ -105,36 +105,13 @@ module DataMapper
         end
       end
 
+      # 
       def validate(resource)
         if valid?(resource)
           nil
         else
           Violation.new(resource, custom_message, self)
         end
-      end
-
-      # Call the validator. "call" is used so the operation is BoundMethod
-      # and Block compatible. This must be implemented in all concrete
-      # classes.
-      #
-      # @param [Object] resource
-      #   The resource that the validator must be called against.
-      #
-      # @return [Boolean]
-      #   true if valid, otherwise false.
-      #
-      def call(resource)
-        return true if valid?(resource)
-
-        error_message = self.custom_message ||
-          MessageTransformer::Default.error_message(
-            violation_type(resource),
-            attribute_name,
-            *violation_data(resource))
-
-        add_error(resource, error_message, attribute_name)
-
-        false
       end
 
       def violation_data(resource)

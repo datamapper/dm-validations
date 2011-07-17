@@ -30,12 +30,6 @@ module DataMapper
           end
         end
 
-        def call(resource)
-          result, error_message = resource.__send__(method)
-          add_error(resource, error_message, attribute_name) unless result
-          result
-        end
-
       end # class Method
 
     end # class Rule

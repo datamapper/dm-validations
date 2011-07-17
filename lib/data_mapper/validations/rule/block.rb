@@ -30,12 +30,6 @@ module DataMapper
           end
         end
 
-        def call(resource)
-          result, error_message = resource.instance_eval(&self.block)
-          add_error(resource, error_message, attribute_name) unless result
-          result
-        end
-
       end # class Block
 
     end # class Rule
