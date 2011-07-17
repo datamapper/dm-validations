@@ -7,22 +7,31 @@ module DataMapper
   module Validations
 
     class RuleSet
+      # Holds a collection of Rule instances to be run against
+      # Resources to validate the Resources in a specific context
+
       extend Equalizer
       extend Forwardable
       include Enumerable
 
-      attr_reader :name
-      attr_reader :optimize
+      # @api public
       attr_reader :rules
+
+      # @api private
       attr_reader :attribute_index
 
-      equalize :name, :rules
+      # @api public
+      attr_accessor :optimize
 
+      equalize :rules
+
+      # @api public
       def_delegators :attribute_index, :[]
+
+      # @api public
       def_delegators :rules, :each, :empty?
 
-      def initialize(name, optimize = false)
-        @name     = name
+      def initialize(optimize = false)
         @optimize = optimize
 
         @rules           = OrderedSet.new
@@ -38,17 +47,10 @@ module DataMapper
         self
       end
 
-      # Holds a collection of Rule instances that should be run against
-      # Resources to validate the Resources in a specific context
-
-
       # Execute all rules in this context against the resource.
       # 
-      # Only validate dirty properties on persisted Resources.
-      # Eager load lazy properties that not yet loaded.
-      #
       # @param [Object] resource
-      #   the resource that we are validating
+      #   the resource to be validated
       # 
       # @return [Array(Violation)]
       #   an Array of Violations
@@ -88,6 +90,9 @@ module DataMapper
         end
       end
 
+      # Only validate dirty properties on persisted Resources.
+      # Eager load lazy properties that are not yet loaded.
+      #
       # In the case of a DM::Resource that isn't new, we optimize:
       #
       #   1. Eager-load all lazy, not-yet-loaded properties that need
@@ -102,8 +107,8 @@ module DataMapper
         attrs       = resource.attributes(:name)
         # TODO: update Resource#dirty_attributes to accept :name arg
         dirty_attrs = Hash[resource.dirty_attributes.map { |p, value| [p.name, value] }]
-        rules       = executable_rules.select { |v|
-          !attrs.include?(v.attribute_name) || dirty_attrs.include?(v.attribute_name)
+        rules       = executable_rules.select { |r|
+          !attrs.include?(r.attribute_name) || dirty_attrs.include?(r.attribute_name)
         }
 
         # Finally include any rules that should always run or don't
@@ -132,5 +137,6 @@ module DataMapper
         resource.__send__(:eager_load, properties_to_load)
       end
     end # class RuleSet
+
   end # module Validations
 end # module DataMapper

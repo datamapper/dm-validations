@@ -6,6 +6,7 @@ require 'data_mapper/validations/rule_set'
 
 module DataMapper
   module Validations
+
     class ContextualRuleSet
       extend Forwardable
       include Enumerable
@@ -31,12 +32,9 @@ module DataMapper
       # @api public
       def_delegators :rule_sets, :clear
 
-      def initialize(model = nil, optimize = false)
-        @model    = model
-        @optimize = optimize
-        @rule_sets = Hash.new do |h, context_name|
-          h[context_name] = RuleSet.new(context_name, self.optimize)
-        end
+      def initialize(model = nil)
+        @model     = model
+        @rule_sets = Hash.new { |h, context_name| h[context_name] = RuleSet.new }
       end
 
       # Delegate #validate to RuleSet
@@ -54,8 +52,8 @@ module DataMapper
       #   RuleSet for the given context
       # 
       # @api public
-      def context(name)
-        rule_sets[name]
+      def context(context_name)
+        rule_sets[context_name]
       end
 
       def [](attribute_name)
@@ -121,7 +119,7 @@ module DataMapper
       end
 
       # Returns the current validation context on the stack if valid for this model,
-      # nil if no contexts are defined for the model (and no contexts are on
+      # nil if no RuleSets are defined for the model (and no contexts are on
       # the validation stack), or :default if the current context is invalid for
       # this model or no contexts have been defined for this model and
       # no context is on the stack.
@@ -225,5 +223,6 @@ module DataMapper
       end
 
     end # class ContextualRuleSet
+
   end # module Validations
 end # module DataMapper
