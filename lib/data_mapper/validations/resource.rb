@@ -45,7 +45,7 @@ module DataMapper
 
       # @api private
       def save_self(*)
-        if dirty_self? && Context.any? && !validate(model.validators.current_context)
+        if dirty_self? && Context.any? && !valid?(model.validators.current_context)
           false
         else
           super
