@@ -90,7 +90,7 @@ module DataMapper
       # TODO: Extract the correct custom message for a Rule's context
       # in ContextualRuleSet#add
       def [](context_name)
-        warn "Accessing custom messages by context name will be removed in a future version (#{caller[0]})"
+        # warn "Accessing custom messages by context name will be removed in a future version (#{caller[0]})"
         @custom_message[context_name]
       end
     end
