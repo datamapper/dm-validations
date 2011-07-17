@@ -11,7 +11,7 @@ module DataMapper
 
           include Numericalness
 
-          def validate_numericalness(value)
+          def valid_numericalness?(value)
             value == expected
           rescue ArgumentError
             # TODO: figure out better solution for: can't compare String with Integer

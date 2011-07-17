@@ -54,7 +54,7 @@ module DataMapper
             true
           else
             length = value_length(value.to_s)
-            validate_length(length)
+            valid_length?(length)
           end
         end
 
@@ -64,8 +64,8 @@ module DataMapper
 
       private
 
-        def validate_length(length)
-          raise NotImplementError, "#{self.class}#validate_length must be implemented"
+        def valid_length?(length)
+          raise NotImplementError, "#{self.class}#valid_length? must be implemented"
         end
 
         # Return the length in characters

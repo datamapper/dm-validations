@@ -60,7 +60,7 @@ module DataMapper
 
           value = resource.validation_property_value(attribute_name)
 
-          optional?(value) || validate_numericalness(value)
+          optional?(value) || valid_numericalness?(value)
         end
 
         def violation_data(resource)

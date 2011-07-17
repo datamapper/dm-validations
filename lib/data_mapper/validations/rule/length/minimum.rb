@@ -36,7 +36,7 @@ module DataMapper
           #   the error message if invalid, nil if valid
           #
           # @api private
-          def validate_length(length)
+          def valid_length?(length)
             expected <= length
           end
 

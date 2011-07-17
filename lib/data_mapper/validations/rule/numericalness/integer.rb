@@ -15,7 +15,7 @@ module DataMapper
             /\A[+-]?\d+\z/
           end
 
-          def validate_numericalness(value)
+          def valid_numericalness?(value)
             # XXX: workaround for jruby. This is needed because the jruby
             # compiler optimizes a bit too far with magic variables like $~.
             # the value.send line sends $~. Inserting this line makes sure the
