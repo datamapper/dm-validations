@@ -31,7 +31,7 @@ module DataMapper
     # 
     # @api public
     def valid_for_default?
-      validate(:default)
+      valid?(:default)
     end
 
     # @return [ErrorSet]
