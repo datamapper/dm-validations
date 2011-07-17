@@ -72,10 +72,6 @@ module DataMapper
       # TODO: remove @options, it is superfluous at this point
       def initialize(attribute_name, options = {})
         @attribute_name = attribute_name
-        @options        = DataMapper::Ext::Hash.except(options, :message, :if, :unless)
-        # TODO: implement a #copy method, for use in ContextualRules#inherit
-        #   then remove :allow_nil, :allow_blank, and :message from @options
-        #   ultimately, remove @options entirely
         @custom_message = options[:message]
         @if_clause      = options[:if]
         @unless_clause  = options[:unless]
