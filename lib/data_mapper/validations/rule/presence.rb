@@ -8,6 +8,11 @@ module DataMapper
 
       class Presence < Rule
 
+        def initialize(attribute_name, options = {})
+          options = options.merge(:allow_nil => false, :allow_blank => false)
+          super(attribute_name, options)
+        end
+
         # Boolean property types are considered present if non-nil.
         # Other property types are considered present if non-blank.
         # Non-properties are considered present if non-blank.
@@ -30,7 +35,7 @@ module DataMapper
         # 
         # @api private
         # 
-        # TODO: break this into concreate trypes and move the property check
+        # TODO: break this into concrete types and move the property check
         # into #initialize. Will require adding model to signature of #initialize
         def boolean_type?(resource)
           property = get_resource_property(resource, attribute_name)

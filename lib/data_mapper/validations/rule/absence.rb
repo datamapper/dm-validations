@@ -8,6 +8,11 @@ module DataMapper
 
       class Absence < Rule
 
+        def initialize(attribute_name, options = {})
+          options = options.merge(:allow_nil => false, :allow_blank => false)
+          super(attribute_name, options)
+        end
+
         def valid?(resource)
           value = resource.validation_property_value(attribute_name)
           DataMapper::Ext.blank?(value)
