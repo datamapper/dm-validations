@@ -9,10 +9,18 @@ module DataMapper
 
         include DataMapper::Assertions
 
+        EQUALIZE_ON = superclass::EQUALIZE_ON.dup << :scope
+
+        equalize *EQUALIZE_ON
+
+        attr_reader :scope
+
         def initialize(attribute_name, options = {})
           if options.has_key?(:scope)
             assert_kind_of('scope', options[:scope], Array, Symbol)
           end
+
+          @scope = Array(options[:scope])
 
           super
 
@@ -29,7 +37,7 @@ module DataMapper
             attribute_name => value,
           }
 
-          Array(@options[:scope]).each { |subject|
+          scope.each { |subject|
             unless resource.respond_to?(subject)
               raise(ArgumentError,"Could not find property to scope by: #{subject}. Note that :unique does not currently support arbitrarily named groups, for that you should use :unique_index with an explicit validates_uniqueness_of.")
             end
