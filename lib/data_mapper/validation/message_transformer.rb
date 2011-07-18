@@ -87,6 +87,26 @@ module DataMapper
           self.class.error_message(violation_type, attribute_name, *violation_data)
         end
       end # class Default
+
+      class I18n < self
+        def transform(violation)
+          raise ArgumentError, "+violation+ must be specified" if violation.nil?
+
+          resource       = violation.resource
+          model_name     = resource.model.model_name
+          attribute_name = violation.attribute_name
+          violation_type = violation.violation_type
+
+          options = {
+            :model     => ::I18n.translate("models.#{model_name}"),
+            :attribute => ::I18n.translate("attributes.#{model_name}.#{attribute_name}"),
+            :value     => resource.validation_property_value(attribute_name)
+          }.merge(violation.values)
+
+          ::I18n.translate("errors.#{violation.type}", options)
+        end
+      end # class I18n
+
     end # class MessageTransformer
 
   end # module Validation
