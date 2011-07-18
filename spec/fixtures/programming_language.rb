@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 module DataMapper
-  module Validations
+  module Validation
     module Fixtures
       # If you think that this particular fixture class
       # and assumptions made below are full of bullshit

@@ -1,5 +1,5 @@
 module DataMapper
-  module Validations
+  module Validation
     module Fixtures
 
       # for pedants: we refer to DIX Ethernet here

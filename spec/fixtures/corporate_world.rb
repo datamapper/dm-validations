@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 module DataMapper
-  module Validations
+  module Validation
     module Fixtures
       class Organisation
         include DataMapper::Resource

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 module DataMapper
-  module Validations
+  module Validation
     module Fixtures
 
       # see http://datamapper.lighthouseapp.com/projects/20609/tickets/671

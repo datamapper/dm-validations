@@ -18,14 +18,14 @@ There are two primary ways to implement validations for your models
     validates_presence_of :name
   end
 
-2) Using auto-validations, please see DataMapper::Validations::AutoValidations. Note that not all validations that are provided via validation methods, are also available as autovalidation options. If they are available, they're functionally equivalent though.
+2) Using auto-validations, please see DataMapper::Validation::AutoValidations. Note that not all validations that are provided via validation methods, are also available as autovalidation options. If they are available, they're functionally equivalent though.
 
   class ProgrammingLanguage
     include DataMapper::Resource
     property :name, String, :required => true
   end
 
-See data_mapper/validations/macros.rb for to learn about the complete collection of validation rules available.
+See data_mapper/validation/macros.rb for to learn about the complete collection of validation rules available.
 
 == Validating
 
@@ -35,7 +35,7 @@ You may manually validate a resource using the valid? method, which will return 
 
 == Working with Validation Errors
 
-If your validators find errors in your model, they will populate the DataMapper::Validations::ErrorSet object that is available through each of your models via calls to your model's errors method.
+If your validators find errors in your model, they will populate the DataMapper::Validation::ErrorSet object that is available through each of your models via calls to your model's errors method.
 
 For example:
 
@@ -48,12 +48,12 @@ For example:
     end
   end
 
-See DataMapper::Validations::ErrorSet for all you can do with your model's
+See DataMapper::Validation::ErrorSet for all you can do with your model's
 errors method.
 
-== Contextual Validations
+== Contextual Validation
 
-DataMapper Validations also provide a means of grouping your validations into
+DataMapper Validation also provide a means of grouping your validations into
 contexts. This enables you to run different sets of validations when you
 need it. For instance, the same model may not only behave differently
 when initially saved or saved on update, but also require special validation sets

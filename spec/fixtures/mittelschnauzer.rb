@@ -1,5 +1,5 @@
 module DataMapper
-  module Validations
+  module Validation
     module Fixtures
       # Mittelschauzer is a type of dog. The More You Know.
       class Mittelschnauzer
