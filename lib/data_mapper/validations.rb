@@ -12,18 +12,26 @@ module DataMapper
     # Check if a resource is valid in a given context
     #
     # @api public
-    def validate(context_name = :default)
+    def valid?(context_name = default_validation_context)
+      validate(context_name).errors.empty?
+    end
+
+    # Command a resource to populate its ErrorSet with any violations of
+    # its validation Rules in +context_name+
+    #
+    # @api public
+    def validate(context_name = default_validation_context)
       errors.clear
-      model = respond_to?(:model) ? self.model : self.class
-      violations = model.validators.validate(self, context_name)
-      violations.each { |v| errors.add(v) }
+      validation_violations(context_name).each { |v| errors.add(v) }
 
       self
     end
 
-    # @api public
-    def valid?(context_name = :default)
-      validate(context_name).errors.empty?
+    # Get a list of violations for the receiver *without* mutating it
+    # 
+    # @api private
+    def validation_violations(context_name = default_validation_context)
+      self.class.validators.validate(self, context_name)
     end
 
     # @return [ErrorSet]
@@ -35,6 +43,19 @@ module DataMapper
     end
 
     # @api public
+    # The default validation context for this Resource.
+    # This Resource's default context can be overridden by implementing
+    # #default_validation_context
+    # 
+    # @return [Symbol]
+    #   the current validation context from the context stack
+    #   (if valid for this model), or :default
+    # 
+    # @api public
+    def default_validation_context
+      self.class.validators.current_context
+    end
+
     def validation_property_value(name)
       __send__(name) if respond_to?(name, true)
     end
@@ -46,19 +67,6 @@ module DataMapper
     # @api public
     def validatable?
       true
-    end
-
-    # The default validation context for this Resource.
-    # This Resource's default context can be overridden by implementing
-    # #default_validation_context
-    # 
-    # @return [Symbol]
-    #   the current validation context from the context stack
-    #   (if valid for this model), or :default
-    # 
-    # @api public
-    def default_validation_context
-      model.validators.current_default_context
     end
 
     module ClassMethods
@@ -79,5 +87,6 @@ module DataMapper
       end
 
     end # module ClassMethods
+
   end # module Validations
 end # module DataMapper
