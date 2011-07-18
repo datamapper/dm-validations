@@ -3,16 +3,12 @@ module DataMapper
 
     # Alias for validate(:default)
     #
-    # TODO: deprecate
-    # 
     # @api public
     def valid_for_default?
       # warn "#{self.class}#valid_for_default? is deprecated and will be removed in a future version (#{caller[0]})"
       valid?(:default)
     end
 
-    # TODO: this Exception class is not referenced within dm-validations
-    #   any reason not to remove it?
     class ValidationError < StandardError; end
 
     class ErrorSet
@@ -58,7 +54,6 @@ module DataMapper
     class Rule
       extend Deprecate
 
-      # TODO: remove :field_name alias
       deprecate :field_name, :attribute_name
 
       # Call the validator. "call" is used so the operation is BoundMethod
