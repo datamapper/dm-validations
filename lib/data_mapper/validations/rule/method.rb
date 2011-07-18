@@ -15,9 +15,9 @@ module DataMapper
         attr_reader :method
 
         def initialize(attribute_name, options={})
-          @method = options.fetch(:method, attribute_name)
-
           super
+
+          @method = options.fetch(:method, attribute_name)
         end
 
         def validate(resource)

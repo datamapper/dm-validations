@@ -20,9 +20,9 @@ module DataMapper
             assert_kind_of('scope', options[:scope], Array, Symbol)
           end
 
-          @scope = Array(options[:scope])
-
           super
+
+          @scope = Array(options[:scope])
 
           allow_nil!   unless defined?(@allow_nil)
           allow_blank! unless defined?(@allow_blank)

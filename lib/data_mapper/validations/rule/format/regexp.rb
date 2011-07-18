@@ -19,9 +19,9 @@ module DataMapper
           attr_reader :format_name
 
           def initialize(attribute_name, options = {})
-            @format_name = options[:format_name]
+            super
 
-            super(attribute_name, DataMapper::Ext::Hash.except(options, :format_name))
+            @format_name = options[:format_name]
           end
 
           def valid?(resource)
@@ -33,10 +33,6 @@ module DataMapper
           rescue ::Encoding::CompatibilityError
             # This is to work around a bug in jruby - see formats/email.rb
             false
-          end
-
-          def violation_type(resource)
-            :invalid
           end
 
           # TODO: integrate format into error message key?

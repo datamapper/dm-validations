@@ -12,9 +12,9 @@ module DataMapper
           include Length
 
           def initialize(attribute_name, options)
-            @expected = options[:equal]
-            # super(attribute_name, DataMapper::Ext::Hash.except(options, :equal))
             super
+
+            @expected = options[:equal]
           end
 
           def violation_type(resource)

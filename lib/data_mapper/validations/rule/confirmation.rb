@@ -16,12 +16,12 @@ module DataMapper
         def initialize(attribute_name, options = {})
           super
 
-          allow_nil!   unless defined?(@allow_nil)
-          allow_blank! unless defined?(@allow_blank)
-
           @confirm_attribute_name = options.fetch(:confirm) do
             :"#{attribute_name}_confirmation"
           end
+
+          allow_nil!   unless defined?(@allow_nil)
+          allow_blank! unless defined?(@allow_blank)
         end
 
         def valid?(resource)

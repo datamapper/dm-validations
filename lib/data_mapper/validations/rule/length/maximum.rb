@@ -14,9 +14,9 @@ module DataMapper
           attr_reader :expected
 
           def initialize(attribute_name, options)
-            @expected = options[:maximum]
-            # super(attribute_name, DataMapper::Ext::Hash.except(options, :maximum))
             super
+
+            @expected = options[:maximum]
           end
 
           def violation_type(resource)

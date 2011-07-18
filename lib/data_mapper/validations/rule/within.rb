@@ -15,9 +15,7 @@ module DataMapper
 
         # TODO: move options normalization into the validator macros
         def self.new(attribute_name, options)
-          set = options.fetch(:set)
-
-          if set.is_a?(::Range)
+          if options.fetch(:set).is_a?(::Range)
             Within::Range.new(attribute_name, options)
           else
             Within::Set.new(attribute_name, options)

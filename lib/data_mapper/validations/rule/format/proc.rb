@@ -26,11 +26,7 @@ module DataMapper
           #   false
           end
 
-          def violation_type(resource)
-            :invalid
-          end
-
-        end # class Regexp
+        end # class Proc
 
       end # module Format
     end # class Rule

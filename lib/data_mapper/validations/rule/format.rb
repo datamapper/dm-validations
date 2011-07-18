@@ -55,9 +55,9 @@ module DataMapper
         attr_reader :format
 
         def initialize(attribute_name, options)
-          @format = options[:format]
+          super
 
-          super(attribute_name, DataMapper::Ext::Hash.except(options, :format))
+          @format = options[:format]
 
           allow_nil!   unless defined?(@allow_nil)
           allow_blank! unless defined?(@allow_blank)

@@ -9,8 +9,10 @@ module DataMapper
       class Absence < Rule
 
         def initialize(attribute_name, options = {})
-          options = options.merge(:allow_nil => false, :allow_blank => false)
-          super(attribute_name, options)
+          super
+
+          @allow_nil   = false
+          @allow_blank = false
         end
 
         def valid?(resource)

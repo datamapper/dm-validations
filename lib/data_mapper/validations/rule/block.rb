@@ -11,11 +11,11 @@ module DataMapper
         attr_reader :block
 
         def initialize(attribute_name, options, &block)
-          super
-
           unless block_given?
             raise ArgumentError, 'cannot initialize a Block validator without a block'
           end
+
+          super
 
           @block = block
         end

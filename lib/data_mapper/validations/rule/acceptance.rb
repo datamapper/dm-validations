@@ -17,9 +17,9 @@ module DataMapper
         attr_reader :accept
 
         def initialize(attribute_name, options = {})
-          @accept = Array(options.fetch(:accept, DEFAULT_ACCEPTED_VALUES))
+          super
 
-          super(attribute_name, DataMapper::Ext::Hash.except(options, :accept))
+          @accept = Array(options.fetch(:accept, DEFAULT_ACCEPTED_VALUES))
 
           allow_nil! unless defined?(@allow_nil)
         end

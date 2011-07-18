@@ -14,11 +14,9 @@ module DataMapper
           attr_reader :expected
 
           def initialize(attribute_name, options)
-            @expected = options[:minimum]
-            # TODO: fix inheritance to delegate copying to Rule
-            # instead of just passing options
-            # super(attribute_name, DataMapper::Ext::Hash.except(options, :minimum))
             super
+
+            @expected = options[:minimum]
           end
 
           def violation_type(resource)

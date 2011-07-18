@@ -18,9 +18,9 @@ module DataMapper
           attr_reader :set
 
           def initialize(attribute_name, options={})
-            @set = options.fetch(:set, [])
+            super
 
-            super(attribute_name, DataMapper::Ext::Hash.except(options, :set))
+            @set = options.fetch(:set, [])
           end
 
           def valid?(resource)

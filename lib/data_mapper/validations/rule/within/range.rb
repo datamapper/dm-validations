@@ -32,9 +32,9 @@ module DataMapper
           end
 
           def initialize(attribute_name, options={})
-            @range = options.fetch(:range) { options.fetch(:set) }
+            super
 
-            super(attribute_name, DataMapper::Ext::Hash.except(options, :range, :set))
+            @range = options.fetch(:range) { options.fetch(:set) }
           end
 
           def valid?(resource)
