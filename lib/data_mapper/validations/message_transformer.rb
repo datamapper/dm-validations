@@ -8,11 +8,12 @@ module DataMapper
     #   message transformer or pass the transformer to {Violation#message}.
     class MessageTransformer
 
-      # Transforms the specified violation to a message.
+      # Transforms the specified Violation to an error message string.
       #
       # @param [Violation] violation
-      #   The violation to transform.
-      # @return [string]
+      #   The Violation to transform.
+      # 
+      # @return [String]
       #   The transformed message.
       #
       # @raise [ArgumentError]
@@ -77,16 +78,6 @@ module DataMapper
           end
         end
 
-        # Transforms the specified Violation to an error message string.
-        #
-        # @param [Violation] violation
-        #   The Violation to transform.
-        # 
-        # @return [string]
-        #   The transformed message.
-        #
-        # @raise [ArgumentError]
-        #   +violation+ is +nil+.
         def transform(violation)
           raise ArgumentError, "+violation+ must be specified" if violation.nil?
           violation_type = violation.violation_type
