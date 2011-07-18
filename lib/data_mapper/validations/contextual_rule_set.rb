@@ -136,10 +136,6 @@ module DataMapper
         valid_context?(context) ? context : :default
       end
 
-      def current_default_context
-        current_context || :default
-      end
-
       # Test if the context is valid for the model
       #
       # @param [Symbol] context
@@ -149,10 +145,9 @@ module DataMapper
       #   true if the context is valid for the model
       #
       # @api private
-      # 
-      # TODO: investigate removing the `contexts.empty?` test here.
-      def valid_context?(context)
-        rule_sets.empty? || rule_sets.include?(context)
+      def valid_context?(context_name)
+        !context_name.nil? &&
+          (rule_sets.empty? || rule_sets.include?(context_name))
       end
 
       # Assert that the given context is valid for this model
@@ -166,9 +161,9 @@ module DataMapper
       # @api private
       # 
       # TODO: is this method actually needed?
-      def assert_valid(context)
-        unless valid_context?(context)
-          raise InvalidContextError, "#{context} is an invalid context, known contexts are #{rule_sets.keys.inspect}"
+      def assert_valid_context(context_name)
+        unless valid_context?(context_name)
+          raise InvalidContextError, "#{context_name} is an invalid context, known contexts are #{rule_sets.keys.inspect}"
         end
       end
 
