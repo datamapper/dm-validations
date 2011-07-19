@@ -56,6 +56,11 @@ module DataMapper
 
       deprecate :field_name, :attribute_name
 
+      def humanized_field_name
+        # warn "#{self.class}#humanized_field_name is deprecated and will be removed in a future version (#{caller[0]})"
+        DataMapper::Inflector.humanize(attribute_name)
+      end
+
       # Call the validator. "call" is used so the operation is BoundMethod
       # and Block compatible. This must be implemented in all concrete
       # classes.

@@ -80,10 +80,6 @@ module DataMapper
         @allow_blank = options[:allow_blank] if options.include?(:allow_blank)
       end
 
-      def humanized_field_name
-        DataMapper::Inflector.humanize(attribute_name)
-      end
-
       # Determines if this validator should be run against the
       # resource by evaluating the :if and :unless clauses
       # optionally passed while specifying any validator.
