@@ -13,7 +13,7 @@ module DataMapper
 
       EQUALIZE_ON = [
           :attribute_name, :allow_nil, :allow_blank,
-          :custom_message, :if_clause, :unless_clause, :options]
+          :custom_message, :if_clause, :unless_clause]
       equalize *EQUALIZE_ON
 
       # @api private
@@ -33,9 +33,6 @@ module DataMapper
 
       # @api private
       attr_reader :unless_clause
-
-      # @api private
-      attr_reader :options
 
       # Get the validators for the given attribute_name and options
       # 
@@ -64,12 +61,6 @@ module DataMapper
       # @option [Symbol, Proc] :unless
       #   The name of a method or a Proc to call to determine if the
       #   validation should not occur.
-      #
-      # @note
-      #   All additional key/value pairs are passed through to the
-      #   Rule subclass
-      #
-      # TODO: remove @options, it is superfluous at this point
       def initialize(attribute_name, options = {})
         @attribute_name = attribute_name
         @custom_message = options.fetch(:message, nil)
