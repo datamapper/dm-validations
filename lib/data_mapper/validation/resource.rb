@@ -52,6 +52,55 @@ module DataMapper
         Context.in_context(context_name) { super(attributes) }
       end
 
+      # @api public
+      def validate(context_name = default_validation_context)
+        super
+        validate_parents  # if model.validators.validate_parents?
+        validate_children # if model.validators.validate_children?
+
+        self
+      end
+
+    private
+
+      # @api private
+      def validate_parents
+        parent_relationships.each do |relationship|
+          next unless relationship.loaded?(self)
+          validate_parent_relationship(relationship)
+        end
+      end
+
+      # @api private
+      def validate_children
+        child_relationships.each do |relationship|
+          next unless relationship.loaded?(self)
+          validate_child_relationship(relationship)
+        end
+      end
+
+      # @api private
+      def validate_parent_relationship(relationship)
+        relationship_name = relationship.name
+        context_name      = relationship.target_model.validators.current_context
+        parent_resource   = relationship.get(self)
+
+        parent_violations = parent_resource.validation_violations(context_name)
+        parent_violations.each { |v| errors[relationship_name] << v }
+      end
+
+      # @api private
+      def validate_child_relationship(relationship)
+        relationship_name = relationship.name
+        context_name      = relationship.target_model.validators.current_context
+        child_collection  = relationship.get_collection(self)
+
+        child_collection.each do |child_resource|
+          child_violations = child_resource.validation_violations(context_name)
+          child_violations.each { |v| errors[relationship_name] << v }
+        end
+      end
+
       # @api private
       def validate_or_halt
         throw :halt if Context.any? && !valid?(validation_rules.current_context)
