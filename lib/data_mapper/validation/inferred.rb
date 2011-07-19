@@ -10,8 +10,10 @@ module DataMapper
       def property(*)
         property = super
 
-        inferred_validator_args = Validation::Inferred.for_property(property)
-        inferred_validator_args.each { |args| validators.add(*args) }
+        rule_definitions = Validation::Inferred.rules_for_property(property)
+        rule_definitions.each do |rule_class, attribute_name, options|
+          validators.add(rule_class, [attribute_name], options)
+        end
 
         # FIXME: explicit return needed for YARD to parse this properly
         return property
@@ -69,33 +71,31 @@ module DataMapper
       #   Triggers that generate validator creation
       #
       #   :required => true
-      #       Setting the option :required to true causes a
-      #       validates_presence_of validator to be created for the property
+      #       Setting the option :required to true causes a Rule::Presence
+      #       to be created for the property
       #
       #   :length => 20
-      #       Setting the option :length causes a validates_length_of
-      #       validator to be created for the property. If the
-      #       value is a Integer the validation will set :maximum => value
-      #       if the value is a Range the validation will set
-      #       :within => value
+      #       Setting the option :length causes a Rule::Length to be created
+      #       for the property.
+      #       If the value is a Integer the Rule will have :maximum => value.
+      #       If the value is a Range the Rule will have :within => value.
       #
       #   :format => :predefined / lambda / Proc
-      #       Setting the :format option causes a validates_format_of
-      #       validator to be created for the property
+      #       Setting the :format option causes a Rule::Format to be created
+      #       for the property
       #
       #   :set => ["foo", "bar", "baz"]
-      #       Setting the :set option causes a validates_within
-      #       validator to be created for the property
+      #       Setting the :set option causes a Rule::Within to be created
+      #       for the property
       #
       #   Integer type
-      #       Using a Integer type causes a validates_numericalness_of
-      #       validator to be created for the property.  integer_only
-      #       is set to true
+      #       Using a Integer type causes a Rule::Numericalness to be created
+      #       for the property.  The Rule's :integer_only option is set to true
       #
       #   BigDecimal or Float type
-      #       Using a Integer type causes a validates_numericalness_of
-      #       validator to be created for the property.  integer_only
-      #       is set to false, and precision/scale match the property
+      #       Using a Integer type causes a Rule::Numericalness to be created
+      #       for the property.  The Rule's :integer_only option will be set
+      #       to false, and precision/scale will be set to match the Property
       #
       #
       #   Messages
@@ -112,32 +112,28 @@ module DataMapper
       #       It is just shortcut if only one validation option is set
       #
       # @api private
-      def self.for_property(property)
-        inferred_validator_args = []
+      def self.rules_for_property(property)
+        rule_definitions = []
 
         # TODO: restate this as a positive assertion, instead of a negative one
-        return inferred_validator_args if skip_validator_inferral_for?(property)
+        return rule_definitions if skip_validator_inferral_for?(property)
 
-        # all inferred validations (aside from Presence/Absence) should be skipped
-        # validation when the value is nil
+        # all inferred rules should not be skipped when the value is nil
+        #   (aside from Rule::Presence/Rule::Absence)
         opts = { :allow_nil => true }
 
         if property.options.key?(:validates)
           opts[:context] = property.options[:validates]
         end
 
-        # TODO: update these methods to return an array of:
-        #   [Rule::Abstract, attribute_name, validator_options]
-        # Then iterate over *that* list and call:
-        #   property.model.validators.add(*args)
-        inferred_validator_args << infer_presence(  property, opts.dup)
-        inferred_validator_args << infer_length(    property, opts.dup)
-        inferred_validator_args << infer_format(    property, opts.dup)
-        inferred_validator_args << infer_uniqueness(property, opts.dup)
-        inferred_validator_args << infer_within(    property, opts.dup)
-        inferred_validator_args << infer_type(      property, opts.dup)
+        rule_definitions << infer_presence(  property, opts.dup)
+        rule_definitions << infer_length(    property, opts.dup)
+        rule_definitions << infer_format(    property, opts.dup)
+        rule_definitions << infer_uniqueness(property, opts.dup)
+        rule_definitions << infer_within(    property, opts.dup)
+        rule_definitions << infer_type(      property, opts.dup)
 
-        inferred_validator_args.compact
+        rule_definitions.compact
       end
 
       def self.skip_validator_inferral_for?(property)
@@ -184,7 +180,7 @@ module DataMapper
         options[:with] = property.options[:format]
 
         validation_options = options_with_message(options, property, :format)
-        # property.model.validates_format_of property.name, validation_options
+
         [Rule::Format, property.name, validation_options]
       end
 
@@ -198,11 +194,9 @@ module DataMapper
             options[:scope] = Array(value)
 
             validation_options = options_with_message(options, property, :is_unique)
-            # property.model.validates_uniqueness_of property.name, validation_options
             [Rule::Uniqueness, property.name, validation_options]
           when TrueClass
             validation_options = options_with_message(options, property, :is_unique)
-            # property.model.validates_uniqueness_of property.name, validation_options
             [Rule::Uniqueness, property.name, validation_options]
         end
       end
@@ -214,7 +208,6 @@ module DataMapper
         options[:set] = property.options[:set]
 
         validation_options = options_with_message(options, property, :within)
-        # property.model.validates_within property.name, validation_options
         [Rule::Within, property.name, validation_options]
       end
 
@@ -231,7 +224,6 @@ module DataMapper
           options[:integer_only] = true
 
           validation_options = options_with_message(options, property, :is_number)
-          # property.model.validates_numericalness_of property.name, validation_options
           [Rule::Numericalness, property.name, validation_options]
         elsif (BigDecimal == property.primitive ||
                Float == property.primitive)
@@ -239,14 +231,12 @@ module DataMapper
           options[:scale]     = property.scale
 
           validation_options = options_with_message(options, property, :is_number)
-          # property.model.validates_numericalness_of property.name, validation_options
           [Rule::Numericalness, property.name, validation_options]
         else
           # We only need this in the case we don't already
           # have a numeric validator, because otherwise
           # it will cause duplicate validation errors
           validation_options = options_with_message(options, property, :is_primitive)
-          # property.model.validates_primitive_type_of property.name, validation_options
           [Rule::PrimitiveType, property.name, validation_options]
         end
       end

@@ -138,6 +138,12 @@ module DataMapper
       deprecate :validates_is_number,     :validates_numericality_of
       deprecate :validates_is_primitive,  :validates_primitive_type_of
       deprecate :validates_is_unique,     :validates_uniqueness_of
+
+      def validates_numericality_of(*attribute_names)
+        # warn "'Numericality' is not a word in the English language, please use validates_numericalness_of (#{caller[0]})"
+        options = attribute_names.last.kind_of?(Hash) ? attribute_names.pop : {}
+        validators.add(Rule::Numericalness, attribute_names, options)
+      end
     end
 
     module Inferred

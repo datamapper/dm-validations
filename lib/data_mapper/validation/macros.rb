@@ -43,7 +43,8 @@ module DataMapper
       #   end
       #
       def validates_absence_of(*attribute_names)
-        validators.add(Rule::Absence, *attribute_names)
+        options = attribute_names.last.kind_of?(Hash) ? attribute_names.pop : {}
+        validators.add(Rule::Absence, attribute_names, options)
       end
 
       # Validates that the attributes's value is in the set of accepted
@@ -72,7 +73,8 @@ module DataMapper
       #     # terms_accepted is one of ["1", 1, "true", true, "t"]
       #
       def validates_acceptance_of(*attribute_names)
-        validators.add(Rule::Acceptance, *attribute_names)
+        options = attribute_names.last.kind_of?(Hash) ? attribute_names.pop : {}
+        validators.add(Rule::Acceptance, attribute_names, options)
       end
 
       # Validate using the given block. The block given needs to return:
@@ -115,7 +117,8 @@ module DataMapper
           raise ArgumentError, 'You need to pass a block to validates_with_block'
         end
 
-        validators.add(Rule::Block, *attribute_names, &block)
+        options = attribute_names.last.kind_of?(Hash) ? attribute_names.pop : {}
+        validators.add(Rule::Block, attribute_names, options, &block)
       end
 
       # Validates that the given attribute is confirmed by another
@@ -152,7 +155,8 @@ module DataMapper
       #     # email == email_repeated
       #
       def validates_confirmation_of(*attribute_names)
-        validators.add(Rule::Confirmation, *attribute_names)
+        options = attribute_names.last.kind_of?(Hash) ? attribute_names.pop : {}
+        validators.add(Rule::Confirmation, attribute_names, options)
       end
 
       # Validates that the attribute is in the specified format. You may
@@ -194,7 +198,8 @@ module DataMapper
       #     # zip_code is a string of 5 digits
       #
       def validates_format_of(*attribute_names)
-        validators.add(Rule::Format, *attribute_names)
+        options = attribute_names.last.kind_of?(Hash) ? attribute_names.pop : {}
+        validators.add(Rule::Format, attribute_names, options)
       end
 
       # Validates that the length of the attribute is equal to, less than,
@@ -254,7 +259,8 @@ module DataMapper
       #     # just_right is between 1 and 10 (inclusive of both 1 and 10)
       #
       def validates_length_of(*attribute_names)
-        validators.add(Rule::Length, *attribute_names)
+        options = attribute_names.last.kind_of?(Hash) ? attribute_names.pop : {}
+        validators.add(Rule::Length, attribute_names, options)
       end
 
       # Validate using method called on validated object. The method must
@@ -292,7 +298,8 @@ module DataMapper
       #    # wrong zip code" unless zip_code == "94301"
       #  end
       def validates_with_method(*attribute_names)
-        validators.add(Rule::Method, *attribute_names)
+        options = attribute_names.last.kind_of?(Hash) ? attribute_names.pop : {}
+        validators.add(Rule::Method, attribute_names, options)
       end
 
       # Validate whether a field is numeric.
@@ -335,14 +342,9 @@ module DataMapper
       # @option [Boolean] :integer_only
       #   Use to restrict allowed values to integers.
       #
-      def validates_numericality_of(*attribute_names)
-        # TODO: flip the switch and turn this on:
-        # warn "'Numericality' is not a word in the English language, please use validates_numericalness_of"
-        validators.add(Rule::Numericalness, *attribute_names)
-      end
-
       def validates_numericalness_of(*attribute_names)
-        validators.add(Rule::Numericalness, *attribute_names)
+        options = attribute_names.last.kind_of?(Hash) ? attribute_names.pop : {}
+        validators.add(Rule::Numericalness, attribute_names, options)
       end
 
       # Validates that the specified attribute is present.
@@ -374,7 +376,8 @@ module DataMapper
       #     # all three attributes are !blank?
       #   end
       def validates_presence_of(*attribute_names)
-        validators.add(Rule::Presence, *attribute_names)
+        options = attribute_names.last.kind_of?(Hash) ? attribute_names.pop : {}
+        validators.add(Rule::Presence, attribute_names, options)
       end
 
       # Validates that the specified attribute is of the correct primitive
@@ -395,13 +398,16 @@ module DataMapper
       #     # casted into a Date object.
       #   end
       def validates_primitive_type_of(*attribute_names)
-        validators.add(Rule::PrimitiveType, *attribute_names)
+        options = attribute_names.last.kind_of?(Hash) ? attribute_names.pop : {}
+        validators.add(Rule::PrimitiveType, attribute_names, options)
       end
 
       # Validate the uniqueness of a field
       #
+      # TODO: YARDoc for this method
       def validates_uniqueness_of(*attribute_names)
-        validators.add(Rule::Uniqueness, *attribute_names)
+        options = attribute_names.last.kind_of?(Hash) ? attribute_names.pop : {}
+        validators.add(Rule::Uniqueness, attribute_names, options)
       end
 
       # Validates that the value of a field is within a range/set.
@@ -430,7 +436,8 @@ module DataMapper
       #     # the two properties conform to their sets
       #   end
       def validates_within(*attribute_names)
-        validators.add(Rule::Within, *attribute_names)
+        options = attribute_names.last.kind_of?(Hash) ? attribute_names.pop : {}
+        validators.add(Rule::Within, attribute_names, options)
       end
 
     end # module Macros

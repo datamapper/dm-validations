@@ -83,8 +83,7 @@ module DataMapper
       # 
       # @return [ContextualRuleSet]
       #   This method is a command, thus returns the receiver
-      def add(rule_class, *attribute_names, &block)
-        options  = attribute_names.last.kind_of?(Hash) ? attribute_names.pop.dup : {}
+      def add(rule_class, attribute_names, options = {}, &block)
         contexts = extract_contexts(options)
 
         attribute_names.each do |attribute_name|
