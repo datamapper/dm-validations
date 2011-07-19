@@ -112,11 +112,13 @@ module DataMapper
 
         equalize *EQUALIZE_ON
 
+        # TODO: could this definition of #inspect be moved into Equalizer itself?
+        #   It would provide a reasonable default implementation of #inspect
+        #   It would eliminate the need for an EQUALIZE_ON constant (and the splat)
         def inspect
           out = "#<#{self.class.name}"
-          self.class::Equalization::EQUALIZE_ON.each do |ivar|
-            value = send(ivar)
-            out << " @#{ivar}=#{value.inspect}"
+          self.class::Equalization::EQUALIZE_ON.each do |ivar_name|
+            out << " @#{ivar_name}=#{__send__(ivar_name).inspect}"
           end
           out << ">"
         end
