@@ -42,7 +42,7 @@ module DataMapper
         unless present
           model.class_eval <<-RUBY, __FILE__, __LINE__ + 1
             def #{name}                   # def valid_for_signup?
-              # warn "\#{self.class}##{name} is deprecated. Use #validate instead (\#{caller[0]})"
+              # warn "\#{self.class}##{name} is deprecated. Use #valid?(context_name) instead (\#{caller[0]})"
               valid?(:#{context})         #   valid?(:signup)
             end                           # end
           RUBY
@@ -88,6 +88,7 @@ module DataMapper
 
       class Block
         def call(resource)
+          # warn "#{self.class}#call is deprecated and will be removed in a future version (#{caller[0]})"
           result, error_message = resource.instance_eval(&self.block)
           add_error(resource, error_message, attribute_name) unless result
           result
@@ -96,6 +97,7 @@ module DataMapper
 
       class Method
         def call(resource)
+          # warn "#{self.class}#call is deprecated and will be removed in a future version (#{caller[0]})"
           result, error_message = resource.__send__(method)
           add_error(resource, error_message, attribute_name) unless result
           result
@@ -117,7 +119,7 @@ module DataMapper
 
     class Violation
       # TODO: Extract the correct custom message for a Rule's context
-      # in ContextualRuleSet#add
+      #   (in ContextualRuleSet#add). That change will break this interface.
       def [](context_name)
         # warn "Accessing custom messages by context name will be removed in a future version (#{caller[0]})"
         @custom_message[context_name]

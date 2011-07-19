@@ -42,7 +42,6 @@ module DataMapper
       @errors ||= ErrorSet.new(self)
     end
 
-    # @api public
     # The default validation context for this Resource.
     # This Resource's default context can be overridden by implementing
     # #default_validation_context
@@ -56,8 +55,17 @@ module DataMapper
       self.class.validators.current_context
     end
 
-    def validation_property_value(name)
-      __send__(name) if respond_to?(name, true)
+    # Retrieve the value of the given property name for the purpose of validation.
+    # Default implementation is to send the attribute name arg to the receiver
+    # and use the resulting value as the attribute value for validation
+    # 
+    # @param [Symbol] attribute_name
+    #   the name of the attribute for which to retrieve
+    #   the attribute value for validation.
+    # 
+    # @api public
+    def validation_property_value(attribute_name)
+      __send__(attribute_name) if respond_to?(attribute_name, true)
     end
 
     # Mark this resource as validatable. When we validate associations of a

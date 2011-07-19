@@ -54,13 +54,21 @@ module DataMapper
       # @param [String, Symbol] attribute_name
       #   The name of the attribute to validate.
       #
+      # TODO: remove Hash as a value for :message
+      #   (see Violation#[] in backwards.rb)
+      # 
+      # @option [String, Hash] :message
+      #   A custom message that will be used for any violations of this rule
       # @option [Symbol, Proc] :if
-      #   The name of a method or a Proc to call to determine if the
-      #   validation should occur.
-      #
+      #   The name of a method (on the valiated resource) or a Proc to call
+      #   (with the resource) to determine if the rule should be applied.
       # @option [Symbol, Proc] :unless
-      #   The name of a method or a Proc to call to determine if the
-      #   validation should not occur.
+      #   The name of a method (on the valiated resource) or a Proc to call
+      #   (with the resource) to determine if the rule should *not* be applied.
+      # @option [Boolean] :allow_nil
+      #   Whether to skip applying this rule on nil values
+      # @option [Boolean] :allow_blank
+      #   Whether to skip applying this rule on blank values
       def initialize(attribute_name, options = {})
         @attribute_name = attribute_name
         @custom_message = options.fetch(:message, nil)

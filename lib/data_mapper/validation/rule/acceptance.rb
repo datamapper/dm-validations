@@ -6,6 +6,7 @@ module DataMapper
   module Validation
     class Rule
 
+      # TODO: update this to inherit from Rule::Within::Set
       class Acceptance < Rule
 
         EQUALIZE_ON = superclass::EQUALIZE_ON.dup << :accept
@@ -36,6 +37,7 @@ module DataMapper
 
       private
 
+        # TODO: isn't this superfluous considering Rule#optional?
         def exempt_value?(value)
           allow_nil? && value.nil?
         end
