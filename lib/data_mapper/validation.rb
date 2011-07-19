@@ -80,6 +80,8 @@ module DataMapper
         @validators ||= ContextualRuleSet.new(self)
       end
 
+    private
+
       # @api private
       def inherited(base)
         super
