@@ -17,7 +17,7 @@ module DataMapper
       attr_reader :resource
       attr_reader :custom_message
       attr_reader :rule
-      attr_writer :attribute_name
+      attr_reader :attribute_name
 
       # Configure a Violation instance
       # 

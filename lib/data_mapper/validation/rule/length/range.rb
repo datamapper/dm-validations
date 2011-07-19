@@ -16,7 +16,7 @@ module DataMapper
           def initialize(attribute_name, options)
             super
 
-            @expected = options[:range]
+            @expected = options.fetch(:range)
           end
 
           def violation_type(resource)

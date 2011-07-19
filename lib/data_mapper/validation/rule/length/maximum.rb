@@ -16,7 +16,7 @@ module DataMapper
           def initialize(attribute_name, options)
             super
 
-            @expected = options[:maximum]
+            @expected = options.fetch(:maximum)
           end
 
           def violation_type(resource)

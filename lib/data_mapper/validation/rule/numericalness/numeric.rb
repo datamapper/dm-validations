@@ -17,9 +17,12 @@ module DataMapper
           def initialize(attribute_name, options)
             super
 
-            @precision = options[:precision]
-            @scale     = options[:scale]
-            expected # validate precision and scale attrs
+            @precision = options.fetch(:precision, nil)
+            @scale     = options.fetch(:scale,     nil)
+
+            unless expected # validate precision and scale attrs
+              raise ArgumentError, "Invalid precision #{precision.inspect} and scale #{scale.inspect} for #{attribute_name}"
+            end
           end
 
           def expected(precision = @precision, scale = @scale)
@@ -32,7 +35,7 @@ module DataMapper
               elsif precision == scale
                 /\A[+-]?(?:0(?:\.\d{1,#{scale}})?)\z/
               else
-                raise ArgumentError, "Invalid precision #{precision.inspect} and scale #{scale.inspect} for #{attribute_name}"
+                nil
               end
             else
               /\A[+-]?(?:\d+|\d*\.\d+)\z/

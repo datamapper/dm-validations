@@ -16,7 +16,7 @@ module DataMapper
           def initialize(attribute_name, options)
             super
 
-            @expected = options[:minimum]
+            @expected = options.fetch(:minimum)
           end
 
           def violation_type(resource)

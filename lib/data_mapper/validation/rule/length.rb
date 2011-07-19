@@ -38,7 +38,7 @@ module DataMapper
             Length::Maximum.new(attribute_name, options.merge(:maximum => maximum))
           else
             # raise ArgumentError, "expected one of :is, :equals, :within, :in, :minimum, :min, :maximum, or :max; got #{options.keys.inspect}"
-            warn "expected length specification: one of :is, :equals, :within, :in, :minimum, :min, :maximum, or :max; got #{options.keys.inspect}"
+            warn "expected length specification: one of :is, :equals, :within, :in, :minimum, :min, :maximum, or :max; got #{options.keys.inspect} (#{caller[0]})"
             Length::Dummy.new(attribute_name, options)
           end
         end

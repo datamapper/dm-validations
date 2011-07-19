@@ -72,9 +72,9 @@ module DataMapper
       # TODO: remove @options, it is superfluous at this point
       def initialize(attribute_name, options = {})
         @attribute_name = attribute_name
-        @custom_message = options[:message]
-        @if_clause      = options[:if]
-        @unless_clause  = options[:unless]
+        @custom_message = options.fetch(:message, nil)
+        @if_clause      = options.fetch(:if,      nil)
+        @unless_clause  = options.fetch(:unless,  nil)
 
         @allow_nil   = options[:allow_nil]   if options.include?(:allow_nil)
         @allow_blank = options[:allow_blank] if options.include?(:allow_blank)

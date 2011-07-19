@@ -11,7 +11,7 @@ module DataMapper
 
           include Format
 
-          EQUALIZE_ON = superclass::EQUALIZE_ON.dup << :format_name << :format
+          EQUALIZE_ON = superclass::EQUALIZE_ON.dup << :format << :format_name
 
           equalize *EQUALIZE_ON
 
@@ -21,7 +21,7 @@ module DataMapper
           def initialize(attribute_name, options = {})
             super
 
-            @format_name = options[:format_name]
+            @format_name = options.fetch(:format_name, nil)
           end
 
           def valid?(resource)
@@ -37,8 +37,8 @@ module DataMapper
 
           # TODO: integrate format into error message key?
           # def error_message_args
-          #   if format.is_a?(Symbol)
-          #     [ :"invalid_#{format}", attribute_name ]
+          #   if format_name.is_a?(Symbol)
+          #     [ :"invalid_#{format_name}", attribute_name ]
           #   else
           #     [ :invalid, attribute_name ]
           #   end

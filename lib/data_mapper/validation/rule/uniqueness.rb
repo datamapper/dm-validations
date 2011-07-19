@@ -16,13 +16,13 @@ module DataMapper
         attr_reader :scope
 
         def initialize(attribute_name, options = {})
-          if options.has_key?(:scope)
+          if options.include?(:scope)
             assert_kind_of('scope', options[:scope], Array, Symbol)
           end
 
           super
 
-          @scope = Array(options[:scope])
+          @scope = Array(options.fetch(:scope, nil))
 
           allow_nil!   unless defined?(@allow_nil)
           allow_blank! unless defined?(@allow_blank)

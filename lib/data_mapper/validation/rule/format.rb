@@ -57,7 +57,7 @@ module DataMapper
         def initialize(attribute_name, options)
           super
 
-          @format = options[:format]
+          @format = options.fetch(:format)
 
           allow_nil!   unless defined?(@allow_nil)
           allow_blank! unless defined?(@allow_blank)
