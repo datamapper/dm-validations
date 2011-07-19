@@ -100,7 +100,14 @@ module DataMapper
         end
       end
 
+      # Validate the +resource+ arg against this Rule
       # 
+      # @param [DataMapper::Resource, Object] resource
+      #   the target object to be validated
+      # 
+      # @return [NilClass, Violation]
+      #   NilClass if +resource+ is valid
+      #   Violation with additional info if +resource+ is invalid
       def validate(resource)
         if valid?(resource)
           nil
