@@ -17,7 +17,7 @@ module DataMapper
             end
 
             def violation_data(resource)
-              [ range.first, range.last ]
+              [ [ :minimum, range.min ], [ :maximum, range.max ] ]
             end
 
           end # class Bounded

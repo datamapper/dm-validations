@@ -22,6 +22,10 @@ module DataMapper
             :not_equal_to
           end
 
+          def violation_data(resource)
+            [ [ :not_expected, expected ] ]
+          end
+
         end # class NotEqual
 
       end # module Numericalness

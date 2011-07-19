@@ -21,6 +21,10 @@ module DataMapper
             :wrong_length
           end
 
+          def violation_data(resource)
+            [ [ :expected, expected ] ]
+          end
+
         private
 
           # Validate the value length is equal to the expected length

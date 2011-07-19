@@ -23,6 +23,10 @@ module DataMapper
             :too_short
           end
 
+          def violation_data(resource)
+            [ [ :minimum, expected ] ]
+          end
+
         private
 
           # Validate the minimum expected value length

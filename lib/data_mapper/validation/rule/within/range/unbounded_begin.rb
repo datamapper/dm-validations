@@ -17,7 +17,7 @@ module DataMapper
             end
 
             def violation_data(resource)
-              [ range.end ]
+              [ [ :maximum, range.max ] ]
             end
 
           end # class UnboundedBegin

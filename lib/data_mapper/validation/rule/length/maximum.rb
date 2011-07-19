@@ -23,6 +23,10 @@ module DataMapper
             :too_long
           end
 
+          def violation_data(resource)
+            [ [ :maximum, expected ] ]
+          end
+
         private
 
           # Validate the maximum expected value length

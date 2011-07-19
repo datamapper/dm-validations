@@ -66,13 +66,17 @@ module DataMapper
       end
 
       # @api public
-      def violation_type
+      def type
         rule ? rule.violation_type(resource) : nil
       end
 
       # @api public
-      def violation_data
-        rule ? rule.violation_data(resource) : nil
+      def info
+        rule ? rule.violation_info(resource) : { }
+      end
+
+      def values
+        rule ? rule.violation_values(resource) : [ ]
       end
 
       def transformer

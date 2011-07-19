@@ -22,7 +22,7 @@ module DataMapper
         def violation_data(resource)
           property = get_resource_property(resource, attribute_name)
 
-          [ property.primitive ]
+          [ [ :primitive, property.primitive ] ]
         end
 
       end # class PrimitiveType

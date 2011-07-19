@@ -22,6 +22,10 @@ module DataMapper
             :equal_to
           end
 
+          def violation_data(resource)
+            [ [ :expected, expected ] ]
+          end
+
         end # class Equal
 
       end # module Numericalness

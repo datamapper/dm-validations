@@ -22,6 +22,10 @@ module DataMapper
             :less_than_or_equal_to
           end
 
+          def violation_data(resource)
+            [ [ :maximum, expected ] ]
+          end
+
         end # class LessThanOrEqual
 
       end # module Numericalness

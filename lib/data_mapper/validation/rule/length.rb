@@ -58,10 +58,6 @@ module DataMapper
           end
         end
 
-        def violation_data(resource)
-          [ expected ]
-        end
-
       private
 
         def valid_length?(length)

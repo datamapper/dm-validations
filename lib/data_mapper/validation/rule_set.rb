@@ -77,7 +77,7 @@ module DataMapper
     private
 
       def rules_for_resource(resource)
-        executable_rules = rules.entries.select { |v| v.execute?(resource) }
+        executable_rules = rules.entries.select { |r| r.execute?(resource) }
 
         # By default we start the list with the full set of executable
         # rules.

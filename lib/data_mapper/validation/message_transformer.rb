@@ -69,10 +69,10 @@ module DataMapper
           self.error_messages.merge!(error_messages)
         end
 
-        def self.error_message(violation_type, attribute_name, *violation_data)
+        def self.error_message(violation_type, attribute_name, violation_values)
           if message = self.error_messages[violation_type]
             attribute_name = DataMapper::Inflector.humanize(attribute_name)
-            message % [attribute_name, *violation_data].flatten
+            message % [attribute_name, *violation_values].flatten
           else
             violation_type.to_s
           end
@@ -80,28 +80,28 @@ module DataMapper
 
         def transform(violation)
           raise ArgumentError, "+violation+ must be specified" if violation.nil?
-          violation_type = violation.violation_type
-          attribute_name = violation.attribute_name
-          violation_data = violation.violation_data
+          violation_type   = violation.type
+          attribute_name   = violation.attribute_name
+          violation_values = violation.values
 
-          self.class.error_message(violation_type, attribute_name, *violation_data)
+          self.class.error_message(violation_type, attribute_name, violation_values)
         end
       end # class Default
 
-      class I18n < self
+      class DefaultI18n < self
         def transform(violation)
           raise ArgumentError, "+violation+ must be specified" if violation.nil?
 
           resource       = violation.resource
           model_name     = resource.model.model_name
           attribute_name = violation.attribute_name
-          violation_type = violation.violation_type
+          violation_type = violation.type
 
           options = {
             :model     => ::I18n.translate("models.#{model_name}"),
             :attribute => ::I18n.translate("attributes.#{model_name}.#{attribute_name}"),
             :value     => resource.validation_property_value(attribute_name)
-          }.merge(violation.values)
+          }.merge(violation.info)
 
           ::I18n.translate("errors.#{violation.type}", options)
         end

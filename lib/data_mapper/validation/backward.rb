@@ -90,7 +90,7 @@ module DataMapper
           MessageTransformer::Default.error_message(
             violation_type(resource),
             attribute_name,
-            *violation_data(resource))
+            *violation_values(resource))
 
         add_error(resource, error_message, attribute_name)
 

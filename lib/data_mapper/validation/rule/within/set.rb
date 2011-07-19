@@ -34,7 +34,7 @@ module DataMapper
           end
 
           def violation_data(resource)
-            [ set.to_a.join(', ') ]
+            [ [ :set, set.to_a.join(', ') ] ]
           end
 
         end # class Set
