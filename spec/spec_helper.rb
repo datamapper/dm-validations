@@ -3,7 +3,9 @@
 
 # require 'dm-validations'
 # require 'dm-types'
-require 'dm-migrations'
+# require 'dm-migrations'
+
+# DataMapper.setup(:default, 'sqlite::memory:')
 
 # class Hash
 #   def except(*keys)
@@ -27,5 +29,3 @@ require 'dm-migrations'
 #     DataMapper.auto_migrate!
 #   end
 # end
-
-DataMapper.setup(:default, 'sqlite::memory:')
