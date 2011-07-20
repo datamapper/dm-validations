@@ -93,7 +93,7 @@ module DataMapper
       # @api private
       def inherited(base)
         super
-        self.validators.inherited(base.validators)
+        base.validators.concat(self.validators)
       end
 
     end # module ClassMethods

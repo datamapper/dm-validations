@@ -90,7 +90,8 @@ module DataMapper
           rules = rule_class.rules_for(attribute_name, options, &block)
 
           contexts.each do |context|
-            rules.each { |rule| self.context(context) << rule }
+            context_rule_set = self.context(context)
+            rules.each { |rule| context_rule_set << rule }
           end
         end
 
@@ -102,17 +103,26 @@ module DataMapper
         self
       end
 
-      def inherited(descendant)
-        rule_sets.each do |context_name, rule_set|
-          rule_set.each do |rule|
-            descendant.context(context_name) << rule.dup
-          end
+      # Assimilate all rules contained in +other+ into the receiver
+      # 
+      # @param [ContextualRuleSet] other
+      #   the ContextualRuleSet whose rules are to be assimilated
+      # 
+      # @return [ContextualRuleSet]
+      #   +self+, the receiver
+      def concat(other)
+        other.rule_sets.each do |context_name, other_context_rule_set|
+          context_rule_set = self.context(context_name)
+          other_context_rule_set.each { |rule| context_rule_set << rule.dup }
         end
+
+        self
       end
 
       def optimize=(new_value)
         @optimize = new_value
         rule_sets.each { |rule_set| rule_set.optimize = self.optimize }
+        new_value
       end
 
       # Returns the current validation context on the stack if valid for this model,
