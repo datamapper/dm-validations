@@ -24,7 +24,8 @@ module DataMapper
     class ContextualRuleSet
       extend Deprecate
 
-      deprecate :clear!,  :clear
+      deprecate :contexts,  :rule_sets
+      deprecate :clear!,    :clear
 
       def execute(context_name, resource)
         # warn "#{self.class}#execute is deprecated. Use #{self.class}#validate instead."
