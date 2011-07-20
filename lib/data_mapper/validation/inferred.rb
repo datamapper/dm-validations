@@ -23,6 +23,7 @@ module DataMapper
 
       # TODO: replace the @disabled_auto_validations reader methods with
       #   a positive statement instead of negative (instead of skip/disable, etc)
+      #   eg., @infer_validations, #infer_validations?
       # 
       # Checks whether auto validations are currently
       # disabled (see +disable_auto_validations+ method
