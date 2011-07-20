@@ -1,4 +1,5 @@
 require 'forwardable'
+require 'data_mapper/support/equalizer'
 require 'data_mapper/validation/message_transformer'
 
 module DataMapper

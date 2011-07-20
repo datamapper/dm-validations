@@ -1,3 +1,4 @@
+require 'data_mapper/core'
 require 'data_mapper/validation'
 require 'data_mapper/validation/context'
 

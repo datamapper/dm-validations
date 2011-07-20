@@ -1,5 +1,6 @@
 # -*- encoding: utf-8 -*-
 
+require 'data_mapper/support/equalizer'
 require 'data_mapper/validation/message_transformer'
 require 'data_mapper/validation/violation'
 

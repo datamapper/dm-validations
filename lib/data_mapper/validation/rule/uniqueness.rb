@@ -1,5 +1,6 @@
 # -*- encoding: utf-8 -*-
 
+require 'data_mapper/support/assertions'
 require 'data_mapper/validation/rule'
 
 module DataMapper
