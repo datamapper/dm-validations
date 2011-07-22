@@ -26,7 +26,7 @@ module DataMapper
       equalize :rules
 
       # @api public
-      def_delegators :attribute_index, :[]
+      def_delegators :attribute_index, :[], :fetch
 
       # @api public
       def_delegators :rules, :each, :empty?
@@ -43,7 +43,6 @@ module DataMapper
           rules << rule
           attribute_index[rule.attribute_name] << rule
         end
-
         self
       end
 
@@ -57,6 +56,18 @@ module DataMapper
       def validate(resource)
         rules = rules_for_resource(resource)
         rules.map { |rule| rule.validate(resource) }.compact
+      end
+
+      # Assimilate all the rules from another RuleSet into the receiver
+      # 
+      # @param [RuleSet, Array] rules
+      #   The other RuleSet whose rules are to be assimilated
+      # 
+      # @return [RuleSet]
+      #   +self+, the receiver
+      def concat(rules)
+        rules.each { |rule| self << rule.dup }
+        self
       end
 
       def inspect
@@ -78,7 +89,8 @@ module DataMapper
         # @see #optimized_rules_for_persisted_resource
         if resource.kind_of?(DataMapper::Resource)
           if optimize && !resource.new?
-            optimized_rules = optimized_rules_for_persisted_resource(resource, executable_rules)
+            optimized_rules =
+              optimized_rules_for_persisted_resource(resource, executable_rules)
             load_validated_properties(resource, optimized_rules)
             optimized_rules
           else
@@ -114,8 +126,10 @@ module DataMapper
         # Finally include any rules that should always run or don't
         # reference any real properties (field-less block vaildators).
         rules |= all_rules.select do |v|
-          # TODO: make this a #always_validate? interface instead of a #kind_of? test
-          v.kind_of?(Rule::Method) ||
+          # TODO: extract this to a #always_validate? interface on Rule
+          #   instead of a #kind_of? test here in RuleSet
+          v.kind_of?(Rule::Block)    ||
+          v.kind_of?(Rule::Method)   ||
           v.kind_of?(Rule::Presence) ||
           v.kind_of?(Rule::Absence)
         end
@@ -131,6 +145,7 @@ module DataMapper
         properties_to_load = rules.map { |rule|
           properties[rule.attribute_name]
         }.compact.select { |property|
+          # TODO: isn't Property#loaded? sufficient?
           property.lazy? && !property.loaded?(resource)
         }
 

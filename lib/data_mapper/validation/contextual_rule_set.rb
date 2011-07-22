@@ -56,8 +56,15 @@ module DataMapper
         rule_sets[context_name]
       end
 
+      # Retrieve Rules applicable to a given attribute name
+      # 
+      # @param [Symbol] attribute_name
+      #   name of the attribute for which to retrieve applicable Rules
+      # 
+      # @return [Array]
+      #   list of Rules applicable to +attribute_name+
       def [](attribute_name)
-        context(:default)[attribute_name]
+        context(:default).fetch(attribute_name, [])
       end
 
       # Create a new rule of the given class for each name in +attribute_names+
@@ -84,19 +91,16 @@ module DataMapper
       # @return [ContextualRuleSet]
       #   This method is a command, thus returns the receiver
       def add(rule_class, attribute_names, options = {}, &block)
-        contexts = extract_contexts(options)
+        context_names = extract_context_names(options)
 
         attribute_names.each do |attribute_name|
           rules = rule_class.rules_for(attribute_name, options, &block)
 
-          contexts.each do |context|
-            context_rule_set = self.context(context)
-            rules.each { |rule| context_rule_set << rule }
-          end
+          context_names.each { |context| context(context).concat(rules) }
         end
 
-        # TODO: remove, then eliminate the @model ivar entirely
-        contexts.each do |context|
+        # TODO: remove this shortcut, then eliminate the @model ivar entirely
+        context_names.each do |context|
           ContextualRuleSet.create_context_instance_methods(@model, context) if @model
         end
 
@@ -111,11 +115,9 @@ module DataMapper
       # @return [ContextualRuleSet]
       #   +self+, the receiver
       def concat(other)
-        other.rule_sets.each do |context_name, other_context_rule_set|
-          context_rule_set = self.context(context_name)
-          other_context_rule_set.each { |rule| context_rule_set << rule.dup }
+        other.rule_sets.each do |context_name, rule_set|
+          context(context_name).concat(rule_set)
         end
-
         self
       end
 
@@ -126,16 +128,17 @@ module DataMapper
       end
 
       # Returns the current validation context on the stack if valid for this model,
-      # nil if no RuleSets are defined for the model (and no contexts are on
+      # nil if no RuleSets are defined for the model (and no context names are on
       # the validation stack), or :default if the current context is invalid for
       # this model or no contexts have been defined for this model and
-      # no context is on the stack.
+      # no context name is on the stack.
       #
       # @return [Symbol]
       #   the current validation context from the stack (if valid for this model),
-      #   nil if no context is on the stack and no contexts are defined for this model,
-      #   or :default if the context on the stack is invalid for this model or
-      #   no context is on the stack and this model has at least one validation context
+      #   nil if no context name is on the stack and no contexts are defined for
+      #   this model, or :default if the context on the stack is invalid for
+      #   this model or no context is on the stack and this model has at least
+      #   one validation context
       # 
       # @api private
       # 
@@ -178,24 +181,24 @@ module DataMapper
 
     private
 
-      # Allow :context to be aliased to :group, :on, & :when
+      # Allow :context to be aliased to :group, :when & :on
       # 
       # @param [Hash] options
-      #   the options from which +context+ is to be extracted
+      #   the options from which +context_names+ is to be extracted
       # 
       # @return [Array(Symbol)]
-      #   the context(s) from +options+
+      #   the context name(s) from +options+
       # 
       # @api private
-      def extract_contexts(options)
-        context = [
+      def extract_context_names(options)
+        context_names = [
           options.delete(:context),
           options.delete(:group),
           options.delete(:when),
           options.delete(:on)
         ].compact.first
 
-        Array(context || :default)
+        Array(context_names || :default)
       end
 
     end # class ContextualRuleSet
