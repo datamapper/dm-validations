@@ -10,9 +10,11 @@ module DataMapper
       def property(*)
         property = super
 
-        rule_definitions = Validation::Inferred.rules_for_property(property)
-        rule_definitions.each do |rule_class, attribute_name, options|
-          validation_rules.add(rule_class, [attribute_name], options)
+        if property.options.fetch(:auto_validation, true) && !disabled_auto_validations?
+          rule_definitions = Validation::Inferred.rules_for_property(property)
+          rule_definitions.each do |rule_class, attribute_name, options|
+            validation_rules.add(rule_class, [attribute_name], options)
+          end
         end
 
         # FIXME: explicit return needed for YARD to parse this properly
@@ -116,9 +118,6 @@ module DataMapper
       def self.rules_for_property(property)
         rule_definitions = []
 
-        # TODO: restate this as a positive assertion, instead of a negative one
-        return rule_definitions if skip_validator_inferral_for?(property)
-
         # all inferred rules should not be skipped when the value is nil
         #   (aside from Rule::Presence/Rule::Absence)
         opts = { :allow_nil => true }
@@ -135,12 +134,6 @@ module DataMapper
         rule_definitions << infer_type(      property, opts.dup)
 
         rule_definitions.compact
-      end
-
-      def self.skip_validator_inferral_for?(property)
-        property.model.disabled_auto_validations? || 
-          (property.options.key?(:auto_validation) &&
-           !property.options[:auto_validation])
       end
 
     private
