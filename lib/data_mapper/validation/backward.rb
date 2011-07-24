@@ -9,8 +9,6 @@ module DataMapper
       valid?(:default)
     end
 
-    class ValidationError < StandardError; end
-
     module ClassMethods
       extend Deprecate
 
@@ -185,11 +183,14 @@ module DataMapper
 
     end # module Inferred
 
-    AutoValidations = Inferred
+    AutoValidations      = Inferred
+    ValidationErrors     = ErrorSet
     ContextualValidators = ContextualRuleSet
-    ValidationErrors = ErrorSet
 
   end # module Validation
+
+  # Previously used similarly to Violation (I believe)
+  class ValidationError < StandardError; end
 
   # Previous top-level namespace (1.0-1.1)
   Validations = Validation

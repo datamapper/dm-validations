@@ -1,6 +1,7 @@
 # -*- encoding: utf-8 -*-
 
 require 'forwardable'
+require 'data_mapper/validation/exceptions'
 require 'data_mapper/validation/context'
 require 'data_mapper/validation/rule_set'
 
@@ -175,7 +176,9 @@ module DataMapper
       # TODO: is this method actually needed?
       def assert_valid_context(context_name)
         unless valid_context?(context_name)
-          raise InvalidContextError, "#{context_name} is an invalid context, known contexts are #{rule_sets.keys.inspect}"
+          actual   = context_name.inspect
+          expected = rule_sets.keys.inspect
+          raise InvalidContextError, "#{actual} is an invalid context, known contexts are #{expected}"
         end
       end
 

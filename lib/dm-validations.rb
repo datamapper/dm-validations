@@ -5,6 +5,7 @@ require 'data_mapper/validation/support/object'
 
 require 'data_mapper/validation'
 
+require 'data_mapper/validation/exceptions'
 require 'data_mapper/validation/context'
 require 'data_mapper/validation/violation'
 require 'data_mapper/validation/error_set'
@@ -21,11 +22,3 @@ require 'data_mapper/validation/inferred'
 require 'data_mapper/validation/backward'
 # TODO: consider moving to a version-specific backwards-compatibility file:
 # require 'data_mapper/validation/backward/1_1'
-
-module DataMapper
-  module Validation
-
-    class InvalidContextError < StandardError; end
-
-  end
-end
