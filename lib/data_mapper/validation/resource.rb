@@ -55,8 +55,8 @@ module DataMapper
       # @api public
       def validate(context_name = default_validation_context)
         super
-        validate_parents  # if model.validators.validate_parents?
-        validate_children # if model.validators.validate_children?
+        validate_parents  # if model.validation_rules.validate_parents?
+        validate_children # if model.validation_rules.validate_children?
 
         self
       end
@@ -82,7 +82,8 @@ module DataMapper
       # @api private
       def validate_parent_relationship(relationship)
         relationship_name = relationship.name
-        context_name      = relationship.target_model.validators.current_context
+        parent_model      = relationship.target_model
+        context_name      = parent_model.validation_rules.current_context
         parent_resource   = relationship.get(self)
 
         parent_violations = parent_resource.validation_violations(context_name)
@@ -92,7 +93,8 @@ module DataMapper
       # @api private
       def validate_child_relationship(relationship)
         relationship_name = relationship.name
-        context_name      = relationship.target_model.validators.current_context
+        child_model       = relationship.target_model
+        context_name      = child_model.validation_rules.current_context
         child_collection  = relationship.get_collection(self)
 
         child_collection.each do |child_resource|
