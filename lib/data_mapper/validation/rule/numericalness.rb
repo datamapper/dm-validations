@@ -29,16 +29,16 @@ module DataMapper
           eq  = scour_options_of_keys(options, [:eq,  :equal, :equals, :exactly, :equal_to])
           ne  = scour_options_of_keys(options, [:ne,  :not_equal_to])
 
-          validators = []
-          validators << Integer.new(attribute_name, options)                                    if int
-          validators << Numeric.new(attribute_name, options)                                    if !int
-          validators << GreaterThan.new(attribute_name, options.merge(:expected => gt))         if gt
-          validators << LessThan.new(attribute_name, options.merge(:expected => lt))            if lt
-          validators << GreaterThanOrEqual.new(attribute_name, options.merge(:expected => gte)) if gte
-          validators << LessThanOrEqual.new(attribute_name, options.merge(:expected => lte))    if lte
-          validators << Equal.new(attribute_name, options.merge(:expected => eq))               if eq
-          validators << NotEqual.new(attribute_name, options.merge(:expected => ne))            if ne
-          validators
+          rules = []
+          rules << Integer.new(attribute_name, options)                                    if int
+          rules << Numeric.new(attribute_name, options)                                    if !int
+          rules << GreaterThan.new(attribute_name, options.merge(:expected => gt))         if gt
+          rules << LessThan.new(attribute_name, options.merge(:expected => lt))            if lt
+          rules << GreaterThanOrEqual.new(attribute_name, options.merge(:expected => gte)) if gte
+          rules << LessThanOrEqual.new(attribute_name, options.merge(:expected => lte))    if lte
+          rules << Equal.new(attribute_name, options.merge(:expected => eq))               if eq
+          rules << NotEqual.new(attribute_name, options.merge(:expected => ne))            if ne
+          rules
         end
 
         def self.scour_options_of_keys(options, keys)
