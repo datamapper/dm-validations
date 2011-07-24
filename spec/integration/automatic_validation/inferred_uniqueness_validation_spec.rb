@@ -2,20 +2,20 @@ require 'spec_helper'
 require 'integration/automatic_validation/spec_helper'
 
 describe 'uniqueness' do
-  describe 'single column' do
+  describe 'single attribute' do
     before :all do
-      @klass = Class.new do
+      class UniqueEventsSingle
         include DataMapper::Resource
 
-        storage_names[:default] = 'unique_events_single'
+        # storage_names[:default] = 'unique_events_single'
 
         property :id,         Integer, :key => true
         property :start_year, Integer, :unique => true
       end
-      @klass.auto_migrate!
+      UniqueEventsSingle.auto_migrate!
 
-      @existing = @klass.create(:id => 1, :start_year => 2008)
-      @new = @klass.new(:id => 2, :start_year => 2008)
+      @existing = UniqueEventsSingle.create(:id => 1, :start_year => 2008)
+      @new = UniqueEventsSingle.new(:id => 2, :start_year => 2008)
     end
 
     it 'validates' do
@@ -23,20 +23,20 @@ describe 'uniqueness' do
     end
   end
 
-  describe 'multiple columns' do
+  describe 'multiple attributes' do
     before :all do
-      @klass = Class.new do
+      class UniqueEventsMultiple
         include DataMapper::Resource
 
-        storage_names[:default] = 'unique_events_multiple'
+        # storage_names[:default] = 'unique_events_multiple'
 
         property :id, Integer, :key => true
         property :start_year, Integer, :unique => :years
         property :stop_year,  Integer, :unique => :years
       end
-      @klass.auto_migrate!
+      UniqueEventsMultiple.auto_migrate!
 
-      @new = @klass.new(:id => 1, :start_year => 2008, :stop_year => 2009)
+      @new = UniqueEventsMultiple.new(:id => 1, :start_year => 2008, :stop_year => 2009)
     end
 
     it 'validates uniquness' do

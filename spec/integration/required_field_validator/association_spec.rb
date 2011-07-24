@@ -33,6 +33,7 @@ describe 'required_field_validator/association_spec' do
     end
 
     Artist.auto_migrate!
+    Album.auto_migrate!
   end
 
 

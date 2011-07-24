@@ -8,6 +8,8 @@ describe 'A model with a :set & :default options on a property' do
       property :id,      DataMapper::Property::Serial
       property :limited, String, :set => %w[ foo bar bang ], :default => 'foo'
     end
+
+    LimitedBoat.finalize
   end
 
   describe "without value on that property" do
