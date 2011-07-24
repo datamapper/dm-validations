@@ -31,7 +31,7 @@ module DataMapper
     # 
     # @api private
     def validation_violations(context_name = default_validation_context)
-      self.class.validators.validate(self, context_name)
+      validation_rules.validate(self, context_name)
     end
 
     # @return [ErrorSet]
@@ -52,7 +52,12 @@ module DataMapper
     # 
     # @api public
     def default_validation_context
-      self.class.validators.current_context
+      validation_rules.current_context
+    end
+
+    # @api private
+    def validation_rules
+      self.class.validation_rules
     end
 
     # Retrieve the value of the given property name for the purpose of validation.
@@ -81,11 +86,11 @@ module DataMapper
 
       include Validation::Macros
 
-      # Return the set of contextual validators or create a new one
+      # Return the ContextualRuleSet for this model
       #
       # @api public
-      def validators
-        @validators ||= ContextualRuleSet.new(self)
+      def validation_rules
+        @validation_rules ||= ContextualRuleSet.new(self)
       end
 
     private
@@ -93,7 +98,7 @@ module DataMapper
       # @api private
       def inherited(base)
         super
-        base.validators.concat(self.validators)
+        base.validation_rules.concat(validation_rules)
       end
 
     end # module ClassMethods

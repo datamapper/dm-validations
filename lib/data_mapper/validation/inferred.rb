@@ -12,7 +12,7 @@ module DataMapper
 
         rule_definitions = Validation::Inferred.rules_for_property(property)
         rule_definitions.each do |rule_class, attribute_name, options|
-          validators.add(rule_class, [attribute_name], options)
+          validation_rules.add(rule_class, [attribute_name], options)
         end
 
         # FIXME: explicit return needed for YARD to parse this properly

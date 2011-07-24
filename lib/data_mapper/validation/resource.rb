@@ -22,10 +22,11 @@ module DataMapper
       #   whether the Resource was persisted successfully
       # 
       # TODO: fix this to not change the method signature of #save
+      # TODO: add support for skipping validations by passing nil
       #
       # @api public
       def save(context_name = default_validation_context)
-        model.validators.assert_valid_context(context_name)
+        validation_rules.assert_valid_context(context_name)
 
         Context.in_context(context_name) { super() }
       end
@@ -46,14 +47,14 @@ module DataMapper
       #
       # @api public
       def update(attributes = {}, context_name = default_validation_context)
-        model.validators.assert_valid_context(context_name)
+        validation_rules.assert_valid_context(context_name)
 
         Context.in_context(context_name) { super(attributes) }
       end
 
       # @api private
       def validate_or_halt
-        throw :halt if Context.any? && !valid?(model.validators.current_context)
+        throw :halt if Context.any? && !valid?(validation_rules.current_context)
       end
 
     end # module Resource

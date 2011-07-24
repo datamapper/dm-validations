@@ -11,6 +11,18 @@ module DataMapper
 
     class ValidationError < StandardError; end
 
+    module ClassMethods
+      extend Deprecate
+
+      # deprecate :validators, :validation_rules
+
+      # This is a widely used API, wait a little before issuing warnings
+      def validators
+        validation_rules
+      end
+
+    end
+
     class ErrorSet
       extend Deprecate
 
@@ -143,7 +155,7 @@ module DataMapper
       def validates_numericality_of(*attribute_names)
         # warn "'Numericality' is not a word in the English language, please use validates_numericalness_of (#{caller[0]})"
         options = attribute_names.last.kind_of?(Hash) ? attribute_names.pop : {}
-        validators.add(Rule::Numericalness, attribute_names, options)
+        validation_rules.add(Rule::Numericalness, attribute_names, options)
       end
     end
 
