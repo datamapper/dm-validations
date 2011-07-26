@@ -80,11 +80,10 @@ module DataMapper
 
         def transform(violation)
           raise ArgumentError, "+violation+ must be specified" if violation.nil?
-          violation_type   = violation.type
-          attribute_name   = violation.attribute_name
-          violation_values = violation.values
 
-          self.class.error_message(violation_type, attribute_name, violation_values)
+          attribute_name = violation.attribute_name
+
+          self.class.error_message(violation.type, attribute_name, violation.values)
         end
       end # class Default
 
@@ -95,7 +94,6 @@ module DataMapper
           resource       = violation.resource
           model_name     = resource.model.model_name
           attribute_name = violation.attribute_name
-          violation_type = violation.type
 
           options = {
             :model     => ::I18n.translate("models.#{model_name}"),
