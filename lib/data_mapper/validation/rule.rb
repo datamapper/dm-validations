@@ -92,10 +92,10 @@ module DataMapper
       #
       # @api private
       def execute?(resource)
-        if unless_clause = self.unless_clause
-          !evaluate_conditional_clause(resource, unless_clause)
-        elsif if_clause = self.if_clause
+        if if_clause = self.if_clause
           evaluate_conditional_clause(resource, if_clause)
+        elsif unless_clause = self.unless_clause
+          !evaluate_conditional_clause(resource, unless_clause)
         else
           true
         end
