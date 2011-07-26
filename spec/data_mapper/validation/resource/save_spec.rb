@@ -12,6 +12,8 @@ describe DataMapper::Validation::Resource, '#save' do
         self
       end
     end
+
+    SaveTestResource.finalize
   end
 
   subject { SaveTestResource.new }
