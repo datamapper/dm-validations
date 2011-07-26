@@ -18,6 +18,10 @@ require 'data_mapper/validation/rule/within'
 module DataMapper
   module Validation
     module Macros
+      def self.extract_options(arguments)
+        arguments.last.kind_of?(Hash) ? arguments.pop : {}
+      end
+
       # Validates that the specified attribute is "blank" via the
       # attribute's #blank? method.
       #
@@ -43,7 +47,7 @@ module DataMapper
       #   end
       #
       def validates_absence_of(*attribute_names)
-        options = attribute_names.last.kind_of?(Hash) ? attribute_names.pop : {}
+        options = Macros.extract_options(attribute_names)
         validation_rules.add(Rule::Absence, attribute_names, options)
       end
 
@@ -73,7 +77,7 @@ module DataMapper
       #     # terms_accepted is one of ["1", 1, "true", true, "t"]
       #
       def validates_acceptance_of(*attribute_names)
-        options = attribute_names.last.kind_of?(Hash) ? attribute_names.pop : {}
+        options = Macros.extract_options(attribute_names)
         validation_rules.add(Rule::Acceptance, attribute_names, options)
       end
 
@@ -117,7 +121,7 @@ module DataMapper
           raise ArgumentError, 'You need to pass a block to validates_with_block'
         end
 
-        options = attribute_names.last.kind_of?(Hash) ? attribute_names.pop : {}
+        options = Macros.extract_options(attribute_names)
         validation_rules.add(Rule::Block, attribute_names, options, &block)
       end
 
@@ -155,7 +159,7 @@ module DataMapper
       #     # email == email_repeated
       #
       def validates_confirmation_of(*attribute_names)
-        options = attribute_names.last.kind_of?(Hash) ? attribute_names.pop : {}
+        options = Macros.extract_options(attribute_names)
         validation_rules.add(Rule::Confirmation, attribute_names, options)
       end
 
@@ -198,7 +202,7 @@ module DataMapper
       #     # zip_code is a string of 5 digits
       #
       def validates_format_of(*attribute_names)
-        options = attribute_names.last.kind_of?(Hash) ? attribute_names.pop : {}
+        options = Macros.extract_options(attribute_names)
         validation_rules.add(Rule::Format, attribute_names, options)
       end
 
@@ -259,7 +263,7 @@ module DataMapper
       #     # just_right is between 1 and 10 (inclusive of both 1 and 10)
       #
       def validates_length_of(*attribute_names)
-        options = attribute_names.last.kind_of?(Hash) ? attribute_names.pop : {}
+        options = Macros.extract_options(attribute_names)
         validation_rules.add(Rule::Length, attribute_names, options)
       end
 
@@ -298,7 +302,7 @@ module DataMapper
       #    # wrong zip code" unless zip_code == "94301"
       #  end
       def validates_with_method(*attribute_names)
-        options = attribute_names.last.kind_of?(Hash) ? attribute_names.pop : {}
+        options = Macros.extract_options(attribute_names)
         validation_rules.add(Rule::Method, attribute_names, options)
       end
 
@@ -343,7 +347,7 @@ module DataMapper
       #   Use to restrict allowed values to integers.
       #
       def validates_numericalness_of(*attribute_names)
-        options = attribute_names.last.kind_of?(Hash) ? attribute_names.pop : {}
+        options = Macros.extract_options(attribute_names)
         validation_rules.add(Rule::Numericalness, attribute_names, options)
       end
 
@@ -398,7 +402,7 @@ module DataMapper
       #     # casted into a Date object.
       #   end
       def validates_primitive_type_of(*attribute_names)
-        options = attribute_names.last.kind_of?(Hash) ? attribute_names.pop : {}
+        options = Macros.extract_options(attribute_names)
         validation_rules.add(Rule::PrimitiveType, attribute_names, options)
       end
 
@@ -406,7 +410,7 @@ module DataMapper
       #
       # TODO: YARDoc for this method
       def validates_uniqueness_of(*attribute_names)
-        options = attribute_names.last.kind_of?(Hash) ? attribute_names.pop : {}
+        options = Macros.extract_options(attribute_names)
         validation_rules.add(Rule::Uniqueness, attribute_names, options)
       end
 
@@ -436,7 +440,7 @@ module DataMapper
       #     # the two properties conform to their sets
       #   end
       def validates_within(*attribute_names)
-        options = attribute_names.last.kind_of?(Hash) ? attribute_names.pop : {}
+        options = Macros.extract_options(attribute_names)
         validation_rules.add(Rule::Within, attribute_names, options)
       end
 
