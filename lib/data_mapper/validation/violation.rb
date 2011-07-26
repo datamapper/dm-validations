@@ -80,7 +80,7 @@ module DataMapper
       end
 
       def transformer
-        if resource.respond_to?(:model) && transformer = resource.validation_rules.transformer
+        if resource.respond_to?(:validation_rules) && transformer = resource.validation_rules.transformer
           transformer
         else
           Violation.default_transformer
