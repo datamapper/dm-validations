@@ -26,6 +26,10 @@ module DataMapper
 
       deprecate :clear!, :clear
 
+      def self.default_error_messages=(error_messages)
+        MessageTransformer::Default.error_messages = error_messages
+      end
+
       def self.default_error_message(violation_type, attribute_name, *violation_data)
         MessageTransformer::Default.error_message(violation_type, attribute_name, *violation_data)
       end
