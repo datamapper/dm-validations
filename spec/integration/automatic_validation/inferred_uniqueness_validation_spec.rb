@@ -9,6 +9,10 @@ describe 'uniqueness' do
 
         storage_names[:default] = 'unique_events_single'
 
+        def self.name
+          'UniqueEventsSingle'
+        end
+
         property :id,         Integer, :key => true
         property :start_year, Integer, :unique => true
       end
@@ -29,6 +33,10 @@ describe 'uniqueness' do
         include DataMapper::Resource
 
         storage_names[:default] = 'unique_events_multiple'
+
+        def self.name
+          'UniqueEventsMultiple'
+        end
 
         property :id, Integer, :key => true
         property :start_year, Integer, :unique => :years
