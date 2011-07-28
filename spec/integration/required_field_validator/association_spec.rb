@@ -32,7 +32,11 @@ describe 'required_field_validator/association_spec' do
 
     end
 
-    Artist.auto_migrate!
+    DataMapper.finalize
+
+    if DataMapper.respond_to?(:auto_migrate!)
+      DataMapper.auto_migrate!
+    end
   end
 
 
