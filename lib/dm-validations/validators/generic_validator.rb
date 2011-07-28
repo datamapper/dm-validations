@@ -170,7 +170,7 @@ module DataMapper
       #
       # Note: DataMapper validations can be used on non-DataMapper resources.
       # In such cases, the return value will be nil.
-      # 
+      #
       # @api private
       def get_resource_property(resource, property_name)
         model = resource.model if resource.respond_to?(:model)

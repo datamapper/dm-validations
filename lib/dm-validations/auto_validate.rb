@@ -39,7 +39,7 @@ module DataMapper
 
       # disables generation of validations for
       # duration of given block
-      # 
+      #
       # @api public
       def without_auto_validations
         previous, @disable_auto_validations = @disable_auto_validations, true
@@ -233,7 +233,7 @@ module DataMapper
       end
 
       # adds message for validator
-      # 
+      #
       # @api private
       def self.options_with_message(base_options, property, validator_name)
         options = base_options.clone

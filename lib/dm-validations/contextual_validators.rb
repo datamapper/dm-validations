@@ -57,18 +57,18 @@ module DataMapper
 
       # Create a new validator of the given klazz and push it onto the
       # requested context for each of the attributes in +attributes+
-      # 
+      #
       # @param [DataMapper::Validations::GenericValidator] validator_class
       #    Validator class, example: DataMapper::Validations::LengthValidator
       #
       # @param [Array<Symbol>] attributes
       #    Attribute names given to validation macro, example:
       #    [:first_name, :last_name] in validates_presence_of :first_name, :last_name
-      # 
+      #
       # @param [Hash] options
       #    Options supplied to validation macro, example:
       #    {:context=>:default, :maximum=>50, :allow_nil=>true, :message=>nil}
-      # 
+      #
       # @option [Symbol] :context
       #   the context in which the new validator should be run
       # @option [Boolean] :allow_nil
@@ -100,15 +100,15 @@ module DataMapper
       # Clean up the argument list and return a opts hash, including the
       # merging of any default opts. Set the context to default if none is
       # provided. Also allow :context to be aliased to :on, :when & :group
-      # 
+      #
       # @param [Hash] options
       #   the options to be normalized
       # @param [NilClass, Hash] defaults
       #   default keys/values to set on normalized options
-      # 
+      #
       # @return [Hash]
       #   the normalized options
-      # 
+      #
       # @api private
       def normalize_options(options, defaults = nil)
         context = [
@@ -134,9 +134,9 @@ module DataMapper
       #   nil if no context is on the stack and no contexts are defined for this model,
       #   or :default if the context on the stack is invalid for this model or
       #   no context is on the stack and this model has at least one validation context
-      # 
+      #
       # @api private
-      # 
+      #
       # TODO: simplify the semantics of #current_context, #valid?
       def current_context
         context = Validations::Context.current
@@ -152,7 +152,7 @@ module DataMapper
       #   true if the context is valid for the model
       #
       # @api private
-      # 
+      #
       # TODO: investigate removing the `contexts.empty?` test here.
       def valid_context?(context)
         contexts.empty? || contexts.include?(context)
@@ -167,7 +167,7 @@ module DataMapper
       #   raised if the context is not valid for this model
       #
       # @api private
-      # 
+      #
       # TODO: is this method actually needed?
       def assert_valid(context)
         unless valid_context?(context)

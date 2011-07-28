@@ -6,10 +6,10 @@ module DataMapper
     #
     module Context
       # Execute a block of code within a specific validation context
-      # 
+      #
       # @param [Symbol] context
       #   the context to execute the block of code within
-      # 
+      #
       # @api semipublic
       def self.in_context(context)
         stack << context
@@ -19,7 +19,7 @@ module DataMapper
       end
 
       # Get the current validation context or nil (if no context is on the stack).
-      # 
+      #
       # @return [Symbol, NilClass]
       #   The current validation context (for the current thread),
       #   or nil if no current context is on the stack
@@ -28,10 +28,10 @@ module DataMapper
       end
 
       # Are there any contexts on the stack?
-      # 
+      #
       # @return [Boolean]
       #   true/false whether there are any contexts on the context stack
-      # 
+      #
       # @api semipublic
       def self.any?(&block)
         stack.any?(&block)
@@ -40,7 +40,7 @@ module DataMapper
       # The (thread-local) validation context stack
       # This allows object graphs to be saved within potentially nested contexts
       # without having to pass the validation context throughout
-      # 
+      #
       # @api private
       def self.stack
         Thread.current[:dm_validations_context_stack] ||= []
@@ -49,11 +49,11 @@ module DataMapper
       # The default validation context for this Resource.
       # This Resource's default context can be overridden by implementing
       # #default_validation_context
-      # 
+      #
       # @return [Symbol]
       #   the current validation context from the context stack
       #   (if valid for this model), or :default
-      # 
+      #
       # @api semipublic
       def default_validation_context
         model.validators.current_context || :default
