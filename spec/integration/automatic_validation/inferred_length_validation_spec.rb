@@ -124,6 +124,14 @@ describe 'DataMapper::Validations::Fixtures::SmsMessage' do
   end
 
   describe 'with an infinitely long note' do
+    before do
+      @original = @model.class.properties[:body]
+    end
+
+    after do
+      @model.class.property(@original.name, @original.class, @original.options)
+    end
+
     it "should raise when trying to set the upper bound of a property length range to Infinity" do
       expected_msg = "Infinity is no valid upper bound for a length range"
       lambda {
