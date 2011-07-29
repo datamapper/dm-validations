@@ -7,6 +7,10 @@ describe 'DataMapper::Validations::WithinValidator' do
     @model = Class.new do
       include DataMapper::Resource
 
+      def self.name
+        'WithinValidatorClass'
+      end
+
       property :name, String, :auto_validation => false
     end.new
 

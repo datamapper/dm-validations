@@ -7,8 +7,6 @@ describe 'uniqueness' do
       @klass = Class.new do
         include DataMapper::Resource
 
-        storage_names[:default] = 'unique_events_single'
-
         def self.name
           'UniqueEventsSingle'
         end
@@ -31,8 +29,6 @@ describe 'uniqueness' do
     before :all do
       @klass = Class.new do
         include DataMapper::Resource
-
-        storage_names[:default] = 'unique_events_multiple'
 
         def self.name
           'UniqueEventsMultiple'
