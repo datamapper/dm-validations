@@ -11,6 +11,7 @@ describe 'DataMapper::Validations::WithinValidator' do
         'WithinValidatorClass'
       end
 
+      property :id,   DataMapper::Property::Serial
       property :name, String, :auto_validation => false
     end.new
 
