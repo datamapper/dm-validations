@@ -57,8 +57,8 @@ describe 'DataMapper::Validations::Fixtures::BillOfLading' do
       @model = DataMapper::Validations::Fixtures::BillOfLading.new(valid_attributes.merge(:email => 'pelé@gmail.com'))
     end
 
-    if RUBY_VERSION == '1.9.2' && RUBY_ENGINE == 'jruby'
-      # Not supported on jruby 1.9 yet - see formats/email.rb
+    if (RUBY_VERSION == '1.9.2' && RUBY_ENGINE == 'jruby') || RUBY_VERSION == '1.9.3'
+      # Not supported on jruby 1.9 or 1.9.3 yet - see formats/email.rb
       it 'should not raise an error' do
         lambda { @model.valid? }.should_not raise_error
       end

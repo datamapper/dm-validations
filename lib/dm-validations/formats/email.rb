@@ -22,12 +22,16 @@ module DataMapper
         # 99% of the time you do not want to allow these email addresses
         # in a public web application.
         EmailAddress = begin
-          if RUBY_VERSION == '1.9.2' && RUBY_ENGINE == 'jruby' && JRUBY_VERSION <= '1.6.3'
+          if (RUBY_VERSION == '1.9.2' && RUBY_ENGINE == 'jruby' && JRUBY_VERSION <= '1.6.3') || RUBY_VERSION == '1.9.3'
             # There is an obscure bug in jruby 1.6 that prevents matching
             # on unicode properties here. Remove this logic branch once
             # a stable jruby release fixes this.
             #
             # http://jira.codehaus.org/browse/JRUBY-5622
+            #
+            # There is a similar bug in preview releases of 1.9.3
+            #
+            # http://redmine.ruby-lang.org/issues/5126
             letter = 'a-zA-Z'
           else
             letter = 'a-zA-Z\p{L}'  # Changed from RFC2822 to include unicode chars
