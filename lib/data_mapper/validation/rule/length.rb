@@ -61,7 +61,7 @@ module DataMapper
       private
 
         def valid_length?(length)
-          raise NotImplementError, "#{self.class}#valid_length? must be implemented"
+          raise NotImplementedError, "#{self.class}#valid_length? must be implemented"
         end
 
         # Return the length in characters
