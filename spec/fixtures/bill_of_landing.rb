@@ -20,6 +20,7 @@ module DataMapper
         property :email,    String, :auto_validation => false
         property :username, String, :auto_validation => false
         property :url,      String, :auto_validation => false
+        property :bank_url, URI,    :auto_validation => false
         property :code,     String, :auto_validation => false, :default => "123456"
 
         #
@@ -36,6 +37,10 @@ module DataMapper
 
         validates_format_of :username, :with => /[a-z]/, :message => 'Username must have at least one letter', :allow_nil => true
         validates_format_of :code,     :with => /\d{5,6}/, :message => 'Code format is invalid'
+      end
+      
+      class SurrenderBillOfLading < BillOfLading
+        validates_format_of :bank_url, :as => :url, :allow_nil => false, :allow_blank => false
       end
     end # Fixtures
   end # Validations
