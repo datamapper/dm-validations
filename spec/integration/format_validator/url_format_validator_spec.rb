@@ -10,7 +10,7 @@ describe 'DataMapper::Validations::Fixtures::BillOfLading' do
     { :id => 1, :doc_no => 'A1234', :email => 'user@example.com', :url => 'http://example.com' }
   end
 
-  [ 'http:// example.com', 'ftp://example.com', 'http://.com', 'http://', 'test', '...',
+  invalid_uris = [ 'http:// example.com', 'ftp://example.com', 'http://.com', 'http://', 'test', '...',
     # these are valid URIs from RFC perspective,
     # but too often not the case for web apps
     #
@@ -18,7 +18,9 @@ describe 'DataMapper::Validations::Fixtures::BillOfLading' do
     # RFC compliant so it can be used, for instance,
     # for internal apps that may refer to local domains
     # like http://backend:8080
-    "http://localhost:4000", "http://localhost" ].each do |uri|
+    "http://localhost:4000", "http://localhost" ]
+    
+  invalid_uris.each do |uri|
     describe "with URL of #{uri}" do
       before :all do
         @model = DataMapper::Validations::Fixtures::BillOfLading.new(valid_attributes.merge(:url => uri))
@@ -29,6 +31,22 @@ describe 'DataMapper::Validations::Fixtures::BillOfLading' do
       it "has a meaningful error message" do
         @model.errors.on(:url).should == [ 'Url has an invalid format' ]
       end
+    end
+  end
+  
+  # http:// throws an exception in Addressable::URI, so it wouldn't make it to the validation part anyway :)
+  (invalid_uris - ['http://']).each do |uri|
+    describe "with dm-type URI of #{uri}" do
+      before(:all) do
+        @model = DataMapper::Validations::Fixtures::SurrenderBillOfLading.new(valid_attributes.merge(:bank_url => uri))
+      end
+
+      it_should_behave_like "invalid model"
+      
+      it "has a meaningful error message" do
+        @model.errors.on(:bank_url).should == [ 'Bank url has an invalid format' ]
+      end
+      
     end
   end
 
@@ -61,6 +79,14 @@ describe 'DataMapper::Validations::Fixtures::BillOfLading' do
        @model = DataMapper::Validations::Fixtures::BillOfLading.new(valid_attributes.merge(:url => uri))
      end
 
+     it_should_behave_like "valid model"
+   end
+   
+   describe "with dm-type URI of #{uri}" do
+     before(:all) do
+       @model = DataMapper::Validations::Fixtures::SurrenderBillOfLading.new(valid_attributes.merge(:bank_url => uri))
+     end
+     
      it_should_behave_like "valid model"
    end
  end
