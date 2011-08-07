@@ -4,7 +4,7 @@ module DataMapper
     #
     # @abstract
     #   Subclass and override {#transform} to implement a custom message
-    #   transformer. Use {ValidationErrors.message_transformer=} to set a new
+    #   transformer. Use {Violation.message_transformer=} to set a new
     #   message transformer or pass the transformer to {Violation#message}.
     class MessageTransformer
 
