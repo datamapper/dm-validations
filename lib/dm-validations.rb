@@ -14,7 +14,7 @@ require 'data_mapper/validation/rule'
 require 'data_mapper/validation/rule_set'
 require 'data_mapper/validation/contextual_rule_set'
 
-require 'data_mapper/validation/resource'
+require 'data_mapper/validation/resource_extensions'
 require 'data_mapper/validation/model_extensions'
 require 'data_mapper/validation/inferred'
 

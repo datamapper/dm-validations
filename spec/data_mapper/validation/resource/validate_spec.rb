@@ -1,7 +1,7 @@
 require 'spec_helper'
-require 'data_mapper/validation/resource'
+require 'data_mapper/validation/resource_extensions'
 
-describe DataMapper::Validation::Resource, '#validate' do
+describe DataMapper::Validation::ResourceExtensions, '#validate' do
   before :all do
     class Base
       include DataMapper::Resource

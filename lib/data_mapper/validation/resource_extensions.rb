@@ -5,7 +5,7 @@ require 'data_mapper/validation/context'
 module DataMapper
   module Validation
 
-    module Resource
+    module ResourceExtensions
 
       def self.included(model)
         model.before :save, :validate_or_halt
@@ -112,6 +112,6 @@ module DataMapper
   end # module Validation
 
   Model.append_inclusions Validation
-  Model.append_inclusions Validation::Resource
+  Model.append_inclusions Validation::ResourceExtensions
 
 end

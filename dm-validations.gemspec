@@ -32,7 +32,7 @@ Gem::Specification.new do |s|
     "lib/data_mapper/validation/macros.rb",
     "lib/data_mapper/validation/message_transformer.rb",
     "lib/data_mapper/validation/model_extensions.rb",
-    "lib/data_mapper/validation/resource.rb",
+    "lib/data_mapper/validation/resource_extensions.rb",
     "lib/data_mapper/validation/rule.rb",
     "lib/data_mapper/validation/rule/absence.rb",
     "lib/data_mapper/validation/rule/acceptance.rb",
