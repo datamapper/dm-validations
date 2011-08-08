@@ -66,6 +66,7 @@ module DataMapper
         yield
       ensure
         @disable_auto_validations = previous
+        self
       end
 
       # Infer validations for a given property. This will only occur
@@ -152,11 +153,13 @@ module DataMapper
         # TODO: return unless property.primitive <= String (?)
         return unless (property.kind_of?(Property::String) ||
                        property.kind_of?(Property::Text))
-
         length = property.options.fetch(:length, Property::String.length)
 
+
         if length.is_a?(Range)
-          raise ArgumentError, "Infinity is not a valid upper bound for a length range" if length.last == Infinity
+          if length.last == Infinity
+            raise ArgumentError, "Infinity is not a valid upper bound for a length range"
+          end
           options[:within]  = length
         else
           options[:maximum] = length
