@@ -13,24 +13,24 @@ module DataMapper
       attr_reader :resource
 
       # @api private
-      attr_reader :errors
+      attr_reader :violations
       # TODO: why was this private?
-      private :errors
+      private :violations
 
       # TODO: replace OrderedHash with OrderedSet and remove vendor'd OrderedHash
       def initialize(resource)
-        @resource = resource
-        @errors   = OrderedHash.new { |h,k| h[k] = [] }
+        @resource   = resource
+        @violations = OrderedHash.new { |h,k| h[k] = [] }
       end
 
-      # Clear existing validation errors.
+      # Clear existing validation violations.
       # 
       # @api public
       def clear
-        errors.clear
+        violations.clear
       end
 
-      # Add a validation error. Use the attribute_name :general if the errors
+      # Add a validation error. Use the attribute_name :general if the violations
       # does not apply to a specific field of the Resource.
       #
       # @param [Symbol, Violation] attribute_name_or_violation
@@ -50,47 +50,47 @@ module DataMapper
             Violation.new(resource, message, nil, attribute_name_or_violation)
           end
 
-        errors[violation.attribute_name] << violation
+        violations[violation.attribute_name] << violation
       end
 
-      # Collect all errors into a single list.
+      # Collect all violations into a single list.
       # 
       # @api public
       def full_messages
-        errors.inject([]) do |list, (attribute_name, errors)|
-          messages = errors
-          messages = errors.full_messages if errors.respond_to?(:full_messages)
+        violations.inject([]) do |list, (attribute_name, violations)|
+          messages = violations
+          messages = violations.full_messages if violations.respond_to?(:full_messages)
           list += messages
         end
       end
 
-      # Return validation errors for a particular attribute_name.
+      # Return validation violations for a particular attribute_name.
       #
       # @param [Symbol] attribute_name
       #   The name of the field you want an error for.
       #
       # @return [Array(Violation, String), NilClass]
-      #   Array of Violations or Strings, if there are errors on +attribute_name+
-      #   nil if there are no errors on +attribute_name+
+      #   Array of Violations, if there are violations on +attribute_name+
+      #   nil if there are no violations on +attribute_name+
       # 
       # @api public
       # 
       # TODO: use a data structure that ensures uniqueness
       def on(attribute_name)
-        attribute_violations = errors[attribute_name]
+        attribute_violations = violations[attribute_name]
         attribute_violations.empty? ? nil : attribute_violations.uniq
       end
 
       # @api public
       def each
-        errors.each_value do |v|
+        violations.each_value do |v|
           yield(v) unless DataMapper::Ext.blank?(v)
         end
       end
 
       # @api public
       def empty?
-        errors.all? { |attribute_name, errors| errors.empty? }
+        violations.all? { |attribute_name, violations| violations.empty? }
       end
 
       # @api public
@@ -98,15 +98,15 @@ module DataMapper
       # FIXME: calling #to_sym on uncontrolled input is an
       # invitation for a memory leak
       def [](attribute_name)
-        errors[attribute_name.to_sym]
+        violations[attribute_name.to_sym]
       end
 
       def method_missing(meth, *args, &block)
-        errors.send(meth, *args, &block)
+        violations.send(meth, *args, &block)
       end
 
       def respond_to?(method)
-        super || errors.respond_to?(method)
+        super || violations.respond_to?(method)
       end
 
     end # class ViolationSet

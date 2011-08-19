@@ -25,6 +25,7 @@ module DataMapper
       extend Deprecate
 
       deprecate :clear!, :clear
+      deprecate :errors, :violations
 
       def self.default_error_messages=(error_messages)
         MessageTransformer::Default.error_messages = error_messages
