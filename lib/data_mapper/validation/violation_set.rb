@@ -5,7 +5,7 @@ require 'data_mapper/validation/violation'
 module DataMapper
   module Validation
 
-    class ErrorSet
+    class ViolationSet
 
       include Enumerable
 
@@ -109,7 +109,7 @@ module DataMapper
         super || errors.respond_to?(method)
       end
 
-    end # class ErrorSet
+    end # class ViolationSet
 
   end # module Validation
 end # module DataMapper

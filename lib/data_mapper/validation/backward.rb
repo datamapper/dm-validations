@@ -21,7 +21,7 @@ module DataMapper
 
     end
 
-    class ErrorSet
+    class ViolationSet
       extend Deprecate
 
       deprecate :clear!, :clear
@@ -188,7 +188,7 @@ module DataMapper
     end # module Inferred
 
     AutoValidations      = Inferred
-    ValidationErrors     = ErrorSet
+    ValidationErrors     = ViolationSet
     ContextualValidators = ContextualRuleSet
 
   end # module Validation

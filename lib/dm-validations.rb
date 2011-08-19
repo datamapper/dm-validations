@@ -8,7 +8,7 @@ require 'data_mapper/validation'
 require 'data_mapper/validation/exceptions'
 require 'data_mapper/validation/context'
 require 'data_mapper/validation/violation'
-require 'data_mapper/validation/error_set'
+require 'data_mapper/validation/violation_set'
 
 require 'data_mapper/validation/rule'
 require 'data_mapper/validation/rule_set'

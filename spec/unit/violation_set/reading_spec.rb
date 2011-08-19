@@ -15,18 +15,18 @@ shared_examples_for 'a validation error reader' do
   end
 end
 
-describe 'DataMapper::Validations::ErrorSet' do
+describe 'DataMapper::Validations::ViolationSet' do
   describe '[]' do
     describe 'when passing the argument as a String' do
       before(:each) do
-        @errors   = DataMapper::Validations::ErrorSet.new(Object.new)
+        @errors   = DataMapper::Validations::ViolationSet.new(Object.new)
         @property = 'name'
       end
       it_should_behave_like 'a validation error reader'
     end
     describe 'when passing the argument as a Symbol' do
       before(:each) do
-        @errors   = DataMapper::Validations::ErrorSet.new(Object.new)
+        @errors   = DataMapper::Validations::ViolationSet.new(Object.new)
         @property = :name
       end
       it_should_behave_like 'a validation error reader'

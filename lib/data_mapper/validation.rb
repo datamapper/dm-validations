@@ -1,4 +1,4 @@
-require 'data_mapper/validation/error_set'
+require 'data_mapper/validation/violation_set'
 require 'data_mapper/validation/contextual_rule_set'
 require 'data_mapper/validation/macros'
 
@@ -16,7 +16,7 @@ module DataMapper
       validate(context_name).errors.empty?
     end
 
-    # Command a resource to populate its ErrorSet with any violations of
+    # Command a resource to populate its ViolationSet with any violations of
     # its validation Rules in +context_name+
     #
     # @api public
@@ -34,12 +34,12 @@ module DataMapper
       validation_rules.validate(self, context_name)
     end
 
-    # @return [ErrorSet]
+    # @return [ViolationSet]
     #   the collection of current validation errors for this resource
     #
     # @api public
     def errors
-      @errors ||= ErrorSet.new(self)
+      @errors ||= ViolationSet.new(self)
     end
 
     # The default validation context for this Resource.

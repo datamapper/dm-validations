@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 require 'spec_helper'
 
-describe 'DataMapper::Validations::ErrorSet' do
+describe 'DataMapper::Validations::ViolationSet' do
   before :all do
-    @model = DataMapper::Validations::ErrorSet.new(Object.new)
+    @model = DataMapper::Validations::ViolationSet.new(Object.new)
   end
 
   describe "initially" do

@@ -4,8 +4,8 @@
 # -*- encoding: utf-8 -*-
 
 Gem::Specification.new do |s|
-  s.name = "dm-validations"
-  s.version = "1.3.0.beta"
+  s.name = %q{dm-validations}
+  s.version = "1.1.1"
 
   s.required_rubygems_version = Gem::Requirement.new("> 1.3.1") if s.respond_to? :required_rubygems_version=
   s.authors = ["Guy van den Berg", "Emmanuel Gomez"]
@@ -31,7 +31,6 @@ Gem::Specification.new do |s|
     "lib/data_mapper/validation/backward.rb",
     "lib/data_mapper/validation/context.rb",
     "lib/data_mapper/validation/contextual_rule_set.rb",
-    "lib/data_mapper/validation/error_set.rb",
     "lib/data_mapper/validation/exceptions.rb",
     "lib/data_mapper/validation/inferred.rb",
     "lib/data_mapper/validation/macros.rb",
@@ -75,6 +74,7 @@ Gem::Specification.new do |s|
     "lib/data_mapper/validation/rule_set.rb",
     "lib/data_mapper/validation/support/object.rb",
     "lib/data_mapper/validation/support/ordered_hash.rb",
+    "lib/data_mapper/validation/violation_set.rb",
     "lib/data_mapper/validation/violation.rb",
     "lib/dm-validations.rb",
     "spec/data_mapper/validation/resource_extensions/save_spec.rb",
