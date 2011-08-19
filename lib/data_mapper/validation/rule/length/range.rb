@@ -24,7 +24,7 @@ module DataMapper
           end
 
           def violation_data(resource)
-            [ [ :min, expected.min ], [ :max, expected.max ] ]
+            [ [ :min, expected.begin ], [ :max, expected.end ] ]
           end
 
         private

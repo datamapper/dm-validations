@@ -17,7 +17,7 @@ module DataMapper
             end
 
             def violation_data(resource)
-              [ [ :minimum, range.min ] ]
+              [ [ :minimum, range.begin ] ]
             end
 
           end # class UnboundedBegin
