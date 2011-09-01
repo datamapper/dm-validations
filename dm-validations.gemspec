@@ -4,14 +4,14 @@
 # -*- encoding: utf-8 -*-
 
 Gem::Specification.new do |s|
-  s.name = %q{dm-validations}
+  s.name = "dm-validations"
   s.version = "1.1.1"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
-  s.authors = [%q{Guy van den Berg}]
-  s.date = %q{2011-06-15}
-  s.description = %q{Library for performing validations on DM models and pure Ruby object}
-  s.email = %q{vandenberg.guy [a] gmail [d] com}
+  s.authors = ["Guy van den Berg"]
+  s.date = "2011-09-01"
+  s.description = "Library for performing validations on DM models and pure Ruby object"
+  s.email = "vandenberg.guy [a] gmail [d] com"
   s.extra_rdoc_files = [
     "LICENSE",
     "README.rdoc"
@@ -62,6 +62,7 @@ Gem::Specification.new do |s|
     "spec/fixtures/jabberwock.rb",
     "spec/fixtures/kayak.rb",
     "spec/fixtures/lernean_hydra.rb",
+    "spec/fixtures/llama_spaceship.rb",
     "spec/fixtures/mathematical_function.rb",
     "spec/fixtures/memory_object.rb",
     "spec/fixtures/mittelschnauzer.rb",
@@ -99,6 +100,7 @@ Gem::Specification.new do |s|
     "spec/integration/confirmation_validator/spec_helper.rb",
     "spec/integration/datamapper_models/association_validation_spec.rb",
     "spec/integration/datamapper_models/inheritance_spec.rb",
+    "spec/integration/dirty_attributes/dirty_attributes_spec.rb",
     "spec/integration/duplicated_validations/duplicated_validations_spec.rb",
     "spec/integration/duplicated_validations/spec_helper.rb",
     "spec/integration/format_validator/email_format_validator_spec.rb",
@@ -164,125 +166,11 @@ Gem::Specification.new do |s|
     "tasks/yard.rake",
     "tasks/yardstick.rake"
   ]
-  s.homepage = %q{http://github.com/datamapper/dm-validations}
-  s.require_paths = [%q{lib}]
-  s.rubyforge_project = %q{datamapper}
-  s.rubygems_version = %q{1.8.5}
-  s.summary = %q{Library for performing validations on DM models and pure Ruby object}
-  s.test_files = [
-    "spec/fixtures/barcode.rb",
-    "spec/fixtures/basketball_court.rb",
-    "spec/fixtures/basketball_player.rb",
-    "spec/fixtures/beta_tester_account.rb",
-    "spec/fixtures/bill_of_landing.rb",
-    "spec/fixtures/boat_dock.rb",
-    "spec/fixtures/city.rb",
-    "spec/fixtures/company.rb",
-    "spec/fixtures/corporate_world.rb",
-    "spec/fixtures/country.rb",
-    "spec/fixtures/ethernet_frame.rb",
-    "spec/fixtures/event.rb",
-    "spec/fixtures/g3_concert.rb",
-    "spec/fixtures/jabberwock.rb",
-    "spec/fixtures/kayak.rb",
-    "spec/fixtures/lernean_hydra.rb",
-    "spec/fixtures/mathematical_function.rb",
-    "spec/fixtures/memory_object.rb",
-    "spec/fixtures/mittelschnauzer.rb",
-    "spec/fixtures/motor_launch.rb",
-    "spec/fixtures/multibyte.rb",
-    "spec/fixtures/page.rb",
-    "spec/fixtures/phone_number.rb",
-    "spec/fixtures/pirogue.rb",
-    "spec/fixtures/programming_language.rb",
-    "spec/fixtures/reservation.rb",
-    "spec/fixtures/scm_operation.rb",
-    "spec/fixtures/sms_message.rb",
-    "spec/fixtures/udp_packet.rb",
-    "spec/integration/absent_field_validator/absent_field_validator_spec.rb",
-    "spec/integration/absent_field_validator/spec_helper.rb",
-    "spec/integration/acceptance_validator/acceptance_validator_spec.rb",
-    "spec/integration/acceptance_validator/spec_helper.rb",
-    "spec/integration/automatic_validation/custom_messages_for_inferred_validation_spec.rb",
-    "spec/integration/automatic_validation/disabling_inferred_validation_spec.rb",
-    "spec/integration/automatic_validation/inferred_boolean_properties_validation_spec.rb",
-    "spec/integration/automatic_validation/inferred_float_property_validation_spec.rb",
-    "spec/integration/automatic_validation/inferred_format_validation_spec.rb",
-    "spec/integration/automatic_validation/inferred_integer_properties_validation_spec.rb",
-    "spec/integration/automatic_validation/inferred_length_validation_spec.rb",
-    "spec/integration/automatic_validation/inferred_presence_validation_spec.rb",
-    "spec/integration/automatic_validation/inferred_primitive_validation_spec.rb",
-    "spec/integration/automatic_validation/inferred_uniqueness_validation_spec.rb",
-    "spec/integration/automatic_validation/inferred_within_validation_spec.rb",
-    "spec/integration/automatic_validation/spec_helper.rb",
-    "spec/integration/block_validator/block_validator_spec.rb",
-    "spec/integration/block_validator/spec_helper.rb",
-    "spec/integration/conditional_validation/if_condition_spec.rb",
-    "spec/integration/conditional_validation/spec_helper.rb",
-    "spec/integration/confirmation_validator/confirmation_validator_spec.rb",
-    "spec/integration/confirmation_validator/spec_helper.rb",
-    "spec/integration/datamapper_models/association_validation_spec.rb",
-    "spec/integration/datamapper_models/inheritance_spec.rb",
-    "spec/integration/duplicated_validations/duplicated_validations_spec.rb",
-    "spec/integration/duplicated_validations/spec_helper.rb",
-    "spec/integration/format_validator/email_format_validator_spec.rb",
-    "spec/integration/format_validator/format_validator_spec.rb",
-    "spec/integration/format_validator/regexp_validator_spec.rb",
-    "spec/integration/format_validator/spec_helper.rb",
-    "spec/integration/format_validator/url_format_validator_spec.rb",
-    "spec/integration/length_validator/default_value_spec.rb",
-    "spec/integration/length_validator/equality_spec.rb",
-    "spec/integration/length_validator/error_message_spec.rb",
-    "spec/integration/length_validator/maximum_spec.rb",
-    "spec/integration/length_validator/minimum_spec.rb",
-    "spec/integration/length_validator/range_spec.rb",
-    "spec/integration/length_validator/spec_helper.rb",
-    "spec/integration/method_validator/method_validator_spec.rb",
-    "spec/integration/method_validator/spec_helper.rb",
-    "spec/integration/numeric_validator/equality_with_float_type_spec.rb",
-    "spec/integration/numeric_validator/equality_with_integer_type_spec.rb",
-    "spec/integration/numeric_validator/float_type_spec.rb",
-    "spec/integration/numeric_validator/gt_with_float_type_spec.rb",
-    "spec/integration/numeric_validator/gte_with_float_type_spec.rb",
-    "spec/integration/numeric_validator/integer_only_true_spec.rb",
-    "spec/integration/numeric_validator/integer_type_spec.rb",
-    "spec/integration/numeric_validator/lt_with_float_type_spec.rb",
-    "spec/integration/numeric_validator/lte_with_float_type_spec.rb",
-    "spec/integration/numeric_validator/spec_helper.rb",
-    "spec/integration/primitive_validator/primitive_validator_spec.rb",
-    "spec/integration/primitive_validator/spec_helper.rb",
-    "spec/integration/pure_ruby_objects/plain_old_ruby_object_validation_spec.rb",
-    "spec/integration/required_field_validator/association_spec.rb",
-    "spec/integration/required_field_validator/boolean_type_value_spec.rb",
-    "spec/integration/required_field_validator/date_type_value_spec.rb",
-    "spec/integration/required_field_validator/datetime_type_value_spec.rb",
-    "spec/integration/required_field_validator/float_type_value_spec.rb",
-    "spec/integration/required_field_validator/integer_type_value_spec.rb",
-    "spec/integration/required_field_validator/plain_old_ruby_object_spec.rb",
-    "spec/integration/required_field_validator/shared_examples.rb",
-    "spec/integration/required_field_validator/spec_helper.rb",
-    "spec/integration/required_field_validator/string_type_value_spec.rb",
-    "spec/integration/required_field_validator/text_type_value_spec.rb",
-    "spec/integration/shared/default_validation_context.rb",
-    "spec/integration/shared/valid_and_invalid_model.rb",
-    "spec/integration/uniqueness_validator/spec_helper.rb",
-    "spec/integration/uniqueness_validator/uniqueness_validator_spec.rb",
-    "spec/integration/within_validator/spec_helper.rb",
-    "spec/integration/within_validator/within_validator_spec.rb",
-    "spec/public/resource_spec.rb",
-    "spec/spec_helper.rb",
-    "spec/unit/contextual_validators/emptiness_spec.rb",
-    "spec/unit/contextual_validators/execution_spec.rb",
-    "spec/unit/contextual_validators/spec_helper.rb",
-    "spec/unit/generic_validator/equality_operator_spec.rb",
-    "spec/unit/generic_validator/optional_spec.rb",
-    "spec/unit/validation_errors/adding_spec.rb",
-    "spec/unit/validation_errors/emptiness_spec.rb",
-    "spec/unit/validation_errors/enumerable_spec.rb",
-    "spec/unit/validation_errors/reading_spec.rb",
-    "spec/unit/validation_errors/respond_to_spec.rb",
-    "spec/unit/validators/within_validator_spec.rb"
-  ]
+  s.homepage = "http://github.com/datamapper/dm-validations"
+  s.require_paths = ["lib"]
+  s.rubyforge_project = "datamapper"
+  s.rubygems_version = "1.8.10"
+  s.summary = "Library for performing validations on DM models and pure Ruby object"
 
   if s.respond_to? :specification_version then
     s.specification_version = 3
@@ -290,22 +178,22 @@ Gem::Specification.new do |s|
     if Gem::Version.new(Gem::VERSION) >= Gem::Version.new('1.2.0') then
       s.add_runtime_dependency(%q<dm-core>, ["~> 1.1.0"])
       s.add_development_dependency(%q<dm-types>, ["~> 1.1.0"])
-      s.add_development_dependency(%q<jeweler>, ["~> 1.5.2"])
-      s.add_development_dependency(%q<rake>, ["~> 0.8.7"])
-      s.add_development_dependency(%q<rspec>, ["~> 1.3.1"])
+      s.add_development_dependency(%q<jeweler>, ["~> 1.6.4"])
+      s.add_development_dependency(%q<rake>, ["~> 0.9.2"])
+      s.add_development_dependency(%q<rspec>, ["~> 1.3.2"])
     else
       s.add_dependency(%q<dm-core>, ["~> 1.1.0"])
       s.add_dependency(%q<dm-types>, ["~> 1.1.0"])
-      s.add_dependency(%q<jeweler>, ["~> 1.5.2"])
-      s.add_dependency(%q<rake>, ["~> 0.8.7"])
-      s.add_dependency(%q<rspec>, ["~> 1.3.1"])
+      s.add_dependency(%q<jeweler>, ["~> 1.6.4"])
+      s.add_dependency(%q<rake>, ["~> 0.9.2"])
+      s.add_dependency(%q<rspec>, ["~> 1.3.2"])
     end
   else
     s.add_dependency(%q<dm-core>, ["~> 1.1.0"])
     s.add_dependency(%q<dm-types>, ["~> 1.1.0"])
-    s.add_dependency(%q<jeweler>, ["~> 1.5.2"])
-    s.add_dependency(%q<rake>, ["~> 0.8.7"])
-    s.add_dependency(%q<rspec>, ["~> 1.3.1"])
+    s.add_dependency(%q<jeweler>, ["~> 1.6.4"])
+    s.add_dependency(%q<rake>, ["~> 0.9.2"])
+    s.add_dependency(%q<rspec>, ["~> 1.3.2"])
   end
 end
 
