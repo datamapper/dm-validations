@@ -59,7 +59,7 @@ module DataMapper
                     else
                       validation
                     end
-        
+
         case validator
           when Proc   then validator.call(value)
           when Regexp then value ? value.to_s =~ validator : false
