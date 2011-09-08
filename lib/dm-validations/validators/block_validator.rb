@@ -50,7 +50,7 @@ module DataMapper
         method_name = "__validates_with_block_#{@__validates_with_block_count}".to_sym
         define_method(method_name, &block)
 
-        options = fields.last.is_a?(Hash) ? fields.last.pop.dup : {}
+        options = fields.last.is_a?(Hash) ? fields.pop.dup : {}
         options[:method] = method_name
         fields = [method_name] if fields.empty?
 
