@@ -36,7 +36,7 @@ module DataMapper
       #   properties. Returns false for other property types or for
       #   non-properties.
       def boolean_type?(property)
-        property ? property.primitive == TrueClass : false
+        property ? property.kind_of?(Property::Boolean) : false
       end
 
     end # class PresenceValidator

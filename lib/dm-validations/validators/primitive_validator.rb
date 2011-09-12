@@ -22,7 +22,7 @@ module DataMapper
         ValidationErrors.default_error_message(
           :primitive,
           field_name,
-          property.load_as
+          property.load_class
         )
       end
 
