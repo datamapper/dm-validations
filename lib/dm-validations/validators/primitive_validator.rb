@@ -8,7 +8,7 @@ module DataMapper
         value    = target.validation_property_value(field_name)
         property = get_resource_property(target, field_name)
 
-        return true if value.nil? || property.primitive?(value)
+        return true if value.nil? || property.value_loaded?(value)
 
         error_message = @options[:message] || default_error(property)
         add_error(target, error_message, field_name)
@@ -22,7 +22,7 @@ module DataMapper
         ValidationErrors.default_error_message(
           :primitive,
           field_name,
-          property.primitive
+          property.load_as
         )
       end
 

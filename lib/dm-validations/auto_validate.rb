@@ -211,13 +211,12 @@ module DataMapper
           options[:lte] = property.max if property.max
         end
 
-        if Integer == property.primitive
+        if property.kind_of?(Property::Integer)
           options[:integer_only] = true
 
           validation_options = options_with_message(options, property, :is_number)
           property.model.validates_numericality_of property.name, validation_options
-        elsif (BigDecimal == property.primitive ||
-               Float == property.primitive)
+        elsif (property.kind_of?(Property::Decimal) || property.kind_of?(Float))
           options[:precision] = property.precision
           options[:scale]     = property.scale
 
