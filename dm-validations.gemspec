@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = "dm-validations"
-  s.version = "1.2.0.rc1"
+  s.version = "1.2.0.rc2"
 
   s.required_rubygems_version = Gem::Requirement.new("> 1.3.1") if s.respond_to? :required_rubygems_version=
   s.authors = ["Guy van den Berg"]
-  s.date = "2011-09-09"
+  s.date = "2011-09-14"
   s.description = "Library for performing validations on DM models and pure Ruby object"
   s.email = "vandenberg.guy [a] gmail [d] com"
   s.extra_rdoc_files = [
