@@ -24,6 +24,6 @@ Spec::Runner.configure do |config|
   config.extend(DataMapper::Spec::Adapters::Helpers)
 
   config.before :suite do
-    DataMapper.auto_migrate!
+    DataMapper.finalize.auto_migrate!
   end
 end

@@ -6,6 +6,10 @@ describe "A class with inferred validations disabled for all properties with an 
     @klass = Class.new do
       include DataMapper::Resource
 
+      def self.name
+        'InferredValidation'
+      end
+
       property :id,   DataMapper::Property::Serial,                     :auto_validation => false
       property :name, String,                        :required => true, :auto_validation => false
       property :bool, DataMapper::Property::Boolean, :required => true, :auto_validation => false
@@ -24,6 +28,10 @@ describe "A class with inferred validations disabled for all properties with a b
   before :all do
     @klass = Class.new do
       include DataMapper::Resource
+
+      def self.name
+        'InferredValidation'
+      end
 
       without_auto_validations do
         property :id,   DataMapper::Property::Serial
