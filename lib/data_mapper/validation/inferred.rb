@@ -217,13 +217,13 @@ module DataMapper
           options[:lte] = property.max if property.max
         end
 
-        if Integer == property.primitive
+        if Integer == property.load_as
           options[:integer_only] = true
 
           validation_options = options_with_message(options, property, :is_number)
           [Rule::Numericalness, property.name, validation_options]
-        elsif (BigDecimal == property.primitive ||
-               Float == property.primitive)
+        elsif (BigDecimal == property.load_as ||
+               Float == property.load_as)
           options[:precision] = property.precision
           options[:scale]     = property.scale
 

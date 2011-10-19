@@ -42,7 +42,7 @@ module DataMapper
         def boolean_type?(resource)
           property = get_resource_property(resource, attribute_name)
 
-          property ? property.primitive == TrueClass : false
+          property ? property.load_as == TrueClass : false
         end
 
       end # class Presence

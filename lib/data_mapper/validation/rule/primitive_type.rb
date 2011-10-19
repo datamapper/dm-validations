@@ -12,7 +12,7 @@ module DataMapper
           property = get_resource_property(resource, attribute_name)
           value    = resource.validation_property_value(attribute_name)
 
-          value.nil? || property.primitive?(value)
+          value.nil? || property.value_dumped?(value)
         end
 
         def violation_type(resource)
@@ -22,7 +22,7 @@ module DataMapper
         def violation_data(resource)
           property = get_resource_property(resource, attribute_name)
 
-          [ [ :primitive, property.primitive ] ]
+          [ [ :primitive, property.load_as ] ]
         end
 
       end # class PrimitiveType
