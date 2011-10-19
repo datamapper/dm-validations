@@ -12,6 +12,8 @@ module DataMapper
           property = get_resource_property(resource, attribute_name)
           value    = resource.validation_property_value(attribute_name)
 
+          # FIXME: Deprecation message said Property#valid? was replaced 
+          # with Property#value_dumped? but IMHO value_loaded? would be correct here?
           value.nil? || property.value_dumped?(value)
         end
 
