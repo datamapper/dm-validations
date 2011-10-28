@@ -21,14 +21,14 @@ describe DataMapper::Validation::ResourceExtensions, '#save' do
   it 'returns false when #valid? returns false' do
     subject.should_receive(:valid?).and_return(false)
 
-    subject.save.should eql(false)
+    subject.save.should be_false
   end
 
   it 'calls #validation_rules.assert_valid_context with its #default_validation_context' do
     context_name = :default
     contextual_rule_set = mock(DataMapper::Validation::ContextualRuleSet)
     contextual_rule_set.stub(:current_context)
-    subject.stub(:validate_or_halt)
+    subject.stub(:save_self)
     subject.stub(:validation_rules => contextual_rule_set)
 
     subject.should_receive(:default_validation_context).and_return(context_name)
@@ -37,8 +37,8 @@ describe DataMapper::Validation::ResourceExtensions, '#save' do
     subject.save
   end
 
-  it 'calls #validate_or_halt' do
-    subject.should_receive(:validate_or_halt)
+  it 'calls #save_self' do
+    subject.should_receive(:save_self)
 
     subject.save
   end
