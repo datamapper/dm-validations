@@ -34,9 +34,9 @@ module DataMapper
       # does not apply to a specific field of the Resource.
       #
       # @param [Symbol, Violation] attribute_name_or_violation
-      #   The name of the field that caused the error, or
-      #   the Violation which describes the validation error
-      # @param [String, #call, Hash] message
+      #   The name of the field that caused the violation, or
+      #   the Violation which describes the validation violation
+      # @param [NilClass, String, #call, Hash] message
       #   The message to add.
       # 
       # @see Violation#initialize
@@ -67,7 +67,7 @@ module DataMapper
       # Return validation violations for a particular attribute_name.
       #
       # @param [Symbol] attribute_name
-      #   The name of the field you want an error for.
+      #   The name of the field you want an violation for.
       #
       # @return [Array(Violation, String), NilClass]
       #   Array of Violations, if there are violations on +attribute_name+
