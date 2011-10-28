@@ -28,16 +28,7 @@ module DataMapper
             value = resource.validation_property_value(attribute_name)
             return true if optional?(value)
 
-            # FIXME: Calling to_s on Addressable instance does not seem 
-            # like a good way here. This list with explict to_s calls 
-            # could grow unto an unmanagable clumb
-            match_value = case value
-            when Numeric,Addressable::URI
-              value.to_s
-            else
-              value
-            end
-            match_value =~ self.format
+            value ? value.to_s =~ self.format : false
           rescue ::Encoding::CompatibilityError
             # This is to work around a bug in jruby - see formats/email.rb
             false
