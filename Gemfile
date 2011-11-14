@@ -1,6 +1,8 @@
 require 'pathname'
 
-source 'http://rubygems.org'
+source :rubygems
+
+gemspec
 
 SOURCE         = ENV.fetch('SOURCE', :git).to_sym
 REPO_POSTFIX   = SOURCE == :path ? ''                                : '.git'
@@ -13,12 +15,7 @@ CURRENT_BRANCH = ENV.fetch('GIT_BRANCH', 'master')
 gem 'dm-core', DM_VERSION, SOURCE => "#{DATAMAPPER}/dm-core#{REPO_POSTFIX}", :branch => CURRENT_BRANCH
 
 group :development do
-
   gem 'dm-types', DM_VERSION, SOURCE => "#{DATAMAPPER}/dm-types#{REPO_POSTFIX}", :branch => CURRENT_BRANCH
-  gem 'jeweler',  '~> 1.6.4'
-  gem 'rake',     '~> 0.9.2'
-  gem 'rspec',    '~> 1.3.2'
-
 end
 
 platforms :mri_18 do
