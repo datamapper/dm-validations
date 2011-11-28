@@ -12,7 +12,7 @@ module DataMapper
           property = get_resource_property(resource, attribute_name)
           value    = resource.validation_property_value(attribute_name)
 
-          value.nil? || property.value_dumped?(value)
+          value.nil? || property.value_loaded?(value)
         end
 
         def violation_type(resource)
