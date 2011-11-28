@@ -34,6 +34,26 @@ describe 'DataMapper::Validations::Fixtures::MemoryObject' do
     end
   end
 
+  describe "with stupid integer given as Integer" do
+    before :all do
+      @model.stupid_integer = 100
+    end
+
+    it "is valid" do
+      @model.should be_valid
+    end
+  end
+
+  describe "with stupid integer given as Object" do
+    before :all do
+      @model.stupid_integer = Object.new
+    end
+
+    it "is NOT valid" do
+      @model.should_not be_valid
+    end
+  end
+
 
   describe "with mark flag set to true" do
     before :all do
