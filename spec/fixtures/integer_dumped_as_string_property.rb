@@ -2,8 +2,15 @@
 module DataMapper
   class Property
     class IntegerDumpedAsStringProperty < DataMapper::Property::Object
-      dump_as ::String
       load_as ::Integer
+      dump_as ::String
+
+      accept_options :length
+
+      DEFAULT_LENGTH = 50
+      length(DEFAULT_LENGTH)
+
+      attr_reader :length
 
       def dump(value)
         value.nil? ? nil : value.to_s
@@ -15,4 +22,3 @@ module DataMapper
     end
   end
 end
-
