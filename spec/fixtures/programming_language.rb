@@ -32,7 +32,7 @@ module DataMapper
         validates_with_method :ensure_appropriate_for_system_programming,  :when => [:doing_system_programming, :hacking_on_the_kernel, :implementing_a_game_engine]
         validates_with_method :ensure_appropriate_for_dsls,                :when => [:implementing_a_dsl]
         validates_with_method :ensure_appropriate_for_cpu_intensive_tasks, :when => [:implementing_a_game_engine_core]
-        validates_with_method :ensure_approved_by_linus_himself,           :when => [:hacking_on_the_kernel]
+        validates_with_method :ensure_approved_by_linus_himself,           :when => [:hacking_on_the_kernel], :violation_type => :unapproved_by_linus
 
         #
         # API

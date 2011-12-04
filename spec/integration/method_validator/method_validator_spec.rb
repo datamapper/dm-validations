@@ -23,6 +23,10 @@ describe 'a poor candidate for DSLs', :shared => true do
   it 'has a (more or less) meaningful error message' do
     @model.errors.on(:ensure_appropriate_for_dsls).should == [ 'may not be so good for domain specific languages' ]
   end
+
+  it 'has a violation type' do
+    @model.errors[:ensure_appropriate_for_dsls].map(&:type).should == [:unsatisfied_condition]
+  end
 end
 
 
@@ -119,6 +123,7 @@ describe 'C++' do
   it 'is not approved by Linus' do
     @model.valid?(:hacking_on_the_kernel)
     @model.errors.on(:ensure_approved_by_linus_himself).should_not be_empty
+    @model.errors[:ensure_approved_by_linus_himself].map(&:type).should == [:unapproved_by_linus]
   end
 end
 
