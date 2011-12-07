@@ -29,4 +29,13 @@ describe 'DataMapper::Validations::Fixtures::G3Concert' do
 
     it_should_behave_like "valid model"
   end
+
+  describe "planned concert for non-existing year/participants/city combinations" do
+    before :all do
+      @model.planned = true
+      @model.year         = 2021
+    end
+
+    it_should_behave_like "valid model"
+  end
 end
