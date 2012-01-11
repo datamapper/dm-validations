@@ -1,62 +1,66 @@
 require 'spec_helper'
 require 'integration/method_validator/spec_helper'
 
-describe "a good fit for DSLs", :shared => true do
-  it "is a good fit for DSLs" do
+describe 'a good fit for DSLs', :shared => true do
+  it 'is a good fit for DSLs' do
     @model.should be_valid_for_implementing_a_dsl
   end
 
-  it "is totally fine for DSLs" do
+  it 'is totally fine for DSLs' do
     @model.ensure_appropriate_for_dsls.should be(true)
   end
 end
 
-describe "a poor candidate for DSLs", :shared => true do
-  it "is a poor candidate for DSLs" do
+describe 'a poor candidate for DSLs', :shared => true do
+  it 'is a poor candidate for DSLs' do
     @model.should_not be_valid_for_implementing_a_dsl
   end
 
-  it "is unappropriate for DSLs" do
+  it 'is unappropriate for DSLs' do
     @model.ensure_appropriate_for_dsls.first.should be(false)
   end
 
-  it "has a (more or less) meaningful error message" do
+  it 'has a (more or less) meaningful error message' do
     @model.errors.on(:ensure_appropriate_for_dsls).should == [ 'may not be so good for domain specific languages' ]
+  end
+
+  it 'has a violation type' do
+    @model.errors[:ensure_appropriate_for_dsls].map(&:type).should == [:unsatisfied_condition]
   end
 end
 
 
-describe "a good fit for game engine core", :shared => true do
-  it "is a good fit for game engine core" do
+describe 'a good fit for game engine core', :shared => true do
+  it 'is a good fit for game engine core' do
     @model.should be_valid_for_implementing_a_game_engine_core
   end
 
-  it "is appropriate for system programming" do
+  it 'is appropriate for system programming' do
     @model.ensure_appropriate_for_system_programming.should be(true)
   end
 end
 
-describe "a poor candidate for game engine core", :shared => true do
-  it "is a poor candidate for game engine core" do
+describe 'a poor candidate for game engine core', :shared => true do
+  it 'is a poor candidate for game engine core' do
     @model.should_not be_valid_for_implementing_a_game_engine_core
   end
 end
 
 
 
-describe "a good fit for kernel hacking", :shared => true do
-  it "is a good fit for kernel hacking" do
+describe 'a good fit for kernel hacking', :shared => true do
+  it 'is a good fit for kernel hacking' do
     @model.should be_valid_for_hacking_on_the_kernel
   end
 
-  it "is appropriate for system programming" do
+  it 'is appropriate for system programming' do
     @model.ensure_appropriate_for_system_programming.should be(true)
   end
 end
 
 
-describe "a poor candidate for kernel hacking", :shared => true do
-  it "is not a good fit for kernel hacking" do
+describe 'a poor candidate for kernel hacking', :shared => true do
+  it 'is not a good fit for kernel hacking' do
     @model.should_not be_valid_for_hacking_on_the_kernel
   end
 end
@@ -64,7 +68,7 @@ end
 #
 # Note that ProgrammingLanguage is not a DM resource,
 # it is a plain old Ruby object (PORO), or simply put,
-# just a "regular" Ruby class with a bunch of accessors.
+# just a 'regular' Ruby class with a bunch of accessors.
 #
 # And yes, assumptions below are full of bullshit and
 # author is a moron, and your favourite programming
@@ -73,9 +77,9 @@ end
 #Please see spec_helper.rb next to this file
 #
 
-describe "C" do
+describe 'C' do
   before :all do
-    @model = ::DataMapper::Validations::Fixtures::ProgrammingLanguage.new(:name                                     => "C",
+    @model = ::DataMapper::Validations::Fixtures::ProgrammingLanguage.new(:name                                     => 'C',
                                                                        :allows_system_calls                      => true,
                                                                        :allows_manual_memory_management          => true,
                                                                        :approved_by_linus                        => true,
@@ -87,18 +91,18 @@ describe "C" do
                                                                        )
   end
 
-  it_should_behave_like "a good fit for kernel hacking"
+  it_should_behave_like 'a good fit for kernel hacking'
 
-  it_should_behave_like "a good fit for game engine core"
+  it_should_behave_like 'a good fit for game engine core'
 
-  it_should_behave_like "a poor candidate for DSLs"
+  it_should_behave_like 'a poor candidate for DSLs'
 end
 
 
 
-describe "C++" do
+describe 'C++' do
   before :all do
-    @model = ::DataMapper::Validations::Fixtures::ProgrammingLanguage.new(:name                                     => "C++",
+    @model = ::DataMapper::Validations::Fixtures::ProgrammingLanguage.new(:name                                     => 'C++',
                                                                        :allows_system_calls                      => true,
                                                                        :allows_manual_memory_management          => true,
                                                                        :approved_by_linus                        => false,
@@ -110,22 +114,23 @@ describe "C++" do
                                                                        )
   end
 
-  it_should_behave_like "a poor candidate for kernel hacking"
+  it_should_behave_like 'a poor candidate for kernel hacking'
 
-  it_should_behave_like "a good fit for game engine core"
+  it_should_behave_like 'a good fit for game engine core'
 
-  it_should_behave_like "a poor candidate for DSLs"
+  it_should_behave_like 'a poor candidate for DSLs'
 
-  it "is not approved by Linus" do
+  it 'is not approved by Linus' do
     @model.valid?(:hacking_on_the_kernel)
     @model.errors.on(:ensure_approved_by_linus_himself).should_not be_empty
+    @model.errors[:ensure_approved_by_linus_himself].map(&:type).should == [:unapproved_by_linus]
   end
 end
 
 
-describe "Ruby" do
+describe 'Ruby' do
   before :all do
-    @model = ::DataMapper::Validations::Fixtures::ProgrammingLanguage.new(:name                                     => "Ruby",
+    @model = ::DataMapper::Validations::Fixtures::ProgrammingLanguage.new(:name                                     => 'Ruby',
                                                                        # well, C extensions do not really count
                                                                        :allows_system_calls                      => false,
                                                                        :allows_manual_memory_management          => false,
@@ -138,22 +143,22 @@ describe "Ruby" do
                                                                        )
   end
 
-  it_should_behave_like "a good fit for DSLs"
+  it_should_behave_like 'a good fit for DSLs'
 
-  it_should_behave_like "a poor candidate for kernel hacking"
+  it_should_behave_like 'a poor candidate for kernel hacking'
 
-  it_should_behave_like "a poor candidate for game engine core"
+  it_should_behave_like 'a poor candidate for game engine core'
 
-  it "has a (more or less) meaningful error message" do
+  it 'has a (more or less) meaningful error message' do
     @model.valid?(:doing_system_programming)
     @model.errors.on(:ensure_appropriate_for_system_programming).should == [ 'try something that is closer to the metal' ]
   end
 end
 
 
-describe "Scala" do
+describe 'Scala' do
   before :all do
-    @model = ::DataMapper::Validations::Fixtures::ProgrammingLanguage.new(:name                                     => "Scala",
+    @model = ::DataMapper::Validations::Fixtures::ProgrammingLanguage.new(:name                                     => 'Scala',
                                                                        :allows_system_calls                      => false,
                                                                        :allows_manual_memory_management          => false,
                                                                        :approved_by_linus                        => false,
@@ -165,13 +170,13 @@ describe "Scala" do
                                                                        )
   end
 
-  it_should_behave_like "a good fit for DSLs"
+  it_should_behave_like 'a good fit for DSLs'
 
-  it_should_behave_like "a poor candidate for kernel hacking"
+  it_should_behave_like 'a poor candidate for kernel hacking'
 
-  it_should_behave_like "a poor candidate for game engine core"
+  it_should_behave_like 'a poor candidate for game engine core'
 
-  it "has a (more or less) meaningful error message" do
+  it 'has a (more or less) meaningful error message' do
     @model.valid?(:doing_system_programming)
     @model.errors.on(:ensure_appropriate_for_system_programming).should == [ 'try something that is closer to the metal' ]
   end
@@ -179,10 +184,10 @@ end
 
 
 
-describe "Haskell" do
+describe 'Haskell' do
   before :all do
     @model = ::DataMapper::Validations::Fixtures::ProgrammingLanguage.new(
-      :name                                     => "Haskell",
+      :name                                     => 'Haskell',
       :allows_system_calls                      => false,
       :allows_manual_memory_management          => false,
       :approved_by_linus                        => false,
@@ -198,13 +203,13 @@ describe "Haskell" do
     )
   end
 
-  it_should_behave_like "a good fit for DSLs"
+  it_should_behave_like 'a good fit for DSLs'
 
-  it_should_behave_like "a poor candidate for kernel hacking"
+  it_should_behave_like 'a poor candidate for kernel hacking'
 
-  it_should_behave_like "a poor candidate for game engine core"
+  it_should_behave_like 'a poor candidate for game engine core'
 
-  it "has a (more or less) meaningful error message" do
+  it 'has a (more or less) meaningful error message' do
     @model.valid?(:doing_system_programming)
     @model.errors.on(:ensure_appropriate_for_system_programming).should == [ 'try something that is closer to the metal' ]
   end
@@ -215,27 +220,27 @@ describe 'DataMapper::Validations::Fixtures::Event' do
   before :all do
     DataMapper::Validations::Fixtures::Event.auto_migrate!
 
-    @model = DataMapper::Validations::Fixtures::Event.new(:name => "Fools day 2009")
+    @model = DataMapper::Validations::Fixtures::Event.new(:name => 'Fools day 2009')
   end
 
-  describe "with start time before end time" do
+  describe 'with start time before end time' do
     before :all do
       @model.starts_at = DateTime.new(2009, 4, 1, 00, 00, 01)
       @model.ends_at   = DateTime.new(2009, 4, 1, 23, 59, 59)
     end
 
-    it_should_behave_like "valid model"
+    it_should_behave_like 'valid model'
   end
 
-  describe "with start time after end time" do
+  describe 'with start time after end time' do
     before :all do
       @model.starts_at = DateTime.new(2009, 4, 1, 23, 59, 59)
       @model.ends_at   = DateTime.new(2009, 4, 1, 00, 00, 01)
     end
 
-    it_should_behave_like "invalid model"
+    it_should_behave_like 'invalid model'
 
-    it "uses custom error message for property starts_at" do
+    it 'uses custom error message for property starts_at' do
       @model.errors.on(:starts_at).should == [ 'Start time cannot be after end time' ]
     end
   end
