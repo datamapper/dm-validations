@@ -19,10 +19,10 @@ module DataMapper
       # @param [Symbol] context
       #   context for which to validate the Resource, defaulting to
       #   #default_validation_context
-      # 
+      #
       # @return [Boolean]
       #   whether the Resource was persisted successfully
-      # 
+      #
       # TODO: fix this to not change the method signature of #save
       # TODO: add support for skipping validations by passing nil
       #
@@ -53,7 +53,7 @@ module DataMapper
       #
       # @return [Boolean]
       #   whether the Resource attributes were set and persisted successfully
-      # 
+      #
       # TODO: fix this to not change the method signature of #update
       #
       # @api public
@@ -115,7 +115,7 @@ module DataMapper
       end
 
       # @see note at self.included, above
-      # 
+      #
       # @api private
       # def validate_or_halt
       #   throw :halt if Context.any? && !valid?(validation_rules.current_context)
