@@ -66,8 +66,8 @@ module DataMapper
       # @api public
       def validate(context_name = default_validation_context)
         super
-        validate_parents  # if model.validation_rules.validate_parents?
-        validate_children # if model.validation_rules.validate_children?
+        #validate_parents  # if model.validation_rules.validate_parents?
+        #validate_children # if model.validation_rules.validate_children?
 
         self
       end
