@@ -71,7 +71,15 @@ describe 'DataMapper::Resource' do
       @resource.save
     end
 
-    describe 'on a new resource' do
+    describe 'on a new, non-dirty resource' do
+      it 'should call valid? once' do
+        blank = DataMapper::Validations::Fixtures::Barcode.new
+        blank.save
+        blank.valid_hook_call_count.should == 1
+      end
+    end
+
+    describe 'on a new, dirty resource' do
       it 'should call valid? once' do
         @resource.valid_hook_call_count.should == 1
       end
@@ -84,8 +92,8 @@ describe 'DataMapper::Resource' do
         @resource.save
       end
 
-      it 'should call valid?' do
-        @resource.valid_hook_call_count.should == 1
+      it 'should not call valid?' do
+        @resource.valid_hook_call_count.to_i.should == 0
       end
     end
 
