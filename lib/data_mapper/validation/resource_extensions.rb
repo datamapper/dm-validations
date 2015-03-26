@@ -35,6 +35,7 @@ module DataMapper
 
       # @api private
       def save_self(*)
+        return super unless dirty_self? || new?
         if Context.any? && !valid?(validation_rules.current_context)
           false
         else
