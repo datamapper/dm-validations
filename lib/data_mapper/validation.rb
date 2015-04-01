@@ -93,8 +93,6 @@ module DataMapper
         @validation_rules ||= ContextualRuleSet.new(self)
       end
 
-    private
-
       # @api private
       def inherited(base)
         super
