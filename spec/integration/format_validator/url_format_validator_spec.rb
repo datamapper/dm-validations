@@ -21,7 +21,7 @@ describe 'DataMapper::Validations::Fixtures::BillOfLading' do
     "http://localhost:4000", "http://localhost" ]
 
   invalid_uris.each do |uri|
-    describe "with URL of #{uri}" do
+    describe "with URL of #{uri.inspect}" do
       before :all do
         @model = DataMapper::Validations::Fixtures::BillOfLading.new(valid_attributes.merge(:url => uri))
       end
@@ -35,8 +35,8 @@ describe 'DataMapper::Validations::Fixtures::BillOfLading' do
   end
 
   # http:// throws an exception in Addressable::URI, so it wouldn't make it to the validation part anyway :)
-  (invalid_uris - ['http://']).each do |uri|
-    describe "with dm-type URI of #{uri}" do
+  (invalid_uris - ['http:// example.com', 'http://']).each do |uri|
+    describe "with dm-type URI of #{uri.inspect}" do
       before(:all) do
         @model = DataMapper::Validations::Fixtures::SurrenderBillOfLading.new(valid_attributes.merge(:bank_url => uri))
       end
@@ -46,10 +46,8 @@ describe 'DataMapper::Validations::Fixtures::BillOfLading' do
       it "has a meaningful error message" do
         @model.errors.on(:bank_url).should == [ 'Bank url has an invalid format' ]
       end
-
     end
   end
-
 
   [ 'http://apple.com',
     'http://www.apple.com',
@@ -74,7 +72,7 @@ describe 'DataMapper::Validations::Fixtures::BillOfLading' do
     "http://hulu.com:80/browse/popular/tv",
     "http://www.hulu.com/watch/62475/the-simpsons-gone-maggie-gone#s-p1-so-i0"
   ].each do |uri|
-   describe "with URL of #{uri}" do
+   describe "with URL of #{uri.inspect}" do
      before :all do
        @model = DataMapper::Validations::Fixtures::BillOfLading.new(valid_attributes.merge(:url => uri))
      end
@@ -82,7 +80,7 @@ describe 'DataMapper::Validations::Fixtures::BillOfLading' do
      it_should_behave_like "valid model"
    end
 
-   describe "with dm-type URI of #{uri}" do
+   describe "with dm-type URI of #{uri.inspect}" do
      before(:all) do
        @model = DataMapper::Validations::Fixtures::SurrenderBillOfLading.new(valid_attributes.merge(:bank_url => uri))
      end

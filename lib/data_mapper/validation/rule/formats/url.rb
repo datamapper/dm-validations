@@ -5,10 +5,7 @@ module DataMapper
     class Rule
       module Formats
 
-        # Regex from http://www.igvita.com/2006/09/07/validating-url-in-ruby-on-rails/
-        Url = begin
-          /(^$)|(^(http|https):\/\/[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}((\:[0-9]{1,5})?\/?.*)?$)/ix
-        end
+        Url = %r{\Ahttps?://[a-z\d](?:[-.]?[a-z\d])*\.[a-z]{2,6}(?::\d{1,5})?/?.*\z}ix.freeze
 
       end # module Formats
     end # class Rule
