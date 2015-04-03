@@ -14,13 +14,13 @@ module DataMapper
         # Attributes
         #
 
-        attr_accessor :year, :participants, :city
+        attr_accessor :year, :participants, :city, :planned
 
         #
         # Validations
         #
 
-        validates_with_block :participants do
+        validates_with_block :participants, :unless => :planned do
           if self.class.known_performances.any? { |perf| perf == self }
             true
           else
