@@ -26,7 +26,7 @@ module DataMapper
       # TODO: replace the @disabled_auto_validations reader methods with
       #   a positive statement instead of negative (instead of skip/disable, etc)
       #   eg., @infer_validations, #infer_validations?
-      # 
+      #
       # Checks whether auto validations are currently
       # disabled (see +disable_auto_validations+ method
       # that takes a block)
@@ -59,7 +59,7 @@ module DataMapper
       alias_method :auto_validations_disabled?, :disabled_auto_validations?
 
       # Disable generation of validations for the duration of the given block
-      # 
+      #
       # @api public
       def without_auto_validations
         previous, @disable_auto_validations = @disable_auto_validations, true
@@ -241,7 +241,7 @@ module DataMapper
       # TODO: eliminate this;
       #   mutating one arg based on a non-obvious interaction of the other two...
       #   well, it makes my skin crawl.
-      # 
+      #
       # @api private
       def self.options_with_message(base_options, property, validator_name)
         options = base_options.clone

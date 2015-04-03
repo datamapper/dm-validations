@@ -47,10 +47,10 @@ module DataMapper
       end
 
       # Execute all rules in this context against the resource.
-      # 
+      #
       # @param [Object] resource
       #   the resource to be validated
-      # 
+      #
       # @return [Array(Violation)]
       #   an Array of Violations
       def validate(resource)
@@ -59,10 +59,10 @@ module DataMapper
       end
 
       # Assimilate all the rules from another RuleSet into the receiver
-      # 
+      #
       # @param [RuleSet, Array] rules
       #   The other RuleSet whose rules are to be assimilated
-      # 
+      #
       # @return [RuleSet]
       #   +self+, the receiver
       def concat(rules)

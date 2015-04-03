@@ -12,7 +12,7 @@ module DataMapper
       #
       # @param [Violation] violation
       #   The Violation to transform.
-      # 
+      #
       # @return [String]
       #   The transformed message.
       #
@@ -63,7 +63,7 @@ module DataMapper
         #   The error messages to be merged.
         def self.error_messages=(error_messages)
           unless error_messages.is_a?(Hash)
-            raise ArgumentError, "+error_messages+ must be a hash" 
+            raise ArgumentError, "+error_messages+ must be a hash"
           end
 
           self.error_messages.merge!(error_messages)

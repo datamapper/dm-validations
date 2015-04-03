@@ -21,7 +21,7 @@ module DataMapper
       attr_reader :attribute_name
 
       # Configure a Violation instance
-      # 
+      #
       # @param [DataMapper::Resource, Object] resource
       #   the validated object; either a DataMapper::Resource,
       #   or a plain old Ruby Object
@@ -32,7 +32,7 @@ module DataMapper
       # @param [Symbol] attribute_name
       #   the name of the attribute whose validation rule was violated
       #   or nil, if a Rule was provided.
-      # 
+      #
       def initialize(resource, message = nil, rule = nil, attribute_name = nil)
         unless message || rule
           raise ArgumentError, "expected +message+ or +rule+"

@@ -24,7 +24,7 @@ module DataMapper
       end
 
       # Clear existing validation violations.
-      # 
+      #
       # @api public
       def clear
         violations.clear
@@ -38,12 +38,12 @@ module DataMapper
       #   the Violation which describes the validation violation
       # @param [NilClass, String, #call, Hash] message
       #   The message to add.
-      # 
+      #
       # @see Violation#initialize
-      # 
+      #
       # @api public
       def add(attribute_name_or_violation, message = nil)
-        violation = 
+        violation =
           if attribute_name_or_violation.kind_of?(Violation)
             attribute_name_or_violation
           else
@@ -54,7 +54,7 @@ module DataMapper
       end
 
       # Collect all violations into a single list.
-      # 
+      #
       # @api public
       def full_messages
         violations.inject([]) do |list, (attribute_name, violations)|
@@ -72,9 +72,9 @@ module DataMapper
       # @return [Array(Violation, String), NilClass]
       #   Array of Violations, if there are violations on +attribute_name+
       #   nil if there are no violations on +attribute_name+
-      # 
+      #
       # @api public
-      # 
+      #
       # TODO: use a data structure that ensures uniqueness
       def on(attribute_name)
         attribute_violations = violations[attribute_name]
@@ -94,7 +94,7 @@ module DataMapper
       end
 
       # @api public
-      # 
+      #
       # FIXME: calling #to_sym on uncontrolled input is an
       # invitation for a memory leak
       def [](attribute_name)

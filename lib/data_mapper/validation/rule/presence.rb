@@ -34,9 +34,9 @@ module DataMapper
         #   Returns true for Boolean, ParanoidBoolean, TrueClass and other
         #   properties. Returns false for other property types or for
         #   non-properties.
-        # 
+        #
         # @api private
-        # 
+        #
         # TODO: break this into concrete types and move the property check
         # into #initialize. Will require adding model to signature of #initialize
         def boolean_type?(resource)

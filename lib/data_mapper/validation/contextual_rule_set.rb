@@ -14,7 +14,7 @@ module DataMapper
 
       # MessageTransformer to use for transforming Violations on Resources
       # instantiated from the model to which this ContextualRuleSet is bound
-      # 
+      #
       # @api public
       attr_accessor :transformer
 
@@ -22,7 +22,7 @@ module DataMapper
       attr_reader :rule_sets
 
       # Whether to optimize the execution of validators for this model's resources
-      # 
+      #
       # @api public
       attr_reader :optimize
 
@@ -39,7 +39,7 @@ module DataMapper
       end
 
       # Delegate #validate to RuleSet
-      # 
+      #
       # @api public
       def validate(resource, context_name)
         context(context_name).validate(resource)
@@ -51,17 +51,17 @@ module DataMapper
       #   Context name for which to return a RuleSet
       # @return [RuleSet]
       #   RuleSet for the given context
-      # 
+      #
       # @api public
       def context(context_name)
         rule_sets[context_name]
       end
 
       # Retrieve Rules applicable to a given attribute name
-      # 
+      #
       # @param [Symbol] attribute_name
       #   name of the attribute for which to retrieve applicable Rules
-      # 
+      #
       # @return [Array]
       #   list of Rules applicable to +attribute_name+
       def [](attribute_name)
@@ -70,25 +70,25 @@ module DataMapper
 
       # Create a new rule of the given class for each name in +attribute_names+
       # and add the rules to the RuleSet(s) indicated
-      # 
+      #
       # @param [DataMapper::Validation::Rule] rule_class
       #    Rule class, example: DataMapper::Validation::Rule::Presence
       #
       # @param [Array<Symbol>] attribute_names
       #    Attribute names given to validation macro, example:
       #    [:first_name, :last_name] in validates_presence_of :first_name, :last_name
-      # 
+      #
       # @param [Hash] options
       #    Options supplied to validation macro, example:
       #    {:context=>:default, :maximum=>50, :allow_nil=>true, :message=>nil}
-      # 
+      #
       # @option [Symbol] :context
       #   the context in which the new rule should be run
       # @option [Boolean] :allow_nil
       #   whether or not the new rule should allow nil values
       # @option [Boolean] :message
       #   the error message the new rule will provide on validation failure
-      # 
+      #
       # @return [ContextualRuleSet]
       #   This method is a command, thus returns the receiver
       def add(rule_class, attribute_names, options = {}, &block)
@@ -109,10 +109,10 @@ module DataMapper
       end
 
       # Assimilate all rules contained in +other+ into the receiver
-      # 
+      #
       # @param [ContextualRuleSet] other
       #   the ContextualRuleSet whose rules are to be assimilated
-      # 
+      #
       # @return [ContextualRuleSet]
       #   +self+, the receiver
       def concat(other)
@@ -140,9 +140,9 @@ module DataMapper
       #   this model, or :default if the context on the stack is invalid for
       #   this model or no context is on the stack and this model has at least
       #   one validation context
-      # 
+      #
       # @api private
-      # 
+      #
       # TODO: simplify the semantics of #current_context, #validate
       def current_context
         context = Validation::Context.current
@@ -172,7 +172,7 @@ module DataMapper
       #   raised if the context is not valid for this model
       #
       # @api private
-      # 
+      #
       # TODO: is this method actually needed?
       def assert_valid_context(context_name)
         unless valid_context?(context_name)
@@ -185,13 +185,13 @@ module DataMapper
     private
 
       # Allow :context to be aliased to :group, :when & :on
-      # 
+      #
       # @param [Hash] options
       #   the options from which +context_names+ is to be extracted
-      # 
+      #
       # @return [Array(Symbol)]
       #   the context name(s) from +options+
-      # 
+      #
       # @api private
       def extract_context_names(options)
         context_names = [

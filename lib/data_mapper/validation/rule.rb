@@ -36,15 +36,15 @@ module DataMapper
       attr_reader :unless_clause
 
       # Get the validators for the given attribute_name and options
-      # 
+      #
       # @param [Symbol] attribute_name
       #   the name of the attribute to which the returned validators will be bound
       # @param [Hash] options
       #   the options with which to configure the returned validators
-      # 
+      #
       # @return [#each(Rule)]
       #   a collection of validators which collectively
-      # 
+      #
       def self.rules_for(attribute_name, options, &block)
         Array(new(attribute_name, options, &block))
       end
@@ -57,7 +57,7 @@ module DataMapper
       #
       # TODO: remove Hash as a value for :message
       #   (see Violation#[] in backwards.rb)
-      # 
+      #
       # @option [String, Hash] :message
       #   A custom message that will be used for any violations of this rule
       # @option [Symbol, Proc] :if
@@ -102,10 +102,10 @@ module DataMapper
       end
 
       # Validate the +resource+ arg against this Rule
-      # 
+      #
       # @param [DataMapper::Resource, Object] resource
       #   the target object to be validated
-      # 
+      #
       # @return [NilClass, Violation]
       #   NilClass if +resource+ is valid
       #   Violation with additional info if +resource+ is invalid
@@ -145,7 +145,7 @@ module DataMapper
       #
       # @return [Rule]
       #   The receiver (self)
-      # 
+      #
       # TODO: remove this method
       #   Rules should return Violations, not mutate resource
       def add_error(resource, message, attribute_name = :general)
@@ -218,7 +218,7 @@ module DataMapper
       #
       # Note: DataMapper validations can be used on non-DataMapper resources.
       # In such cases, the return value will be nil.
-      # 
+      #
       # @api private
       def get_resource_property(resource, property_name)
         model = resource.model if resource.respond_to?(:model)

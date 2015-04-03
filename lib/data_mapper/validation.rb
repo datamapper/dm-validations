@@ -28,7 +28,7 @@ module DataMapper
     end
 
     # Get a list of violations for the receiver *without* mutating it
-    # 
+    #
     # @api private
     def validation_violations(context_name = default_validation_context)
       validation_rules.validate(self, context_name)
@@ -45,11 +45,11 @@ module DataMapper
     # The default validation context for this Resource.
     # This Resource's default context can be overridden by implementing
     # #default_validation_context
-    # 
+    #
     # @return [Symbol]
     #   the current validation context from the context stack
     #   (if valid for this model), or :default
-    # 
+    #
     # @api public
     def default_validation_context
       validation_rules.current_context
@@ -63,11 +63,11 @@ module DataMapper
     # Retrieve the value of the given property name for the purpose of validation.
     # Default implementation is to send the attribute name arg to the receiver
     # and use the resulting value as the attribute value for validation
-    # 
+    #
     # @param [Symbol] attribute_name
     #   the name of the attribute for which to retrieve
     #   the attribute value for validation.
-    # 
+    #
     # @api public
     def validation_property_value(attribute_name)
       __send__(attribute_name) if respond_to?(attribute_name, true)
